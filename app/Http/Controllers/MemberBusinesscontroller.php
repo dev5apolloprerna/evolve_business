@@ -129,7 +129,7 @@ class MemberBusinesscontroller extends Controller
                 $sendemaildetails = DB::table('sendemaildetails')->where('id', 2)->first();
                
                 $msg = [
-                    'FromMail' => $sendemaildetails->strFromMail ??  'support@evolv.co.in',
+                    'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
                     'Title' => $sendemaildetails->strTitle ??  'business send',
                     'ToEmail' => isset($ToUser) ? ($ToUser->email ?? '') : '',
                     'CCEmail' =>'k.krupa0101@gmail.com',
@@ -228,7 +228,7 @@ class MemberBusinesscontroller extends Controller
         return view('rejectstatus',compact('gu_id'));
         
     }
-     public function updatestatus(Request $request)
+    public function updatestatus(Request $request)
     {
         $d=DB::table('Business')->where('gu_id', $request->id)->first();
        
@@ -242,7 +242,6 @@ class MemberBusinesscontroller extends Controller
 
         return view('rejectedcom');
     }   
-    
     
      // login member user pending list code 
 
