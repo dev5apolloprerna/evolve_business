@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\City;
 use App\Models\City_group;
 use App\Models\Member_metting;
+use App\Models\members;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -16,15 +17,15 @@ class Membermeetingcontroller extends Controller
 {
     public function index(Request $request)
     {
-       
+
         // dd('call');
         $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
         $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
-        $datas =DB::table('Cluster_Meet')->orderBy(DB::raw('STR_TO_DATE(`start_date`,"%d.%m.%y %H:%i")'),'DESC')->paginate(env('PAR_PAGE_COUNT',20));
-       //$datas =DB::table('Cluster_Meet')->paginate(env('PAR_PAGE_COUNT'));
-        $Count =$datas->count();
-        
-        return view('Membermeeting.index', compact('Count','cityGroups','cities','datas'));
+        $datas = DB::table('Cluster_Meet')->orderBy(DB::raw('STR_TO_DATE(`start_date`,"%d.%m.%y %H:%i")'), 'DESC')->paginate(env('PAR_PAGE_COUNT', 20));
+        //$datas =DB::table('Cluster_Meet')->paginate(env('PAR_PAGE_COUNT'));
+        $Count = $datas->count();
+
+        return view('Membermeeting.index', compact('Count', 'cityGroups', 'cities', 'datas'));
     }
 
     public function create(Request $request)
@@ -37,7 +38,7 @@ class Membermeetingcontroller extends Controller
             'Meeting_title'    => $request->Meetingtitle,
             'start_date'    => $request->start_date,
             'End_date'    => $request->End_date,
-            'created_at' => date('Y-m-d H:i:s'),      
+            'created_at' => date('Y-m-d H:i:s'),
         );
         DB::table('Cluster_Meet')->insert($Data);
         return back()->with('success', 'Cluster Meet Created Successfully.');
@@ -45,19 +46,18 @@ class Membermeetingcontroller extends Controller
 
     public function editview(Request $request, $id)
     {
-   
+
         $cities = City::select('id', 'city_name')->get();
         $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
-        $data = DB::table('Cluster_Meet')->where('id',$id)->first();
-// dd($data);
-      echo json_encode($data);
-    
+        $data = DB::table('Cluster_Meet')->where('id', $id)->first();
+        // dd($data);
+        echo json_encode($data);
     }
-    
+
 
     public function update(Request $request)
     {
-       
+
         // dd($request);
 
         $update = DB::table('Cluster_Meet')
@@ -70,7 +70,7 @@ class Membermeetingcontroller extends Controller
                 'End_date'    => $request->End_date,
                 'updated_at' => date('Y-m-d H:i:s')
             ]);
-          
+
         return back()->with('success', 'Cluster Meet Updated Successfully.');
     }
 
@@ -86,55 +86,69 @@ class Membermeetingcontroller extends Controller
     }
 
 
-    public function Memberindex(Request $request,$id)
+    public function Memberindex(Request $request, $id)
     {
-       
-        $meetingdata = Member_metting::select("member_id")->where(['meeting_id' => $id])->get();
-    //    dd($permission);
-        $data =DB::table('Cluster_Meet')->where('id',$id)->first();
+        $allmembers = members::select('id', 'Contact_person')->orderBy('Contact_person')->get();
+        $meetingdata = Member_metting::where(['meeting_id' => $id])->get();
+        //    dd($permission);
+        $data = DB::table('Cluster_Meet')->where('id', $id)->first();
         $meetingid = $id;
         $members = DB::table('Cluster_Meet as cm')
-            ->select('m.id as member_id','m.Contact_person')
+            ->select('m.id as member_id', 'm.Contact_person')
             ->join('members as m', function ($join) {
                 $join->on('cm.city_id', '=', 'm.city_id')
-                     ->on('cm.city_group_id', '=', 'm.citygroup_id');
+                    ->on('cm.city_group_id', '=', 'm.citygroup_id');
             })
             ->where('cm.isDelete', 0)
             ->where('m.isDelete', 0)
             ->where('cm.city_id', $data->city_id)
             ->where('cm.city_group_id', $data->city_group_id)
-            ->orderBy('Contact_person','asc')
+            ->orderBy('Contact_person', 'asc')
             ->distinct()
-            ->get(); 
-            return view('Membermeeting.Memberindex', compact('members','meetingid','meetingdata'));
-        
-       
+            ->get();
+        $pptTaken1 = Member_metting::where('meeting_id', $id)
+            ->pluck('ppt_taken_1')
+            ->toArray();
+
+        $pptTaken2 = Member_metting::where('meeting_id', $id)
+            ->pluck('ppt_taken_2')
+            ->toArray();
+
+        $brand_showcase_1 = Member_metting::where('meeting_id', $id)
+            ->pluck('brand_showcase_1')
+            ->toArray();
+
+        $brand_showcase_2 = Member_metting::where('meeting_id', $id)
+            ->pluck('brand_showcase_2')
+            ->toArray();
+        return view('Membermeeting.Memberindex', compact('brand_showcase_1', 'brand_showcase_2', 'pptTaken1', 'pptTaken2', 'allmembers', 'members', 'meetingid', 'meetingdata'));
     }
     public function memberstore(Request $request)
     {
-       
         DB::table('Cluster_Meet_Member_meeting')
-        ->where('meeting_id', $request->meetingid)
-        ->delete();
-
+            ->where('meeting_id', $request->meetingid)
+            ->delete();
         $meetingId = $request->input('meetingid');
         $memberIds = $request->input('members');
         foreach ($memberIds as $memberId) {
             Member_metting::create([
                 'meeting_id' => $meetingId,
                 'member_id' => $memberId,
+                'ppt_taken_1' => $request->ppt_taken_1,
+                'ppt_taken_2' => $request->ppt_taken_2,
+                'brand_showcase_1' => $request->brand_showcase_1,
+                'brand_showcase_2' => $request->brand_showcase_2,
             ]);
         }
 
         $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
         $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
-        $datas =DB::table('Cluster_Meet')->paginate(env('PAR_PAGE_COUNT',20));
-        $Count =$datas->count();
- 
-        return redirect()->route('Membermeeting.index', compact('Count', 'cityGroups', 'cities', 'datas'))->with('success', 'Meeting Members added successfully!');
+        $datas = DB::table('Cluster_Meet')->paginate(env('PAR_PAGE_COUNT', 20));
+        $Count = $datas->count();
 
+        return redirect()->route('Membermeeting.index', compact('Count', 'cityGroups', 'cities', 'datas'))->with('success', 'Meeting Members added successfully!');
     }
-     public function Membermeeting_comment(Request $request, $id = null)
+    public function Membermeeting_comment(Request $request, $id = null)
     {
         try {
             $metting_id = $id ?? '';
@@ -143,7 +157,7 @@ class Membermeetingcontroller extends Controller
                 ->leftJoin('members', 'Cluster_Meet_Member_meeting.member_id', '=', 'members.id')
                 ->leftJoin('Cluster_Meet', 'Cluster_Meet_Member_meeting.meeting_id', '=', 'Cluster_Meet.id')
                 ->where('Cluster_Meet_Member_meeting.meeting_id', $id)
-                ->paginate(env('PAR_PAGE_COUNT',20));
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $count = $datas->count();
             return view('Membermeeting.Membercomment', compact('datas', 'count', 'metting_id'));
@@ -204,6 +218,4 @@ class Membermeetingcontroller extends Controller
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
-  
-
 }

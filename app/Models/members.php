@@ -11,6 +11,7 @@ class members extends Model
     public $table = 'members';
     protected $fillable = [
         'user_id',
+        'Contact_person',
         'companyname',
         'phonenumber',
         'email',
@@ -30,12 +31,11 @@ class members extends Model
         'youtube_link',
         'google_link',
         'Arrival_flag',
- 
+
     ];
 
-     public function renewalhistory()
+    public function renewalhistory()
     {
         return $this->hasOne(renewalhistory::class, 'member_id');
     }
 }
-

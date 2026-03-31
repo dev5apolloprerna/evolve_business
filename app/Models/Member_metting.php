@@ -12,6 +12,9 @@ class Member_metting extends Model
     protected $fillable = [
         'meeting_id',
         'member_id',
-          
+        'ppt_taken_1',
+        'ppt_taken_2',
+        'brand_showcase_1',
+        'brand_showcase_2',
     ];
 }

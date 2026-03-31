@@ -1,14 +1,6 @@
 @extends('layouts.front')
-@section('opTag')
-@section('title', $seo->metaTitle)
 
-<meta name="description" content="{{ $seo->metaDescription }}" />
-<meta name="keywords" content="{{ $seo->metaKeyword }}" />
-{!! $seo->head !!}
-{!! $seo->body !!}
-
-
-@endsection
+@section('title', 'Member Login')
 
 @section('content')
     <style>
