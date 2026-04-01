@@ -41,6 +41,8 @@ use App\Http\Controllers\AdminReferencecontroller;
 use App\Http\Controllers\Membersearchcontroller;
 use App\Http\Controllers\Membermeetingcontroller;
 use App\Http\Controllers\PointsMasterController;
+use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\MemberVisitorController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClusterfestFeedbackController;
@@ -217,6 +219,33 @@ Route::prefix('admin')->name('Points.')->middleware('auth')->group(
         Route::delete('/Points/delete', [PointsMasterController::class, 'delete'])->name('delete');
     }
 );
+
+//Visitor master
+Route::prefix('admin')->name('Visitor.')->middleware('auth')->group(
+    function () {
+        Route::get('/Visitor/index', [VisitorController::class, 'index'])->name('index');
+        Route::get('/Visitor/create/{id?}', [VisitorController::class, 'createnew'])->name('create');
+        Route::post('/Visitor/store', [VisitorController::class, 'create'])->name('store');
+        Route::get('/Visitor/edit/{id?}', [VisitorController::class, 'editview'])->name('edit');
+        Route::post('/Visitor/update', [VisitorController::class, 'update'])->name('update');
+        Route::delete('/Visitor/delete', [VisitorController::class, 'delete'])->name('delete');
+    }
+);
+// Member Visitor
+Route::prefix('admin')->name('MemberVisitor.')->middleware('auth')->group(
+    function () {
+        Route::get('/MemberVisitor/index', [MemberVisitorController::class, 'index'])->name('index');
+        Route::get('/MemberVisitor/create/{id?}', [MemberVisitorController::class, 'createnew'])->name('create');
+        Route::post('/MemberVisitor/store', [MemberVisitorController::class, 'create'])->name('store');
+        Route::get('/MemberVisitor/edit/{id?}', [MemberVisitorController::class, 'editview'])->name('edit');
+        Route::post('/MemberVisitor/update', [MemberVisitorController::class, 'update'])->name('update');
+        Route::delete('/MemberVisitor/delete', [MemberVisitorController::class, 'delete'])->name('delete');
+        Route::post('/MemberVisitor/update-status', [MemberVisitorController::class, 'updateStatus'])->name('updateStatus');
+        Route::get('/MemberVisitor/get-status/{id}', [MemberVisitorController::class, 'getStatus'])->name('getStatus');
+    }
+);
+
+
 //category master
 Route::prefix('admin')->name('categories.')->middleware('auth')->group(function () {
     Route::any('/categories/index', [Categoriescontroller::class, 'index'])->name('index');

@@ -34,14 +34,14 @@ use Razorpay\Api\Api;
 
 class FrontController extends Controller
 {
-     public function Announcement_delete(Request $request)
+    public function Announcement_delete(Request $request)
     {
         try {
             // $delete = DB::table('Announcement')->where(['id' => $request->id])->first();
             // $root = $_SERVER['DOCUMENT_ROOT'];
             // $destinationpath = $root . '/Announcement/';
             // unlink($destinationpath . $delete->photo);
-    
+
             DB::table('Announcement')->where(['id' => $request->id])->delete();
             return redirect()->route('Announcement.index')->with('success', 'Announcement Deleted Successfully!.');
         } catch (\Throwable $th) {
@@ -62,56 +62,52 @@ class FrontController extends Controller
             }
             $image->move($destinationpath, $img);
         }
-        $slug=Str::slug($request->Title);
+        $slug = Str::slug($request->Title);
         $Data = array(
             'Title' => $request->Title,
             'photo' => $img,
-            'Announcement_slug'=>$slug,
+            'Announcement_slug' => $slug,
             'description' => $request->description,
-            );
+        );
         DB::table('Announcement')->insert($Data);
         return redirect()->route('Announcement.index')->with('success', 'Announcement create successfully.');
     }
 
     public function Announcement_storeview(Request $request)
     {
-       return view('Announcement.storeview');
+        return view('Announcement.storeview');
     }
-      public function checkDate(Request $request)
+    public function checkDate(Request $request)
     {
-       
+
         $isBooked = DB::table('members')
-        ->where('Book_Your_Podcast', $request->input('date'))
-        ->exists();
+            ->where('Book_Your_Podcast', $request->input('date'))
+            ->exists();
         return response()->json(['isBooked' => $isBooked]);
-
     }
-    public function Announcement_Detail(Request $request,$id)
+    public function Announcement_Detail(Request $request, $id)
     {
 
-         $Announcement = DB::table('Announcement')->where('Announcement_slug',$id)->orderBy('id', 'DESC')->first();
-         return view('frontview.AnnouncementDetail', compact('Announcement'));
-   
+        $Announcement = DB::table('Announcement')->where('Announcement_slug', $id)->orderBy('id', 'DESC')->first();
+        return view('frontview.AnnouncementDetail', compact('Announcement'));
     }
-   public function Announce_index(Request $request)
-   {
+    public function Announce_index(Request $request)
+    {
 
         $Events = DB::table('Announcement')->orderBy('id', 'DESC')->paginate(20);
-        $Count=$Events->count();
-        
-        return view('Announcement.index', compact('Events','Count'));
-  
-   }
-   public function Announcement_editview(Request $request,$id)
-   {
-     
-        $Data = DB::table('Announcement')->where('id',$id)->first();
-   
+        $Count = $Events->count();
+
+        return view('Announcement.index', compact('Events', 'Count'));
+    }
+    public function Announcement_editview(Request $request, $id)
+    {
+
+        $Data = DB::table('Announcement')->where('id', $id)->first();
+
         return view('Announcement.edit', compact('Data'));
-  
-   }
-   public function Announcement_update(Request $request)
-   {  
+    }
+    public function Announcement_update(Request $request)
+    {
         // dd($request);
         $img = "";
         if ($request->hasFile('photo')) {
@@ -134,22 +130,22 @@ class FrontController extends Controller
             $oldImg = $request->input('hiddenPhoto');
             $img = $oldImg;
         }
-        $slug=Str::slug($request->Title);
+        $slug = Str::slug($request->Title);
         $Student = DB::table('Announcement')
-        ->where('id', $request->id)
-        ->update([
-            'Title' => $request->Title,
-            'photo' => $img,
-            'Announcement_slug'=>$slug,
-            'description' => $request->description,
-        ]);
+            ->where('id', $request->id)
+            ->update([
+                'Title' => $request->Title,
+                'photo' => $img,
+                'Announcement_slug' => $slug,
+                'description' => $request->description,
+            ]);
 
         return redirect()->route('Announcement.index')->with('success', 'Announcement Updated successfully.');
-   }
- 
+    }
+
     public function Activity_update(Request $request)
     {
-      //    dd($request);
+        //    dd($request);
 
         $img = "";
         if ($request->hasFile('photo')) {
@@ -185,33 +181,31 @@ class FrontController extends Controller
                 'description' => $request->description,
                 "strIP" => $_SERVER['REMOTE_ADDR']
             ]);
-      
+
         return redirect()->route('Activity.index')->with('success', 'Activity Updated Successfully.');
     }
-    public function Activity_editview(Request $request,$id=null)
+    public function Activity_editview(Request $request, $id = null)
     {
-  
+
         $data = DB::table('Member_Activity')->where(['id' => $id])->first();
         // dd($data);
         echo json_encode($data);
-   
     }
     public function Activity_delete(Request $request)
     {
-        DB::table('Member_Activity')->where('id',$request->id)->delete();
-        return back()->with('success', 'Activity Deleted Successfully!.'); 
-   
+        DB::table('Member_Activity')->where('id', $request->id)->delete();
+        return back()->with('success', 'Activity Deleted Successfully!.');
     }
     public function activity_index(Request $request)
     {
         // $session=auth::user();
-        $activity= DB::table('Member_Activity')->paginate(env('PAR_PAGE_COUNT',20));
-        $Count=$activity->count();
-        return view('Activity.index',compact('Count','activity'));
+        $activity = DB::table('Member_Activity')->paginate(env('PAR_PAGE_COUNT', 20));
+        $Count = $activity->count();
+        return view('Activity.index', compact('Count', 'activity'));
     }
     public function activity_create(Request $request)
     {
-        
+
         // $session=auth::user();
         $img = "";
         if ($request->hasFile('photo')) {
@@ -224,7 +218,7 @@ class FrontController extends Controller
             }
             $image->move($destinationpath, $img);
         }
-        
+
         $Data = array(
             // 'user_id'=> 0,
             'photo' => $img,
@@ -236,41 +230,40 @@ class FrontController extends Controller
         DB::table('Member_Activity')->insert($Data);
 
         return redirect()->route('Activity.index')->with('success', 'Activity Created Successfully.');
-       
     }
-   
+
     public function Admin_induction_index(Request $request)
     {
-       $induction =DB::table('induction_meet')
-       ->select('induction_meet.*','categories.name as cat_name','categories.id as cat_id')
-       ->leftjoin('categories','induction_meet.category_id','=','categories.id')
-       ->where('cluster_meet','!=',1)
-       ->orderBy('induction_meet.id', 'desc')->paginate(3000);
-    
-       $Count =$induction->count();
-        return view('induction.index', compact('induction','Count'));
+        $induction = DB::table('induction_meet')
+            ->select('induction_meet.*', 'categories.name as cat_name', 'categories.id as cat_id')
+            ->leftjoin('categories', 'induction_meet.category_id', '=', 'categories.id')
+            ->where('cluster_meet', '!=', 1)
+            ->orderBy('induction_meet.id', 'desc')->paginate(3000);
+
+        $Count = $induction->count();
+        return view('induction.index', compact('induction', 'Count'));
     }
     public function clustermetting(Request $request)
     {
-      
-       $clustermeet =DB::table('induction_meet')
-       ->where('cluster_meet','!=',0)
-       ->orderBy('induction_meet.checktime', 'asc')->paginate(3000);
-       $Count =$clustermeet->count();
-  
-        return view('induction.clustermetting', compact('clustermeet','Count'));
+
+        $clustermeet = DB::table('induction_meet')
+            ->where('cluster_meet', '!=', 0)
+            ->orderBy('induction_meet.checktime', 'asc')->paginate(3000);
+        $Count = $clustermeet->count();
+
+        return view('induction.clustermetting', compact('clustermeet', 'Count'));
     }
     public function clustermeet_delete(Request $request)
     {
-        DB::table('induction_meet')->where('id',$request->id)->delete();
+        DB::table('induction_meet')->where('id', $request->id)->delete();
         return back()->with('success', 'Cluster Meet Deleted Successfully!.');
     }
     public function induction_morning_index(Request $request)
     {
         try {
             $seo = MetaData::where(['id' => 1])->first();
-            $category=DB::table('categories')->orderBy('name','asc')->get();
-            return view('frontview.induction-morning', compact('category','seo'));
+            $category = DB::table('categories')->orderBy('name', 'asc')->get();
+            return view('frontview.induction-morning', compact('category', 'seo'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -278,9 +271,9 @@ class FrontController extends Controller
     public function induction_morning_index_paid(Request $request)
     {
         try {
-             $seo = MetaData::where(['id' => 1])->first();
+            $seo = MetaData::where(['id' => 1])->first();
             $category = DB::table('categories')->orderBy('name', 'asc')->get();
-            return view('frontview.induction-morning-paid', compact('category','seo'));
+            return view('frontview.induction-morning-paid', compact('category', 'seo'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -288,13 +281,13 @@ class FrontController extends Controller
 
     public function visitor_index(Request $request)
     {
-        $category=DB::table('categories')->orderBy('name','asc')->get();
+        $category = DB::table('categories')->orderBy('name', 'asc')->get();
         return view('frontview.visitor-cluster', compact('category'));
     }
     public function cluster_visitor_store(Request $request)
     {
-    
-       // $checktimeString ='';// implode(', ', $request->checktime);
+
+        // $checktimeString ='';// implode(', ', $request->checktime);
         $data = [
             "type" => $request->type,
             "name" => $request->name,
@@ -305,65 +298,63 @@ class FrontController extends Controller
             "reference_name" => $request->reference_name,
             "email" => $request->email,
             "checktime" => $request->check_time,
-            "Gst_numbar"=>$request->gstnumber ?? 0,
+            "Gst_numbar" => $request->gstnumber ?? 0,
             "created_at" => date('Y-m-d H:i:s')
         ];
-       
-        $Data =DB::table('induction_meet')->insertGetId($data);
+
+        $Data = DB::table('induction_meet')->insertGetId($data);
         //paid
-        $getdeta =DB::table('induction_meet')->where('id',$Data)->first();
-        $Net_Amount =1499;
-    
-    $razorpayKey = config('services.razorpay.key');
-$api = new Api(
-    config('services.razorpay.key'),
-    config('services.razorpay.secret')
-);
+        $getdeta = DB::table('induction_meet')->where('id', $Data)->first();
+        $Net_Amount = 1499;
+
+        $razorpayKey = config('services.razorpay.key');
+        $api = new Api(
+            config('services.razorpay.key'),
+            config('services.razorpay.secret')
+        );
 
         $order = $api->order->create([
             'receipt'         => 'order_rcptid_' . rand(),
-            'amount'          => $Net_Amount * 100, 
+            'amount'          => $Net_Amount * 100,
             'currency'        => 'INR',
-            'payment_capture' => 1 
+            'payment_capture' => 1
         ]);
-        
-         return view('frontview.razorpayView' ,compact('Data','Net_Amount','razorpayKey','getdeta','order'));
-        
+
+        return view('frontview.razorpayView', compact('Data', 'Net_Amount', 'razorpayKey', 'getdeta', 'order'));
+
         //Free
-       // return back()->with('success', 'thank you, Your registration done Successfully!.'); 
-        
-     }
+        // return back()->with('success', 'thank you, Your registration done Successfully!.'); 
+
+    }
     public function induction_evening_index(Request $request)
     {
         try {
-                $seo = MetaData::where(['id' => 1])->first();
-                $dates = [
-                 
-                ];
-            
-                
-                $booked_dates = DB::table('induction_meet')
-                              ->select('checktime', DB::raw('count(*) as total'))
-                              ->groupBy('checktime')
-                              ->pluck('total', 'checktime') 
-                              ->toArray();
-                $citygroup =DB::table('city_groups')->orderBy('group_name','asc')->get();
-           
-            $available_dates = array_filter($dates, function($date) use ($booked_dates) {
-              
+            $seo = MetaData::where(['id' => 1])->first();
+            $dates = [];
+
+
+            $booked_dates = DB::table('induction_meet')
+                ->select('checktime', DB::raw('count(*) as total'))
+                ->groupBy('checktime')
+                ->pluck('total', 'checktime')
+                ->toArray();
+            $citygroup = DB::table('city_groups')->orderBy('group_name', 'asc')->get();
+
+            $available_dates = array_filter($dates, function ($date) use ($booked_dates) {
+
                 return !isset($booked_dates[$date]) || $booked_dates[$date] < 9;
             });
-        
-                return view('frontview.induction-evening', compact('available_dates','citygroup','seo'));
+
+            return view('frontview.induction-evening', compact('available_dates', 'citygroup', 'seo'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-        }        
+        }
     }
 
     public function induction_store(Request $request)
     {
-      
-       // $checktimeString ='';// implode(', ', $request->checktime);
+
+        // $checktimeString ='';// implode(', ', $request->checktime);
         $data = [
             "type" => $request->type,
             "name" => $request->name,
@@ -374,109 +365,109 @@ $api = new Api(
             "reference_name" => $request->reference_name,
             "email" => $request->email,
             "checktime" => $request->check_time,
-            "Gst_numbar"=>$request->gstnumber ?? 0,
+            "Gst_numbar" => $request->gstnumber ?? 0,
             "created_at" => date('Y-m-d H:i:s')
         ];
         // dd($data);
-        $Data =DB::table('induction_meet')->insertGetId($data);
-        if($request->amount_fee >0 ){
-        $getdeta =DB::table('induction_meet')->where('id',$Data)->first();
-        $Net_Amount =$request->amount_fee;
-        
-        $razorpayKey = config('app.RAZORPAY_KEY');
-        $api = new Api(config('app.RAZORPAY_KEY'), config('app.RAZORPAY_SECRET'));
-        
-        $order = $api->order->create([
-            'receipt'         => 'order_rcptid_' . rand(),
-            'amount'          => $Net_Amount * 100, 
-            'currency'        => 'INR',
-            'payment_capture' => 1 
-        ]);
-        
-         return view('frontview.razorpayView' ,compact('Data','Net_Amount','razorpayKey','getdeta','order'));
-        }else{
-          return view('frontview.thankyou');  
+        $Data = DB::table('induction_meet')->insertGetId($data);
+        if ($request->amount_fee > 0) {
+            $getdeta = DB::table('induction_meet')->where('id', $Data)->first();
+            $Net_Amount = $request->amount_fee;
+
+            $razorpayKey = config('app.RAZORPAY_KEY');
+            $api = new Api(config('app.RAZORPAY_KEY'), config('app.RAZORPAY_SECRET'));
+
+            $order = $api->order->create([
+                'receipt'         => 'order_rcptid_' . rand(),
+                'amount'          => $Net_Amount * 100,
+                'currency'        => 'INR',
+                'payment_capture' => 1
+            ]);
+
+            return view('frontview.razorpayView', compact('Data', 'Net_Amount', 'razorpayKey', 'getdeta', 'order'));
+        } else {
+            return view('frontview.thankyou');
         }
-     }
-     
+    }
+
     public function induction_store_paid(Request $request)
     {
         try {
-                $data = [
-                    "type" => $request->type,
-                    "name" => $request->name,
-                    "category_id" => $request->category_id,
-                    "contact_person_name" => $request->contact_person_name,
-                    "Phonenumber" => $request->Phonenumber,
-                    "referred_by" => $request->referred_by,
-                    "reference_name" => $request->reference_name,
-                    "email" => $request->email,
-                    "checktime" => $request->type,
-                    "Gst_numbar" => $request->gstnumber ?? 0,
-                    "created_at" => date('Y-m-d H:i:s'),
-                    "visitor_registration_paid" => 1,
-                ];
-                $Data = DB::table('induction_meet')->insertGetId($data);
-                $getdeta = DB::table('induction_meet')->where('id', $Data)->first();
-                $Net_Amount = $request->amount_fee;
-                if ($Net_Amount < 1) {
-                    return back()->with('error', 'Minimum payment amount must be ₹1 or more.');
-                }
-        
-                $razorpayKey = config('app.RAZORPAY_KEY');
-                $api = new Api(config('app.RAZORPAY_KEY'), config('app.RAZORPAY_SECRET'));
-                $order = $api->order->create([
-                    'receipt'         => 'order_rcptid_' . rand(),
-                    'amount'          => $Net_Amount * 100,
-                    'currency'        => 'INR',
-                    'payment_capture' => 1
-                ]);
-                return view('frontview.razorpayView_paid', compact('Data', 'Net_Amount', 'razorpayKey', 'getdeta', 'order'));
+            $data = [
+                "type" => $request->type,
+                "name" => $request->name,
+                "category_id" => $request->category_id,
+                "contact_person_name" => $request->contact_person_name,
+                "Phonenumber" => $request->Phonenumber,
+                "referred_by" => $request->referred_by,
+                "reference_name" => $request->reference_name,
+                "email" => $request->email,
+                "checktime" => $request->type,
+                "Gst_numbar" => $request->gstnumber ?? 0,
+                "created_at" => date('Y-m-d H:i:s'),
+                "visitor_registration_paid" => 1,
+            ];
+            $Data = DB::table('induction_meet')->insertGetId($data);
+            $getdeta = DB::table('induction_meet')->where('id', $Data)->first();
+            $Net_Amount = $request->amount_fee;
+            if ($Net_Amount < 1) {
+                return back()->with('error', 'Minimum payment amount must be ₹1 or more.');
+            }
+
+            $razorpayKey = config('app.RAZORPAY_KEY');
+            $api = new Api(config('app.RAZORPAY_KEY'), config('app.RAZORPAY_SECRET'));
+            $order = $api->order->create([
+                'receipt'         => 'order_rcptid_' . rand(),
+                'amount'          => $Net_Amount * 100,
+                'currency'        => 'INR',
+                'payment_capture' => 1
+            ]);
+            return view('frontview.razorpayView_paid', compact('Data', 'Net_Amount', 'razorpayKey', 'getdeta', 'order'));
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', $th->getMessage());
         }
-    } 
-     public function clustermeet_store(Request $request)
-     {    
-         $data = [
-             "type" => $request->type,
-             "name" => $request->name,
-             "Phonenumber" => $request->Phonenumber,
-             "checktime" => $request->droup_down,
-             "cluster_meet"=>1,
-             "created_at" => date('Y-m-d H:i:s')
-         ];
-         $Data =DB::table('induction_meet')->insertGetId($data);
-         return back()->with('success', 'Thank you for intrest.Registred in Cluster meet successfully.'); 
-      }
+    }
+    public function clustermeet_store(Request $request)
+    {
+        $data = [
+            "type" => $request->type,
+            "name" => $request->name,
+            "Phonenumber" => $request->Phonenumber,
+            "checktime" => $request->droup_down,
+            "cluster_meet" => 1,
+            "created_at" => date('Y-m-d H:i:s')
+        ];
+        $Data = DB::table('induction_meet')->insertGetId($data);
+        return back()->with('success', 'Thank you for intrest.Registred in Cluster meet successfully.');
+    }
     public function ProductInquiry_delete(Request $request)
     {
-       
-        DB::table('ProductInquiry')->where('id',$request->id)->delete();
-        return back()->with('success', 'Product Inquiry Deleted Successfully!.'); 
+
+        DB::table('ProductInquiry')->where('id', $request->id)->delete();
+        return back()->with('success', 'Product Inquiry Deleted Successfully!.');
     }
 
     public function ProductInquiry_list(Request $request)
     {
         $session = auth::user();
-        $member=DB::table('members')->where('user_id',$session->id)->first();
-        $product=DB::table('ProductInquiry')->select('ProductInquiry.created_at','ProductInquiry.id as product_inq_id','ProductInquiry.Member_id','ProductInquiry.Product_id','ProductInquiry.Name','ProductInquiry.email','ProductInquiry.Phone_Number','member_services.product_name')
-        ->leftjoin('member_services','ProductInquiry.Product_id','=','member_services.id')
-        ->where('ProductInquiry.Member_id',$member->id)->orderBy('ProductInquiry.id','desc')->paginate(env('PAR_PAGE_COUNT',20));
-        
-        $Count=$product->count();
+        $member = DB::table('members')->where('user_id', $session->id)->first();
+        $product = DB::table('ProductInquiry')->select('ProductInquiry.created_at', 'ProductInquiry.id as product_inq_id', 'ProductInquiry.Member_id', 'ProductInquiry.Product_id', 'ProductInquiry.Name', 'ProductInquiry.email', 'ProductInquiry.Phone_Number', 'member_services.product_name')
+            ->leftjoin('member_services', 'ProductInquiry.Product_id', '=', 'member_services.id')
+            ->where('ProductInquiry.Member_id', $member->id)->orderBy('ProductInquiry.id', 'desc')->paginate(env('PAR_PAGE_COUNT', 20));
 
-        return view('frontview.Inquirylist', compact('product','Count'));
+        $Count = $product->count();
+
+        return view('frontview.Inquirylist', compact('product', 'Count'));
     }
     // Book Your Podcast
     public function podcastindex(Request $request)
     {
         return view('podcast.podcastindex');
     }
-   
+
     public function podcaststore(Request $request)
-   {
+    {
         try {
             $session = auth::user();
             $podcastDate = $request->input('Book_Your_Podcast');
@@ -486,90 +477,90 @@ $api = new Api(
             $monthName = strftime('%B', strtotime($podcastDate));
             $existingBooking = DB::table('members')
                 ->where('Book_Your_Podcast', $podcastDate)
-                ->exists();   
+                ->exists();
             if ($existingBooking) {
                 return redirect()->back()->with('error', 'This podcast date is already booked.');
             }
             $bookingCount = DB::table('members')
                 ->whereYear('Book_Your_Podcast', $year)
                 ->whereMonth('Book_Your_Podcast', $month)
-                ->count();    
+                ->count();
             if ($bookingCount >= 9) {
                 return redirect()->back()->with('error', 'Bookings for ' . $monthName . ' are full. Please book next month.');
             }
             DB::table('members')->where('user_id', $session->id)->update([
-                'Book_Your_Podcast' => $podcastDate,   
+                'Book_Your_Podcast' => $podcastDate,
             ]);
-            
+
             $sendemaildetails = DB::table('sendemaildetails')->where('id', 5)->first();
-        
+
             $msg = [
                 'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
                 'Title' => $sendemaildetails->strTitle ??  'Evolve Business Community',
                 'ToEmail' => $sendemaildetails->ToMail ?? 'info@getdemo.in',
                 'Subject' => $sendemaildetails->strSubject ?? 'Book Your Podcast' ?? '',
             ];
-            
+
             $data = [
                 'Book_Your_Podcast' => $emaildate ?? '',
                 'membername' => $session->first_name ?? '',
                 'memberemail' => $session->email ?? '',
                 'memberphonenumber' => $session->mobile_number ?? ''
             ];
-           
+
             $mail = Mail::send('emails.BookYourPodcast', ['data' => $data], function ($message) use ($msg) {
                 $message->from($msg['FromMail'], $msg['Title']);
                 $message->to($msg['ToEmail'])->subject($msg['Subject']);
             });
-            
-            return redirect()->route('Memberhome')->with('success', 'Podcast Created successfully.');  
+
+            return redirect()->route('Memberhome')->with('success', 'Podcast Created successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
-   }
+    }
     //Book Member of the week
-    public function memberweek(Request $request) 
+    public function memberweek(Request $request)
     {
         return view('podcast.memberweek');
     }
     public function weekstore(Request $request)
-   {
-       
+    {
+
         try {
-    
+
             $session = auth::user();
             $bookweek = $request->input('Book_Your_Member_of_the_week');
             $Book_week_time = $request->input('Book_week_time');
             $emaildate = date('d-m-Y', strtotime($bookweek));
-            
+
             $existingBooking = DB::table('members')
-                            ->where('Book_Your_Member_of_the_week', $request->input('Book_Your_Member_of_the_week'))
-                            ->exists();
-                            
+                ->where('Book_Your_Member_of_the_week', $request->input('Book_Your_Member_of_the_week'))
+                ->exists();
+
             if ($existingBooking) {
                 return redirect()->back()->with('error', 'This Member of the week already booked.');
             }
 
             $startDate = new \DateTime($request->Book_Your_Member_of_the_week);
-            $endDate = clone $startDate; 
+            $endDate = clone $startDate;
             $endDate->modify('+6 days');
             $endDateFormatted = $endDate->format('Y-m-d');
-            $emailenddate=$endDate->format('d-m-Y');
+            $emailenddate = $endDate->format('d-m-Y');
             DB::table('members')->where('user_id', $session->id)->update([
                 'Book_Your_Member_of_the_week' => $request->Book_Your_Member_of_the_week,
-                'Book_week_time'=>$request->Book_week_time,
+                'Book_week_time' => $request->Book_week_time,
                 'Member_of_the_week_enddate' => $endDateFormatted,
             ]);
-            
-           $sendemaildetails = DB::table('sendemaildetails')->where('id', 6)->first();
-         
+
+            $sendemaildetails = DB::table('sendemaildetails')->where('id', 6)->first();
+
             $msg = [
                 'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
                 'Title' => $sendemaildetails->strTitle ??  'Evolve Business Community',
                 'ToEmail' => $sendemaildetails->ToMail ?? 'info@getdemo.in',
                 'Subject' => $sendemaildetails->strSubject ?? 'Book Your Podcast' ?? '',
             ];
-            
+
             $data = [
                 'Bookweekstart' => $emaildate ?? '',
                 'Bookweekend' => $emailenddate ?? '',
@@ -578,12 +569,12 @@ $api = new Api(
                 'memberemail' => $session->email ?? '',
                 'memberphonenumber' => $session->mobile_number ?? ''
             ];
-          
+
             $mail = Mail::send('emails.BookMemberoftheweek', ['data' => $data], function ($message) use ($msg) {
                 $message->from($msg['FromMail'], $msg['Title']);
                 $message->to($msg['ToEmail'])->subject($msg['Subject']);
             });
-            
+
             return redirect()->route('Memberhome')->with('success', 'Book Your Member of the week Created Successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
@@ -593,82 +584,81 @@ $api = new Api(
     public function index(Request $request)
     {
         try {
-               $seo = MetaData::where(['id' => 1])->first();
-               $active_member_count = DB::table('members')
-               ->where('iStatus', 1)
-               ->where('isDelete', 0)
-               ->where('arrival_flag', 0)
-               ->count();
-                $group_count =DB::table('city_groups')
+            $seo = MetaData::where(['id' => 1])->first();
+            $active_member_count = DB::table('members')
                 ->where('iStatus', 1)
                 ->where('isDelete', 0)
-                ->count();       
-                $total_business_amount = DB::table('Business')
+                ->where('arrival_flag', 0)
+                ->count();
+            $group_count = DB::table('city_groups')
+                ->where('iStatus', 1)
+                ->where('isDelete', 0)
+                ->count();
+            $total_business_amount = DB::table('Business')
                 ->where('isapproved_status', 1)
                 ->sum('business_amount');
-                $active =DB::table('Member_Activity')->orderBy('id','DESC')->get();
-                // dd($active);
-                $Ourteem = DB::table('Overteem')
-                ->select('Overteem_id','Overteem_name','Overteem_photo', 'description','designation')
+            $active = DB::table('Member_Activity')->orderBy('id', 'DESC')->get();
+            // dd($active);
+            $Ourteem = DB::table('Overteem')
+                ->select('Overteem_id', 'Overteem_name', 'Overteem_photo', 'description', 'designation')
                 ->where(['iStatus' => 1, 'isDelete' => 0])
-               ->paginate(20);
+                ->paginate(20);
 
-                $service = DB::table('categories')
-                ->select('categories.id', 'categories.name', 'categories.photo','categories.category_slug')
+            $service = DB::table('categories')
+                ->select('categories.id', 'categories.name', 'categories.photo', 'categories.category_slug')
                 ->join('members', 'categories.id', '=', 'members.category_id')
                 ->where('categories.iStatus', 1)
                 ->where('categories.isDelete', 0)
-                ->paginate(env('PAR_PAGE_COUNT',20));
-            
-                $Blog = DB::table('blogs')
-                ->select('id','user_id', 'blogTitle','content','blogImage','blogDescription','metaTitle','metaKeyword','blogDate','blog_slug')
-                ->where(['iStatus' => 1, 'isDelete' => 0 , 'status' => 1])
-                ->orderBy('id','desc')->first();
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
-                $Blogs = DB::table('blogs')
-                ->select('id','user_id', 'blogTitle','content','blogImage','blogDescription','metaTitle','metaKeyword','blogDate','blog_slug')
-                ->where(['iStatus' => 1, 'isDelete' => 0 , 'status' => 1])
-                ->orderBy('id','desc')
-                ->paginate(env('PAR_PAGE_COUNT',20));
+            $Blog = DB::table('blogs')
+                ->select('id', 'user_id', 'blogTitle', 'content', 'blogImage', 'blogDescription', 'metaTitle', 'metaKeyword', 'blogDate', 'blog_slug')
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'status' => 1])
+                ->orderBy('id', 'desc')->first();
 
-                $Image = DB::table('Adminfrontimage')
-                ->select('id','Title','photo', 'button_link')
+            $Blogs = DB::table('blogs')
+                ->select('id', 'user_id', 'blogTitle', 'content', 'blogImage', 'blogDescription', 'metaTitle', 'metaKeyword', 'blogDate', 'blog_slug')
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'status' => 1])
+                ->orderBy('id', 'desc')
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+
+            $Image = DB::table('Adminfrontimage')
+                ->select('id', 'Title', 'photo', 'button_link')
                 ->where(['iStatus' => 1, 'isDelete' => 0])
-                ->paginate(env('PAR_PAGE_COUNT',20));
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
-                $latestEvent = DB::table('news_and_events')
-                ->select('event_id', 'user_id', 'name', 'photo', 'description', 'eventstart_date', 'eventend_date', 'ispaid', 'price', 'limitedset', 'setnumber','event_slug')
+            $latestEvent = DB::table('news_and_events')
+                ->select('event_id', 'user_id', 'name', 'photo', 'description', 'eventstart_date', 'eventend_date', 'ispaid', 'price', 'limitedset', 'setnumber', 'event_slug')
                 ->where(['iStatus' => 1, 'isDelete' => 0])
                 ->orderBy('eventstart_date', 'desc')
                 ->first();
 
 
-                $videos = DB::table('video_gallery')
+            $videos = DB::table('video_gallery')
                 ->select('video_id', 'name', 'vidoeurl', 'comments')
                 ->where(['iStatus' => 1, 'isDelete' => 0])
                 ->orderBy('video_id', 'desc')
                 ->limit(1)
                 ->paginate(1);
-                // dd($Videos);
+            // dd($Videos);
 
-                //  dd($Ourteem);
-                return view('frontview.index', compact('seo','total_business_amount','group_count','active_member_count','Ourteem','service','Blog','Blogs','Image','latestEvent','active','videos'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
-        
+            //  dd($Ourteem);
+            return view('frontview.index', compact('seo', 'total_business_amount', 'group_count', 'active_member_count', 'Ourteem', 'service', 'Blog', 'Blogs', 'Image', 'latestEvent', 'active', 'videos'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
     public function about(Request $request)
     {
         try {
             $seo = MetaData::where(['id' => 2])->first();
-              $Ourteem = DB::table('Overteem')
-                ->select('Overteem_id','Overteem_name','Overteem_photo', 'description','designation')
+            $Ourteem = DB::table('Overteem')
+                ->select('Overteem_id', 'Overteem_name', 'Overteem_photo', 'description', 'designation')
                 ->where('iStatus', 1)
                 ->where('isDelete', 0)
                 ->where('isteam', 1)
-                ->paginate(env('PAR_PAGE_COUNT',20));
-        return view('frontview.about', compact('Ourteem','seo'));
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+            return view('frontview.about', compact('Ourteem', 'seo'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -680,50 +670,47 @@ $api = new Api(
     public function explore(Request $request)
     {
         try {
-                //  dd($request);
-                $seo = MetaData::where(['id' => 2])->first();
-                $Ourteem = DB::table('Overteem')
-                ->select('Overteem_id','Overteem_name','Overteem_photo', 'description','designation')
+            //  dd($request);
+            $seo = MetaData::where(['id' => 2])->first();
+            $Ourteem = DB::table('Overteem')
+                ->select('Overteem_id', 'Overteem_name', 'Overteem_photo', 'description', 'designation')
                 ->where('iStatus', 1)
                 ->where('isDelete', 0)
-                ->paginate(env('PAR_PAGE_COUNT',20));
-                return view('frontview.exploreus', compact('Ourteem','seo'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
-      
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+            return view('frontview.exploreus', compact('Ourteem', 'seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
-       public function tcf(Request $request)
+    public function tcf(Request $request)
     {
         try {
-                //  dd($request);
-                $seo = MetaData::where(['id' => 18])->first();
-              
-                return view('frontview.tcf', compact('seo'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
-      
+            //  dd($request);
+            $seo = MetaData::where(['id' => 18])->first();
+
+            return view('frontview.tcf', compact('seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
-        public function learning(Request $request)
+    public function learning(Request $request)
     {
         try {
-                //  dd($request);
-                $seo = MetaData::where(['id' => 2])->first();
-                return view('frontview.learning', compact('seo'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
-      
+            //  dd($request);
+            $seo = MetaData::where(['id' => 2])->first();
+            return view('frontview.learning', compact('seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
     public function dicover(Request $request)
     {
         try {
-                $seo = MetaData::where(['id' => 3])->first();
-                return view('frontview.dicoverus', compact('seo'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
+            $seo = MetaData::where(['id' => 3])->first();
+            return view('frontview.dicoverus', compact('seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
     public function product(Request $request)
     {
@@ -733,115 +720,112 @@ $api = new Api(
     public function news(Request $request)
     {
         try {
-                $seo = MetaData::where(['id' => 4])->first();
-                $News = DB::table('news_and_events')
-                ->select('event_id','user_id','name', 'description','photo','eventstart_date','eventend_date','ispaid','price','limitedset','setnumber','event_slug')
+            $seo = MetaData::where(['id' => 4])->first();
+            $News = DB::table('news_and_events')
+                ->select('event_id', 'user_id', 'name', 'description', 'photo', 'eventstart_date', 'eventend_date', 'ispaid', 'price', 'limitedset', 'setnumber', 'event_slug')
                 ->where('iStatus', 1)
                 ->where('isDelete', 0)
-                ->orderBy('event_id','desc')
-                ->paginate(env('PAR_PAGE_COUNT',20));
-               
-                return view('frontview.news', compact('News','seo'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
-       
+                ->orderBy('event_id', 'desc')
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+
+            return view('frontview.news', compact('News', 'seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
-    public function newsdetail(Request $request,$Id)
+    public function newsdetail(Request $request, $Id)
     {
         // dd($Id);
         try {
-                $seo = MetaData::where(['id' => 6])->first();
-                $slug_to_id =DB::table('news_and_events')->where('event_slug',$Id)->first();
+            $seo = MetaData::where(['id' => 6])->first();
+            $slug_to_id = DB::table('news_and_events')->where('event_slug', $Id)->first();
 
-                $news = $slug_to_id->event_id;
-                $Newsdetail = DB::table('news_and_events')
-                ->select('event_id','user_id','name', 'description','photo','eventstart_date','eventend_date','ispaid','price','limitedset','setnumber')
-                ->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $slug_to_id->event_id ])
+            $news = $slug_to_id->event_id;
+            $Newsdetail = DB::table('news_and_events')
+                ->select('event_id', 'user_id', 'name', 'description', 'photo', 'eventstart_date', 'eventend_date', 'ispaid', 'price', 'limitedset', 'setnumber')
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $slug_to_id->event_id])
                 ->first(10);
-                $users =$Newsdetail->user_id;
-                $user =DB::table('users')
+            $users = $Newsdetail->user_id;
+            $user = DB::table('users')
                 ->select('*')
-                ->where(['Status' => 1,'id' => $users])->first();
+                ->where(['Status' => 1, 'id' => $users])->first();
 
-                $resentpost = DB::table('news_and_events')
-                ->select('event_id','user_id','name', 'description','photo','eventstart_date','eventend_date','ispaid','price','limitedset','setnumber')
-                ->where(['iStatus' => 1, 'isDelete' => 0 ,'user_id' =>$users ])
+            $resentpost = DB::table('news_and_events')
+                ->select('event_id', 'user_id', 'name', 'description', 'photo', 'eventstart_date', 'eventend_date', 'ispaid', 'price', 'limitedset', 'setnumber')
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'user_id' => $users])
                 ->paginate(10);
 
-                $comment =DB::table('member_news_comment')
-                ->select('id','news_id')
-                ->where(['iStatus' => 1, 'isDelete' => 0 ,'news_id' =>$news ])->get();
+            $comment = DB::table('member_news_comment')
+                ->select('id', 'news_id')
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'news_id' => $news])->get();
 
-                $newscountcount =$comment->count();
-                // dd('call');
-                //  dd($Newsdetail);
-                return view('frontview.news-detail', compact('Newsdetail','resentpost','news','newscountcount','seo'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
-       
+            $newscountcount = $comment->count();
+            // dd('call');
+            //  dd($Newsdetail);
+            return view('frontview.news-detail', compact('Newsdetail', 'resentpost', 'news', 'newscountcount', 'seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
     public function photoalbum(Request $request)
     {
         //  dd('call');
         try {
-                $seo = MetaData::where(['id' => 5])->first();
-                $photos = DB::table('photo_gallery')
-                    ->select('gallery_id', 'eventId', 'photo','name','photo_slug')
-                    ->where('iStatus', 1)
-                    ->where('isDelete', 0)
-                    ->paginate(env('PAR_PAGE_COUNT',20));
+            $seo = MetaData::where(['id' => 5])->first();
+            $photos = DB::table('photo_gallery')
+                ->select('gallery_id', 'eventId', 'photo', 'name', 'photo_slug')
+                ->where('iStatus', 1)
+                ->where('isDelete', 0)
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
-                return view('frontview.photo-album', compact('photos','seo'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
+            return view('frontview.photo-album', compact('photos', 'seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
-    public function photogallery(Request $request,$Id)
+    public function photogallery(Request $request, $Id)
     {
         try {
             $seo = MetaData::where(['id' => 7])->first();
-                $slug_to_id =DB::table('photo_gallery')->where('photo_slug',$Id)->first();
-                $photosgallery = DB::table('photo_gallery_detail')
+            $slug_to_id = DB::table('photo_gallery')->where('photo_slug', $Id)->first();
+            $photosgallery = DB::table('photo_gallery_detail')
                 ->select('gallery_detail_id', 'photo')
                 ->where(['iStatus' => 1, 'isDelete' => 0, 'gallery_id' => $slug_to_id->gallery_id])
                 ->paginate(12);
 
-                // dd($slug_to_id);
-                return view('frontview.photo-gallery', compact('photosgallery','slug_to_id','seo'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
+            // dd($slug_to_id);
+            return view('frontview.photo-gallery', compact('photosgallery', 'slug_to_id', 'seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
     public function videogallery(Request $request)
     {
         //  dd($request);
         try {
-              $seo = MetaData::where(['id' => 8])->first();
-                $videos = DB::table('video_gallery')
-                ->select('video_id', 'name', 'vidoeurl','eventid','comments','date')
+            $seo = MetaData::where(['id' => 8])->first();
+            $videos = DB::table('video_gallery')
+                ->select('video_id', 'name', 'vidoeurl', 'eventid', 'comments', 'date')
                 ->where(['iStatus' => 1, 'isDelete' => 0])
-                ->orderBy('video_id','desc')
-                ->paginate(env('PAR_PAGE_COUNT',20));
-                
-                // dd($video);
-                return view('frontview.video-gallery', compact('videos','seo'));
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }
-        
+                ->orderBy('video_id', 'desc')
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+
+            // dd($video);
+            return view('frontview.video-gallery', compact('videos', 'seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
     public function frontblog(Request $request)
     {
-        try { 
-                // $Blog = DB::table('blogs')
-                // ->select('id','user_id', 'blogTitle','content','blogImage','blogDescription','metaTitle','metaKeyword','blogDate','blog_slug')
-                // ->where(['iStatus' => 1, 'isDelete' => 0 , 'status' => 1])
-                // ->orderBy('id','desc')
-                // ->paginate(env('PAR_PAGE_COUNT'));
-                $seo = MetaData::where(['id' => 9])->first();
-                $Blog = DB::table('blogs')
+        try {
+            // $Blog = DB::table('blogs')
+            // ->select('id','user_id', 'blogTitle','content','blogImage','blogDescription','metaTitle','metaKeyword','blogDate','blog_slug')
+            // ->where(['iStatus' => 1, 'isDelete' => 0 , 'status' => 1])
+            // ->orderBy('id','desc')
+            // ->paginate(env('PAR_PAGE_COUNT'));
+            $seo = MetaData::where(['id' => 9])->first();
+            $Blog = DB::table('blogs')
                 ->select(
                     'blogs.id as blog_id',
                     'blogs.user_id as blog_user_id',
@@ -862,285 +846,280 @@ $api = new Api(
                 ->leftJoin('members', 'blogs.user_id', '=', 'members.user_id')
                 ->leftJoin('categories', 'members.category_id', '=', 'categories.id')
                 ->where(['blogs.iStatus' => 1, 'blogs.isDelete' => 0, 'blogs.status' => 1])
-                ->orderBy('blogs.id','desc')
-                ->paginate(env('PAR_PAGE_COUNT',20));
-            
-                return view('frontview.blog', compact('Blog','seo'));
-            } catch (Exception $e){
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage()); 
-            }
-        
+                ->orderBy('blogs.id', 'desc')
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+
+            return view('frontview.blog', compact('Blog', 'seo'));
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
-    public function blogdetail(Request $request,$Id)
+    public function blogdetail(Request $request, $Id)
     {
-        try { 
-                $seo = MetaData::where(['id' => 10])->first();
-                $slug_to_id =DB::table('blogs')->where('blog_slug',$Id)->first();
+        try {
+            $seo = MetaData::where(['id' => 10])->first();
+            $slug_to_id = DB::table('blogs')->where('blog_slug', $Id)->first();
 
-                $blogid = $slug_to_id->id;
-                $Blogdetail = DB::table('blogs')
-                ->select('id','user_id', 'blogTitle','content','blogImage','blogDescription','metaTitle','metaKeyword','blogDate')
-                ->where(['iStatus' => 1, 'isDelete' => 0, 'id' => $slug_to_id->id ,'status' => 1])
+            $blogid = $slug_to_id->id;
+            $Blogdetail = DB::table('blogs')
+                ->select('id', 'user_id', 'blogTitle', 'content', 'blogImage', 'blogDescription', 'metaTitle', 'metaKeyword', 'blogDate')
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'id' => $slug_to_id->id, 'status' => 1])
                 ->first();
-                $users =$Blogdetail->user_id;
-                $Member =DB::table('members')->select('members.id as member_id','members.category_id','categories.id as categoriesmaster_id','categories.name')
-                ->leftjoin('categories','members.category_id','=','categories.id')
-                ->where('members.user_id',$users)->first();
-                $user =DB::table('users')
+            $users = $Blogdetail->user_id;
+            $Member = DB::table('members')->select('members.id as member_id', 'members.category_id', 'categories.id as categoriesmaster_id', 'categories.name')
+                ->leftjoin('categories', 'members.category_id', '=', 'categories.id')
+                ->where('members.user_id', $users)->first();
+            $user = DB::table('users')
                 ->select('*')
-                ->where(['Status' => 1,'id' => $users])->first();
-                $resentpost = DB::table('blogs')
-                ->select('id','user_id', 'blogTitle','content','blogImage','blogDescription','metaTitle','metaKeyword','blogDate')
-                ->where(['iStatus' => 1, 'isDelete' => 0 , 'status' => 1 ,'user_id' =>$users ])
-                ->paginate(env('PAR_PAGE_COUNT',20));
-                $comment =DB::table('memberblog_comment')
-                ->select('id','blog_id')
-                ->where(['iStatus' => 1, 'isDelete' => 0 ,'blog_id' =>$blogid ])->get();
-                $blogcountcount =$comment->count();
+                ->where(['Status' => 1, 'id' => $users])->first();
+            $resentpost = DB::table('blogs')
+                ->select('id', 'user_id', 'blogTitle', 'content', 'blogImage', 'blogDescription', 'metaTitle', 'metaKeyword', 'blogDate')
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'status' => 1, 'user_id' => $users])
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+            $comment = DB::table('memberblog_comment')
+                ->select('id', 'blog_id')
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'blog_id' => $blogid])->get();
+            $blogcountcount = $comment->count();
 
-            return view('frontview.blog-detail', compact('Blogdetail','user','resentpost','blogid','blogcountcount','Member','slug_to_id','seo'));
-            } catch (Exception $e){
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage()); 
-            }
-       
+            return view('frontview.blog-detail', compact('Blogdetail', 'user', 'resentpost', 'blogid', 'blogcountcount', 'Member', 'slug_to_id', 'seo'));
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
     public function contactusindex(Request $request)
     {
-        try { 
-                $seo = MetaData::where(['id' => 11])->first();
-                return view('frontview.contact-us',compact('seo'));
-            } catch (Exception $e){
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage()); 
-            }
+        try {
+            $seo = MetaData::where(['id' => 11])->first();
+            return view('frontview.contact-us', compact('seo'));
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
     public function frontlogin(Request $request)
     {
-        $seo = MetaData::where(['id' => 12])->first();
-        return view('frontview.front-login',compact('seo'));
+        // $seo = MetaData::where(['id' => 12])->first();
+        return view('frontview.front-login');
     }
     public function contectthankyou(Request $request)
     {
-       
+
         return view('frontview.front-login');
     }
     public function blogcomment(Request $request)
     {
-       $data = array(
-        'blog_id' => $request->blog_id,
-        'name' => $request->name,
-        'email' => $request->email,
-        'message' => $request->message,
-        "strIp" => $request->ip(),
-        "created_at" => date('Y-m-d H:i:s')
+        $data = array(
+            'blog_id' => $request->blog_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'message' => $request->message,
+            "strIp" => $request->ip(),
+            "created_at" => date('Y-m-d H:i:s')
         );
-            // dd($data);
-            DB::table('memberblog_comment')->insert($data);
-            return back();
-                // return view('frontview.front-login');
+        // dd($data);
+        DB::table('memberblog_comment')->insert($data);
+        return back();
+        // return view('frontview.front-login');
     }
     public function newscomment(Request $request)
     {
-        if($request->ispaid == 1){
-          
-             $data = array(
+        if ($request->ispaid == 1) {
+
+            $data = array(
                 'news_id' => $request->news_id,
                 'name' => $request->name,
                 'email' => $request->email,
-                'companyname'=>$request->companyname,
-                'businesscategory'=>$request->businesscategory,
-                'phonenumber'=>$request->number,
+                'companyname' => $request->companyname,
+                'businesscategory' => $request->businesscategory,
+                'phonenumber' => $request->number,
                 'message' => $request->message,
                 'referred_by' => $request->referred_by ?? '',
                 'reference_name' => $request->reference_name ?? '',
                 "strIp" => $request->ip(),
-                "amount"=>$request->amount ?? 0,
-                "ispaid"=> 1,
+                "amount" => $request->amount ?? 0,
+                "ispaid" => 1,
                 "created_at" => date('Y-m-d H:i:s')
-              );
-                 $Data = DB::table('member_news_comment')->insertGetId($data);
-                 $getdeta = DB::table('member_news_comment')->where('id', $Data)->first();
-                 $Net_Amount = $request->amount ?? 0 ;
-                 
-                $razorpayKey = config('app.RAZORPAY_KEY');
-                $api = new Api(config('app.RAZORPAY_KEY'), config('app.RAZORPAY_SECRET'));
-                 
-               
-                 $order = $api->order->create([
-                    'receipt'         => 'order_rcptid_' . rand(),
-                    'amount'          => $Net_Amount * 100, 
-                    'currency'        => 'INR',
-                    'payment_capture' => 1 
-                ]);
-                return view('frontview.event_razorpayView' ,compact('Data','Net_Amount','razorpayKey','getdeta','order'));
-            
-        }else{
-             $data = array(
+            );
+            $Data = DB::table('member_news_comment')->insertGetId($data);
+            $getdeta = DB::table('member_news_comment')->where('id', $Data)->first();
+            $Net_Amount = $request->amount ?? 0;
+
+            $razorpayKey = config('app.RAZORPAY_KEY');
+            $api = new Api(config('app.RAZORPAY_KEY'), config('app.RAZORPAY_SECRET'));
+
+
+            $order = $api->order->create([
+                'receipt'         => 'order_rcptid_' . rand(),
+                'amount'          => $Net_Amount * 100,
+                'currency'        => 'INR',
+                'payment_capture' => 1
+            ]);
+            return view('frontview.event_razorpayView', compact('Data', 'Net_Amount', 'razorpayKey', 'getdeta', 'order'));
+        } else {
+            $data = array(
                 'news_id' => $request->news_id,
                 'name' => $request->name,
                 'email' => $request->email,
-                'companyname'=>$request->companyname,
-                'businesscategory'=>$request->businesscategory,
-                'phonenumber'=>$request->number,
+                'companyname' => $request->companyname,
+                'businesscategory' => $request->businesscategory,
+                'phonenumber' => $request->number,
                 'message' => $request->message,
                 'referred_by' => $request->referred_by ?? '',
                 'reference_name' => $request->reference_name ?? '',
                 "strIp" => $request->ip(),
                 "created_at" => date('Y-m-d H:i:s')
-              );
+            );
             DB::table('member_news_comment')->insert($data);
             return back();
         }
-                // return view('frontview.front-login');
+        // return view('frontview.front-login');
     }
     public function frontregister(Request $request)
-    { 
-        try {  
-                $seo = MetaData::where(['id' => 18])->first();
-                $category = Categories::select('id', 'name')
+    {
+        try {
+            $seo = MetaData::where(['id' => 18])->first();
+            $category = Categories::select('id', 'name')
                 ->where(['iStatus' => 1, 'isDelete' => 0])
                 ->get();
-                $citygroup =DB::table('city_groups')->orderBy('group_name','asc')->get();
+            $citygroup = DB::table('city_groups')->orderBy('group_name', 'asc')->get();
             //    dd($category);
-            return view('frontview.frontregister', compact('category','citygroup','seo'));    
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }  
-    } 
-   public function getNewsData(Request $request,$id)
+            return view('frontview.frontregister', compact('category', 'citygroup', 'seo'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+    public function getNewsData(Request $request, $id)
     {
         // dd($id);
-        $data =DB::table('member_news_comment')
-        ->select('id','news_id','name','email','message')
-        ->where(['iStatus' => 1,'isDelete' => 0,'news_id' => $id])->get();
+        $data = DB::table('member_news_comment')
+            ->select('id', 'news_id', 'name', 'email', 'message')
+            ->where(['iStatus' => 1, 'isDelete' => 0, 'news_id' => $id])->get();
 
-        echo json_encode($data);    
+        echo json_encode($data);
     }
     public function registerstore1(Request $request)
     {
         // dd($request);
-        try {  
-                $request->validate([
-                    'documents'    => 'required|file|mimes:doc,docx,pdf,jpeg,jpg',
-                    'business_establishment_year' => 'required|file|mimes:doc,docx,pdf,jpeg,jpg',
-                ]);
-        
-                $img = "";
-                if ($request->hasFile('documents')) {
-                    $root = $_SERVER['DOCUMENT_ROOT'];
-                    $image = $request->file('documents');
-                    $img = time() . '.' . $image->getClientOriginalExtension();
-                    $destinationpath = $root . '/registerdocuments/';
-                    if (!file_exists($destinationpath)) {
-                        mkdir($destinationpath, 0755, true);
-                    }
-                    $image->move($destinationpath, $img);
+        try {
+            $request->validate([
+                'documents'    => 'required|file|mimes:doc,docx,pdf,jpeg,jpg',
+                'business_establishment_year' => 'required|file|mimes:doc,docx,pdf,jpeg,jpg',
+            ]);
+
+            $img = "";
+            if ($request->hasFile('documents')) {
+                $root = $_SERVER['DOCUMENT_ROOT'];
+                $image = $request->file('documents');
+                $img = time() . '.' . $image->getClientOriginalExtension();
+                $destinationpath = $root . '/registerdocuments/';
+                if (!file_exists($destinationpath)) {
+                    mkdir($destinationpath, 0755, true);
                 }
-                $doc = "";
-                if ($request->hasFile('business_establishment_year')) {
-                    $root = $_SERVER['DOCUMENT_ROOT'];
-                    $image = $request->file('business_establishment_year');
-                    $doc = time() . '.' . $image->getClientOriginalExtension();
-                    $destinationpath = $root . '/business_establishment_year/';
-                    if (!file_exists($destinationpath)) {
-                        mkdir($destinationpath, 0755, true);
-                    }
-                    $image->move($destinationpath, $doc);
+                $image->move($destinationpath, $img);
+            }
+            $doc = "";
+            if ($request->hasFile('business_establishment_year')) {
+                $root = $_SERVER['DOCUMENT_ROOT'];
+                $image = $request->file('business_establishment_year');
+                $doc = time() . '.' . $image->getClientOriginalExtension();
+                $destinationpath = $root . '/business_establishment_year/';
+                if (!file_exists($destinationpath)) {
+                    mkdir($destinationpath, 0755, true);
                 }
-                // dd($doc);
-                $data = array(
-                    'reg_name'                => $request->name,
-                    'email'                   => $request->email,
-                    'Phonenumber'             => $request->Phonenumber,
-                    'reg_business_segment'    => $request->business_segment,
-                    'reg_category'            => $request->category,
-                    'reg_businessFirm'        => $request->businessFirm,
-                    'reg_OfficeAddress'       => $request->RegisteredOfficeAddress,
-                    'reg_Other_Address'       => $request->Other_Address,
-                    'reg_designation'         => $request->designation,
-                    'reg_Inceptionyear'       => $request->Business_Inception_year,
-                    'reg_annual_turnover'     => $request->annual_turnover,
-                    'business_documents_brand' => $request->business_documents_brand,
-                    'industry'                => $request->industry,
-                    'industry_subcategory'    => $request->industry_subcategory,
-                    'representative_name'     => $request->representative_name,
-                    'chapter'                 => $request->chapter,
-                    'payment_mode'            => $request->payment_mode,
-                    'documents'               => $img,
-                    'business_establishment_year' => $doc,
-                    "strIp"                   => $request->ip(),
-                    "created_at"              => date('Y-m-d H:i:s')
-                );
-                // dd($data);
-                DB::table('Register_frontview')->insert($data);
-                return back()->with('success', 'Your Register Inquiry Create Successfully');
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-            }       
+                $image->move($destinationpath, $doc);
+            }
+            // dd($doc);
+            $data = array(
+                'reg_name'                => $request->name,
+                'email'                   => $request->email,
+                'Phonenumber'             => $request->Phonenumber,
+                'reg_business_segment'    => $request->business_segment,
+                'reg_category'            => $request->category,
+                'reg_businessFirm'        => $request->businessFirm,
+                'reg_OfficeAddress'       => $request->RegisteredOfficeAddress,
+                'reg_Other_Address'       => $request->Other_Address,
+                'reg_designation'         => $request->designation,
+                'reg_Inceptionyear'       => $request->Business_Inception_year,
+                'reg_annual_turnover'     => $request->annual_turnover,
+                'business_documents_brand' => $request->business_documents_brand,
+                'industry'                => $request->industry,
+                'industry_subcategory'    => $request->industry_subcategory,
+                'representative_name'     => $request->representative_name,
+                'chapter'                 => $request->chapter,
+                'payment_mode'            => $request->payment_mode,
+                'documents'               => $img,
+                'business_establishment_year' => $doc,
+                "strIp"                   => $request->ip(),
+                "created_at"              => date('Y-m-d H:i:s')
+            );
+            // dd($data);
+            DB::table('Register_frontview')->insert($data);
+            return back()->with('success', 'Your Register Inquiry Create Successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
-    public function category_detail(Request $request,$id)
+    public function category_detail(Request $request, $id)
     {
-     return view('frontview.category-detail');
-        
+        return view('frontview.category-detail');
     }
     public function contact_us(Request $request)
     {
-        $request->validate([
+        $request->validate(
+            [
                 'contact_name' => 'required',
                 'contact_email' => 'required',
                 'contact_phone' => 'required|digits:10',
                 'captcha' => 'required|captcha',
-                ]
-                ,
-                [
-                    // 'captcha.captcha' => 'Invalid captcha code.'
-                    'captcha.required' => 'Captcha is required.',
-                    'captcha.captcha' => 'Invalid captcha code.',
-                ]
-                
-            );
-            $data = array(
-                'name' => $request->contact_name,
-                'email' => $request->contact_email,
-                'mobileNumber' => $request->contact_phone,
-                'message' => $request->contact_message,
-                "strIp" => $request->ip(),
-                "created_at" => date('Y-m-d H:i:s')
-            );
-           
-            DB::table('inquiry')->insert($data);
+            ],
+            [
+                // 'captcha.captcha' => 'Invalid captcha code.'
+                'captcha.required' => 'Captcha is required.',
+                'captcha.captcha' => 'Invalid captcha code.',
+            ]
 
-            $sendemaildetails = DB::table('sendemaildetails')->where('id', 4)->first();
-      
-            $msg = [
-                'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
-                'Title' => $sendemaildetails->strTitle ??  'Evolve Business Community',
-                'ToEmail' =>$sendemaildetails->ToMail ?? 'info@getdemo.in',
-                'Subject' => $sendemaildetails->strSubject ?? 'contact us' ?? '',
-            ];
-    
-            $Maildata = [
-                'name' => $request->contact_name ?? '',
-                'email' => $request->contact_email ?? '',
-                'mobile' =>  $request->contact_phone ?? '',
-                'message' => $request->contact_message ?? ''
-            ];
-          
-            $mail = Mail::send('emails.contactus', ['data' => $Maildata], function ($message) use ($msg) {
-                $message->from($msg['FromMail'], $msg['Title']);
-                $message->to($msg['ToEmail'])->subject($msg['Subject']);
-            });
+        );
+        $data = array(
+            'name' => $request->contact_name,
+            'email' => $request->contact_email,
+            'mobileNumber' => $request->contact_phone,
+            'message' => $request->contact_message,
+            "strIp" => $request->ip(),
+            "created_at" => date('Y-m-d H:i:s')
+        );
 
-            DB::commit();
-            // return back();
-            return view('frontview.ContactThankyou');
-          
+        DB::table('inquiry')->insert($data);
+
+        $sendemaildetails = DB::table('sendemaildetails')->where('id', 4)->first();
+
+        $msg = [
+            'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
+            'Title' => $sendemaildetails->strTitle ??  'Evolve Business Community',
+            'ToEmail' => $sendemaildetails->ToMail ?? 'info@getdemo.in',
+            'Subject' => $sendemaildetails->strSubject ?? 'contact us' ?? '',
+        ];
+
+        $Maildata = [
+            'name' => $request->contact_name ?? '',
+            'email' => $request->contact_email ?? '',
+            'mobile' =>  $request->contact_phone ?? '',
+            'message' => $request->contact_message ?? ''
+        ];
+
+        $mail = Mail::send('emails.contactus', ['data' => $Maildata], function ($message) use ($msg) {
+            $message->from($msg['FromMail'], $msg['Title']);
+            $message->to($msg['ToEmail'])->subject($msg['Subject']);
+        });
+
+        DB::commit();
+        // return back();
+        return view('frontview.ContactThankyou');
     }
     public function frontlogout(Request $request)
     {
         Auth::logout();
         Session::flush(); // Clear all session data
         return view('frontview.frontlogout');
-    } 
+    }
     public function refreshCaptcha()
     {
         return response()->json(['captcha' => captcha_img()]);
@@ -2046,15 +2025,15 @@ $api = new Api(
     {
         return view('frontview.termandcondition');
     }
-     public function Refund_Policy()
+    public function Refund_Policy()
     {
         $seo = MetaData::where(['id' => 16])->first();
         return view('frontview.Refund_Policy', compact('seo'));
     }
-    
-    
-    
-    
+
+
+
+
     public function logout()
     {
         $session = Session::get('customerid');
@@ -2102,7 +2081,7 @@ $api = new Api(
             )
                 ->orderBy('productId', 'desc')
                 ->where(['product.iStatus' => 1, 'product.isDelete' => 0, 'product.isFeatures' => 0])
-                ->when($HeaderSearch, fn ($query, $HeaderSearch) => $query
+                ->when($HeaderSearch, fn($query, $HeaderSearch) => $query
                     ->where('product.productname', 'LIKE', '%' . $HeaderSearch . '%'))
                 ->paginate(16);
             // dd($Product);
@@ -2121,7 +2100,7 @@ $api = new Api(
             )
                 ->orderBy('productId', 'desc')
                 ->where(['product.iStatus' => 1, 'product.isDelete' => 0, 'product.isFeatures' => 0])
-                ->when($HeaderSearch, fn ($query, $HeaderSearch) => $query
+                ->when($HeaderSearch, fn($query, $HeaderSearch) => $query
                     ->where('product.productname', 'LIKE', '%' . $HeaderSearch . '%'))
                 ->count();
             // dd($Product);
@@ -2141,7 +2120,7 @@ $api = new Api(
             )
                 ->orderBy('productId', 'desc')
                 ->where(['product.iStatus' => 1, 'product.isDelete' => 0, 'product.isFeatures' => 0, 'category.slugname' => $id])
-                ->when($HeaderSearch, fn ($query, $HeaderSearch) => $query
+                ->when($HeaderSearch, fn($query, $HeaderSearch) => $query
                     ->where('product.productname', 'LIKE', '%' . $HeaderSearch . '%'))
                 ->join('multiplecategory', 'product.productId', '=', 'multiplecategory.productid')
                 ->join('category', 'multiplecategory.categoryid', '=', 'category.categoryId')
@@ -2162,7 +2141,7 @@ $api = new Api(
             )
                 ->orderBy('productId', 'desc')
                 ->where(['product.iStatus' => 1, 'product.isDelete' => 0, 'product.isFeatures' => 0, 'category.slugname' => $id])
-                ->when($HeaderSearch, fn ($query, $HeaderSearch) => $query
+                ->when($HeaderSearch, fn($query, $HeaderSearch) => $query
                     ->where('product.productname', 'LIKE', '%' . $HeaderSearch . '%'))
                 ->join('multiplecategory', 'product.productId', '=', 'multiplecategory.productid')
                 ->join('category', 'multiplecategory.categoryid', '=', 'category.categoryId')
@@ -2237,114 +2216,108 @@ $api = new Api(
     }
     public function membersub(Request $request)
     {
-        $session =Auth::user();
+        $session = Auth::user();
         $member = DB::table('members')->where('members.user_id', '=', $session->id)
-        ->first();
+            ->first();
         $renewalhistory = DB::table('renewal_history')
-        ->where('renewal_history.id', '=', $member->renewalhistory_id)
-        ->join('membership_plans', 'renewal_history.plan_id','membership_plans.id')
-        ->get();
+            ->where('renewal_history.id', '=', $member->renewalhistory_id)
+            ->join('membership_plans', 'renewal_history.plan_id', 'membership_plans.id')
+            ->get();
         $Count = $renewalhistory->count();
         // dd($renewalhistory);
-        return view('Membersub.index', compact('Count','renewalhistory'));
+        return view('Membersub.index', compact('Count', 'renewalhistory'));
     }
-   // product search in front 
-    public function adminsearch(Request $request,$id = null)
+    // product search in front 
+    public function adminsearch(Request $request, $id = null)
     {
 
         $seo = MetaData::where(['id' => 13])->first();
-        $cat_id=$request->categories_id; 
-        $categories_id =$request->categoriesid;
-        $keyup=$request->first_name1;   
-         if(isset($categories_id))
-         {
+        $cat_id = $request->categories_id;
+        $categories_id = $request->categoriesid;
+        $keyup = $request->first_name1;
+        if (isset($categories_id)) {
             $seo = MetaData::where(['id' => 13])->first();
             $service = DB::table('categories')
-            ->select('categories.id', 'categories.name', 'categories.photo','categories.category_slug')
-            ->join('members', 'categories.id', '=', 'members.category_id')
-            ->where('categories.iStatus', 1)
-            ->where('categories.isDelete', 0)
-            ->paginate(env('PAR_PAGE_COUNT',20));
+                ->select('categories.id', 'categories.name', 'categories.photo', 'categories.category_slug')
+                ->join('members', 'categories.id', '=', 'members.category_id')
+                ->where('categories.iStatus', 1)
+                ->where('categories.isDelete', 0)
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
-            $categorys= DB::table('categories')->orderBy('name', 'asc')
-            ->get();
+            $categorys = DB::table('categories')->orderBy('name', 'asc')
+                ->get();
             $Products = DB::table('members')
-            ->join('member_services', 'members.id', '=', 'member_services.member_id')
-            ->where('members.category_id', $categories_id)
-            ->paginate(env('PAR_PAGE_COUNT',20));
-            $Count=$Products->count();
+                ->join('member_services', 'members.id', '=', 'member_services.member_id')
+                ->where('members.category_id', $categories_id)
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+            $Count = $Products->count();
 
-            return view('frontview.Search', compact('Products','categorys','categories_id','service','Count','seo'));
-         }
-         if(isset($cat_id))
-         {
+            return view('frontview.Search', compact('Products', 'categorys', 'categories_id', 'service', 'Count', 'seo'));
+        }
+        if (isset($cat_id)) {
             $seo = MetaData::where(['id' => 13])->first();
             $service = DB::table('categories')
-            ->select('categories.id', 'categories.name', 'categories.photo','categories.category_slug')
-            ->join('members', 'categories.id', '=', 'members.category_id')
-            ->where('categories.iStatus', 1)
-            ->where('categories.isDelete', 0)
-            ->paginate(env('PAR_PAGE_COUNT',20));
+                ->select('categories.id', 'categories.name', 'categories.photo', 'categories.category_slug')
+                ->join('members', 'categories.id', '=', 'members.category_id')
+                ->where('categories.iStatus', 1)
+                ->where('categories.isDelete', 0)
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
-            $categorys= DB::table('categories')->orderBy('name', 'asc')
-            ->get();
+            $categorys = DB::table('categories')->orderBy('name', 'asc')
+                ->get();
             $Products = DB::table('members')
-            ->join('member_services', 'members.id', '=', 'member_services.member_id')
-            ->where('members.category_id', $cat_id)
-            ->paginate(env('PAR_PAGE_COUNT',20));
+                ->join('member_services', 'members.id', '=', 'member_services.member_id')
+                ->where('members.category_id', $cat_id)
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
-                $data = [
-                    'service' => $service,
-                    'categorys' => $categorys,
-                    'Products' => $Products
-                ];
+            $data = [
+                'service' => $service,
+                'categorys' => $categorys,
+                'Products' => $Products
+            ];
             return response()->json($data);
+        }
+        if (isset($keyup)) {
 
-         }
-         if(isset($keyup))
-         {
-           
             $service = DB::table('categories')
-            ->select('categories.id', 'categories.name', 'categories.photo','categories.category_slug')
-            ->join('members', 'categories.id', '=', 'members.category_id')
-            ->where('categories.iStatus', 1)
-            ->where('categories.isDelete', 0)
-            ->paginate(env('PAR_PAGE_COUNT',20));
-          
-            $categorys= DB::table('categories')->orderBy('name', 'asc')
-            ->get();
+                ->select('categories.id', 'categories.name', 'categories.photo', 'categories.category_slug')
+                ->join('members', 'categories.id', '=', 'members.category_id')
+                ->where('categories.iStatus', 1)
+                ->where('categories.isDelete', 0)
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+
+            $categorys = DB::table('categories')->orderBy('name', 'asc')
+                ->get();
             $Adminfirst_name = $request->first_name1;
             $request->session()->put('Adminfirst_name', $Adminfirst_name ?? null);
-    
+
             // Start a new query builder instance
             $membersQuery = DB::table('member_services');
             $membersQuery->when($request->first_name1, function ($query) use ($request) {
                 $query->where(function ($query) use ($request) {
                     $query->where('product_name', 'LIKE', '%' . $request->first_name1 . '%')
-                    ->orWhere('description', 'LIKE', '%' . $request->first_name1 . '%')
-                    ->orWhere('Hash_Tag', 'LIKE', '%' . $request->first_name1 . '%')
-                    ->orWhere('price', 'LIKE', '%' . $request->first_name1 . '%');
+                        ->orWhere('description', 'LIKE', '%' . $request->first_name1 . '%')
+                        ->orWhere('Hash_Tag', 'LIKE', '%' . $request->first_name1 . '%')
+                        ->orWhere('price', 'LIKE', '%' . $request->first_name1 . '%');
                 });
             });
             $data = $membersQuery->paginate(10);
             return response()->json($data);
-            
-         }
-         if($id === null)
-        {
-            
+        }
+        if ($id === null) {
+
             $service = DB::table('categories')
-            ->select('categories.id', 'categories.name', 'categories.photo','categories.category_slug')
-            ->join('members', 'categories.id', '=', 'members.category_id')
-            ->where('categories.iStatus', 1)
-            ->where('categories.isDelete', 0)
-            ->paginate(env('PAR_PAGE_COUNT',20));
-          
-            $categorys= DB::table('categories')->orderBy('name', 'asc')
-            ->get();
+                ->select('categories.id', 'categories.name', 'categories.photo', 'categories.category_slug')
+                ->join('members', 'categories.id', '=', 'members.category_id')
+                ->where('categories.iStatus', 1)
+                ->where('categories.isDelete', 0)
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+
+            $categorys = DB::table('categories')->orderBy('name', 'asc')
+                ->get();
             $Adminfirst_name = $request->first_name;
             $request->session()->put('Adminfirst_name', $Adminfirst_name ?? null);
-    
+
             // Start a new query builder instance
             $membersQuery = DB::table('member_services');
             $membersQuery->when($request->first_name, function ($query) use ($request) {
@@ -2356,63 +2329,61 @@ $api = new Api(
                 });
             });
             $Products = $membersQuery->paginate(10);
-            $Count=$Products->count();
+            $Count = $Products->count();
+        } else {
 
-        }else{
-           
-            $Adminfirst_name= '';
-            $slug_to_get_id =DB::table('categories')->where('category_slug',$id)->first();
-            $categories_id =$slug_to_get_id->id;
-            $categorys= DB::table('categories')->orderBy('name', 'asc')
-            ->get();
+            $Adminfirst_name = '';
+            $slug_to_get_id = DB::table('categories')->where('category_slug', $id)->first();
+            $categories_id = $slug_to_get_id->id;
+            $categorys = DB::table('categories')->orderBy('name', 'asc')
+                ->get();
             $Products = DB::table('members')
-            ->join('member_services', 'members.id', '=', 'member_services.member_id')
-            ->where('members.category_id', $slug_to_get_id->id)
-            ->paginate(env('PAR_PAGE_COUNT',20));
+                ->join('member_services', 'members.id', '=', 'member_services.member_id')
+                ->where('members.category_id', $slug_to_get_id->id)
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $service = DB::table('categories')
-            ->select('categories.id', 'categories.name', 'categories.photo','categories.category_slug')
-            ->join('members', 'categories.id', '=', 'members.category_id')
-            ->where('categories.iStatus', 1)
-            ->where('categories.isDelete', 0)
-            ->paginate(env('PAR_PAGE_COUNT',20));
+                ->select('categories.id', 'categories.name', 'categories.photo', 'categories.category_slug')
+                ->join('members', 'categories.id', '=', 'members.category_id')
+                ->where('categories.iStatus', 1)
+                ->where('categories.isDelete', 0)
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
-             $Count=$Products->count();
-             
+            $Count = $Products->count();
         }
 
-        return view('frontview.Search', compact('Products','categorys','categories_id','Adminfirst_name','service','Count','seo'));
-    
+        return view('frontview.Search', compact('Products', 'categorys', 'categories_id', 'Adminfirst_name', 'service', 'Count', 'seo'));
     }
-    public function ProductInquiry(Request $request){
-      
+    public function ProductInquiry(Request $request)
+    {
+
         $user = DB::table('ProductInquiry')->insert([
 
             'Member_id'     =>  $request->memberid,
             'Product_id'    => $request->productid,
             'Name'          => $request->Name,
-            'email'         => $request->email, 
-            'Phone_Number'  =>$request->Phone_Number,
-            'Comment'       =>$request->Comment,
+            'email'         => $request->email,
+            'Phone_Number'  => $request->Phone_Number,
+            'Comment'       => $request->Comment,
             'created_at'     => date('Y-m-d H:i:s'),
         ]);
 
         $Product_user_email = DB::table('members')
-        ->select('email')
-        ->where('id', $request->memberid)
-        ->first();
-       
-        $productdetail =DB::table('member_services')->select('product_name')
-        ->where('id', $request->productid)
-        ->first();
-         
+            ->select('email')
+            ->where('id', $request->memberid)
+            ->first();
+
+        $productdetail = DB::table('member_services')->select('product_name')
+            ->where('id', $request->productid)
+            ->first();
+
         $sendemaildetails = DB::table('sendemaildetails')->where('id', 7)->first();
 
         $msg = [
             'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
             'Title' => $sendemaildetails->strTitle ??  'Evolve Business Community',
-            'ToEmail' =>$Product_user_email->email ?? '',
-            'CCEmail' =>$sendemaildetails->strCC ?? 'info@getdemo.in',
+            'ToEmail' => $Product_user_email->email ?? '',
+            'CCEmail' => $sendemaildetails->strCC ?? 'info@getdemo.in',
             'Subject' => $sendemaildetails->strSubject ?? 'Product Inquiry' ?? '',
         ];
 
@@ -2423,7 +2394,7 @@ $api = new Api(
             'Comment' => $request->Comment ?? '',
             'product_name' => $productdetail->product_name ?? 'NO Data'
         ];
-       
+
         $mail = Mail::send('emails.ProductInquiry', ['data' => $data], function ($message) use ($msg) {
             $message->from($msg['FromMail'], $msg['Title']);
             $message->to($msg['ToEmail'])->subject($msg['Subject']);
@@ -2434,30 +2405,33 @@ $api = new Api(
 
         return back()->with('success', 'Product Inquiry successfully Submit');
     }
-    public function Privacy_Policy(Request $request){
+    public function Privacy_Policy(Request $request)
+    {
 
         $seo = MetaData::where(['id' => 14])->first();
-        return view('frontview.Privacy-Policy',compact('seo'));
+        return view('frontview.Privacy-Policy', compact('seo'));
     }
 
-    public function TermCondition(Request $request){
+    public function TermCondition(Request $request)
+    {
 
         $seo = MetaData::where(['id' => 15])->first();
         return view('frontview.TermCondition', compact('seo'));
     }
 
-    public function THANK_YOU(Request $request){
+    public function THANK_YOU(Request $request)
+    {
 
         return view('frontview.thankyou');
     }
-    
+
     public function Clusterfish_index(Request $request)
     {
         try {
             $seo = MetaData::where(['id' => 1])->first();
             $category = DB::table('members')->orderBy('Contact_person', 'asc')->get();
-           return view('frontview.Clusterfish', compact('category','seo'));
-           //return redirect('https://groath.in/');
+            return view('frontview.Clusterfish', compact('category', 'seo'));
+            //return redirect('https://groath.in/');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -2470,7 +2444,7 @@ $api = new Api(
             $data = [
                 "Eventtype" => "Clusterfish",
                 "name" => $request->contact_person_name,
-                "email"=>$request->email ?? '',
+                "email" => $request->email ?? '',
                 "Brand_name" => $request->Brand_name,
                 "City" => $request->City,
                 "Phonenumber" => $request->Phonenumber,
@@ -2489,14 +2463,14 @@ $api = new Api(
                 $Net_Amount = 1799;
             } elseif ($currentdate <= '2025-09-20') {
                 $Net_Amount = 2499;
-            }else{
+            } else {
                 $Net_Amount = 5000;
             }
-            
+
             $api = new Api(config('app.RAZORPAY_KEY'), config('app.RAZORPAY_SECRET'));
-          
+
             $razorpayKey = config('app.RAZORPAY_KEY');
-           
+
             $order = $api->order->create([
                 'receipt'         => 'order_rcptid_' . rand(),
                 'amount'          => $Net_Amount * 100,
@@ -2509,7 +2483,7 @@ $api = new Api(
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
-    
+
     public function Admin_Clusterfish_index(Request $request)
     {
         $FromDate = $request->fromdate ?? '';
@@ -2528,7 +2502,7 @@ $api = new Api(
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
-    public function ClusterfesteToexcel(Request $request,$fromdate = null, $todate = null,)
+    public function ClusterfesteToexcel(Request $request, $fromdate = null, $todate = null,)
     {
         $FromDate = $request->fromdate;
         $ToDate = $request->todate;
@@ -2540,7 +2514,7 @@ $api = new Api(
                 ->when($request->todate, fn($query, $ToDate) => $query
                     ->where('Clusterfish.created_at', '<=', date('Y-m-d 23:59:59', strtotime($ToDate))))
                 ->get();
-            return view('Clusterfish.Clusterfestexportdata', compact('Clusterfish','FromDate', 'ToDate'));
+            return view('Clusterfish.Clusterfestexportdata', compact('Clusterfish', 'FromDate', 'ToDate'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -2555,9 +2529,9 @@ $api = new Api(
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
-     public function Clusterfest_paymentStatus(Request $request)
+    public function Clusterfest_paymentStatus(Request $request)
     {
-       
+
         try {
             $payment_status_update = DB::table('Clusterfish')->where('id', $request->paymentRecordId)->update([
                 'Payment_Status' => $request->payment_status,
@@ -2567,57 +2541,58 @@ $api = new Api(
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
-     public function Opportunity_meet(Request $request)
+    public function Opportunity_meet(Request $request)
     {
-         try {
-              $seo = MetaData::where(['id' => 1])->first();
-                $category=DB::table('categories')->orderBy('name','asc')->get();
-                return view('frontview.Opportunitymeet', compact('category','seo'));
-         } catch (\Exception $e) {
+        try {
+            $seo = MetaData::where(['id' => 1])->first();
+            $category = DB::table('categories')->orderBy('name', 'asc')->get();
+            return view('frontview.Opportunitymeet', compact('category', 'seo'));
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
     public function Opportunity_meet_store(Request $request)
     {
-         try {
-        $data = [
-            "contact_person_name" => $request->contact_person_name,  #name
-            "Phonenumber" => $request->Phonenumber,                  #phonenumber
-            "email" => $request->email,
-            "name" => $request->name,                                # brand name
-            "Gst_numbar"=>$request->gstnumber ?? 0,                  #gst number
-            "category_id" => $request->category_id,                  #category name
-            "type" => $request->type,                                #select time
-            "referred_by" => $request->referred_by,                  #reference name  
-            "reference_name" => $request->reference_name,
-            "checktime" => $request->type,
-            "Opportunity_meet_flag" => 1,
-            "created_at" => date('Y-m-d H:i:s')
-        ];
-        $Data =DB::table('induction_meet')->insertGetId($data);
-        $getdeta =DB::table('induction_meet')->where('id',$Data)->first();
-        $Net_Amount =$request->amount_fee;
-        $razorpayKey = config('app.RAZORPAY_KEY');
-        $api = new Api(config('app.RAZORPAY_KEY'), config('app.RAZORPAY_SECRET'));
-        
-        $order = $api->order->create([
-            'receipt'         => 'order_rcptid_' . rand(),
-            'amount'          => $Net_Amount * 100, 
-            'currency'        => 'INR',
-            'payment_capture' => 1 
-        ]);
-      
-         return view('frontview.Opportunity_razorpayView' ,compact('Data','Net_Amount','razorpayKey','getdeta','order'));
-         } catch (\Exception $e) {
+        try {
+            $data = [
+                "contact_person_name" => $request->contact_person_name,  #name
+                "Phonenumber" => $request->Phonenumber,                  #phonenumber
+                "email" => $request->email,
+                "name" => $request->name,                                # brand name
+                "Gst_numbar" => $request->gstnumber ?? 0,                  #gst number
+                "category_id" => $request->category_id,                  #category name
+                "type" => $request->type,                                #select time
+                "referred_by" => $request->referred_by,                  #reference name  
+                "reference_name" => $request->reference_name,
+                "checktime" => $request->type,
+                "Opportunity_meet_flag" => 1,
+                "created_at" => date('Y-m-d H:i:s')
+            ];
+            $Data = DB::table('induction_meet')->insertGetId($data);
+            $getdeta = DB::table('induction_meet')->where('id', $Data)->first();
+            $Net_Amount = $request->amount_fee;
+            $razorpayKey = config('app.RAZORPAY_KEY');
+            $api = new Api(config('app.RAZORPAY_KEY'), config('app.RAZORPAY_SECRET'));
+
+            $order = $api->order->create([
+                'receipt'         => 'order_rcptid_' . rand(),
+                'amount'          => $Net_Amount * 100,
+                'currency'        => 'INR',
+                'payment_capture' => 1
+            ]);
+
+            return view('frontview.Opportunity_razorpayView', compact('Data', 'Net_Amount', 'razorpayKey', 'getdeta', 'order'));
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
-     }
-     
-      public function emailer(Request $request){
+    }
+
+    public function emailer(Request $request)
+    {
 
         return view('emailmarketing.emailer');
     }
-     public function Youngleaders(Request $request)
+    public function Youngleaders(Request $request)
     {
         try {
             $category = DB::table('categories')->orderBy('name', 'asc')->get();
@@ -2656,7 +2631,7 @@ $api = new Api(
             return back()->with('error', 'Something went wrong. Please try again.');
         }
     }
-     public function Young_leaders_index(Request $request)
+    public function Young_leaders_index(Request $request)
     {
         try {
             $Data = DB::table('youngleaders')
@@ -2672,5 +2647,4 @@ $api = new Api(
             return back()->with('error', 'Something went wrong. Please try again.');
         }
     }
-
 }

@@ -121,6 +121,16 @@
                                         </li>
                                     @endif
 
+                                    @if ($session->role_id == 1 || $session->role_id == 3)
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link @if (request()->routeIs('MemberVisitor.index')) {{ 'active' }} @endif"
+                                                href="{{ route('MemberVisitor.index') }}">
+                                                <i class="fas fa-user"></i>
+                                                <span data-key="t-dashboards">Members Visitor</span>
+                                            </a>
+                                        </li>
+                                    @endif
+
 
 
 
@@ -153,6 +163,13 @@
                                         href="{{ route('productInquirylist') }}">
                                         <i class="fas fa-question-circle inquiry-icon"></i>
                                         <span data-key="t-dashboards">Product Inquiry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link @if (request()->routeIs('Visitor.index')) {{ 'active' }} @endif"
+                                        href="{{ route('Visitor.index') }}">
+                                        <i class="fas fa-user"></i>
+                                        <span data-key="t-dashboards">Visitor</span>
                                     </a>
                                 </li>
                             </ul>

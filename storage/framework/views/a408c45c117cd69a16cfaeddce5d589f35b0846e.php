@@ -121,6 +121,16 @@
                                         </li>
                                     <?php endif; ?>
 
+                                    <?php if($session->role_id == 1 || $session->role_id == 3): ?>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link <?php if(request()->routeIs('MemberVisitor.index')): ?> <?php echo e('active'); ?> <?php endif; ?>"
+                                                href="<?php echo e(route('MemberVisitor.index')); ?>">
+                                                <i class="fas fa-user"></i>
+                                                <span data-key="t-dashboards">Members Visitor</span>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
 
 
 
@@ -153,6 +163,13 @@
                                         href="<?php echo e(route('productInquirylist')); ?>">
                                         <i class="fas fa-question-circle inquiry-icon"></i>
                                         <span data-key="t-dashboards">Product Inquiry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link <?php if(request()->routeIs('Visitor.index')): ?> <?php echo e('active'); ?> <?php endif; ?>"
+                                        href="<?php echo e(route('Visitor.index')); ?>">
+                                        <i class="fas fa-user"></i>
+                                        <span data-key="t-dashboards">Visitor</span>
                                     </a>
                                 </li>
                             </ul>
