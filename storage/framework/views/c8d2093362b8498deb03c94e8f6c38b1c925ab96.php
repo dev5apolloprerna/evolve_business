@@ -8,3 +8,4 @@ $file = str_replace('#password', $data['password'], $file);
 
 echo $file;
 ?>
+<?php /**PATH /var/www/html/evolve_business_live/resources/views/emails/Loginemail.blade.php ENDPATH**/ ?>
