@@ -40,6 +40,7 @@ use App\Http\Controllers\Referencecontroller;
 use App\Http\Controllers\AdminReferencecontroller;
 use App\Http\Controllers\Membersearchcontroller;
 use App\Http\Controllers\Membermeetingcontroller;
+use App\Http\Controllers\PointsMasterController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClusterfestFeedbackController;
@@ -205,6 +206,17 @@ Route::prefix('admin')->name('serviceprovider.')->middleware('auth')->group(func
     Route::get('/citygroupcheck/serviceprovider/', [Citygroupcontroller::class, 'checkserviceprovider'])->name('citygroupcheckserviceprovider');
     Route::get('/citygroupedit/check/serviceprovider/', [Citygroupcontroller::class, 'editcheckserviceprovider'])->name('citygroupeditcheckserviceprovider');
 });
+
+//Points master
+Route::prefix('admin')->name('Points.')->middleware('auth')->group(
+    function () {
+        Route::get('/Points/index', [PointsMasterController::class, 'index'])->name('index');
+        Route::post('/Points/store', [PointsMasterController::class, 'create'])->name('store');
+        Route::get('/Points/edit/{id?}', [PointsMasterController::class, 'editview'])->name('edit');
+        Route::post('/Points/update', [PointsMasterController::class, 'update'])->name('update');
+        Route::delete('/Points/delete', [PointsMasterController::class, 'delete'])->name('delete');
+    }
+);
 //category master
 Route::prefix('admin')->name('categories.')->middleware('auth')->group(function () {
     Route::any('/categories/index', [Categoriescontroller::class, 'index'])->name('index');
