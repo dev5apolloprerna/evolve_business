@@ -1,20 +1,20 @@
-@extends('layouts.app')
-@section('title', 'Pending List')
-@section('content')
 
+
+<?php $__env->startSection('title', 'Connection Received List'); ?>
+<?php $__env->startSection('content'); ?>
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
-
-                {{-- Alert Messages --}}
-                @include('common.alert')
+                
+                
+                <?php echo $__env->make('common.alert', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
                 <div class="col-md-12 mt-3">
                     <div class="card mb-3">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Pending Business List
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Connection Received
                                     </h5>
                                 </div>
                             </div>
@@ -25,73 +25,92 @@
                                     aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
                                     id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
                                     <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
-
-                                        <table class="table table-bordered table-striped fs--1 mb-0">
-                                            <thead class="bg-200 text-900">
-                                                <tr>
-                                                    <th scope="col">No</th>
-                                                    <th scop="col">Business Type</th>
-                                                    <th scop="col">Given By</th>
-                                                    <!-- <th width="5%" class="sort" data-sort="Date">Given To</th> -->
-                                                    <th scop="col">Amount</th>
-                                                    <th scop="col">Business date
-                                                    </th>
-                                                    <th scop="col">Status</th>
-                                                    <!-- <th width="5%" class="sort" data-sort="Date">Available seats
-                                                                </th> -->
-                                                    <th w scop="col">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="list">
-                                                <?php $i = 1; ?>
-                                                @foreach ($Business as $Business1)
+                                        <?php if($Count > 0): ?>
+                                        <div class="table-responsive scrollbar">
+                                            <table class="table table-bordered table-striped fs--1 mb-0">
+                                                <thead class="bg-200 text-900">
                                                     <tr>
-                                                        <td class="text-center">
-                                                            {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{ $Business1->business_type == 1 ? 'Direct' : 'Reference' }}
-                                                        </td>
-                                                        <td class="text-center">{{ $Business1->business_from }}</td>
-                                                        <!-- <td class="text-center">{{ $Business1->business_to }}</td> -->
-                                                        <td class="text-center">{{ $Business1->Business_amount }}</td>
-                                                        <td class="text-center">
-                                                            {{ \Carbon\Carbon::parse($Business1->business_Date)->format('d-m-Y') }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{ $Business1->isapproved_status == 0 ? 'Pending' : '' }}
-                                                        </td>
-
-                                                        <td>
-                                                            <!-- <a href="#" data-bs-toggle="modal"
-                                                                        data-bs-target="#EditModal"
-                                                                        onclick="getEditData(<?= $Business1->business_id ?>)"
-                                                                        class="btn btn-link p-0" title="Edit">
-                                                                        <span class="text-500 fas fa-edit"></span>
-                                                                    </a>
-                                                                    <a class="btn btn-link p-0" href="#"
-                                                                        data-bs-toggle="modal" title="Delete"
-                                                                        data-bs-target="#deleteRecordModal"
-                                                                        onclick="deleteData(<?= $Business1->business_id ?>);">
-                                                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                    </a> -->
-                                                            <a class="" href="#" data-bs-toggle="modal"
-                                                                title="Status Changed" data-bs-target="#statusModal"
-                                                                onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
-                                                                <i class="fas fa-plus-square" aria-hidden="true"></i>
-                                                            </a>
-
-                                                        </td>
+                                                        <th scope="col">Sr No</th>                                            
+                                                        <th scop="col">Given By</th>
+                                                        <th scop="col">Company Name</th>
+                                                        <th scop="col">Connection Name</th>
+                                                        <th scop="col">Email</th>
+                                                        <th scop="col">Phone Number
+                                                        </th>
+                                                        <th scop="col">Connection For Message</th>
+                                                        <th scop="col">Connection Date</th>                                                                         
+                                                        <th scop="col">Status</th>                                                                                               
+                                                        
                                                     </tr>
-                                                    <?php $i++; ?>
-                                                @endforeach
-                                            </tbody>
+                                                </thead>
+                                                <tbody class="list">
+                                                    <?php $i = 1;                                               
+                                                    ?>
+                                                    <?php $__currentLoopData = $Business; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $Business1): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                <?php echo e($i + $Business->perPage() * ($Business->currentPage() - 1)); ?>
 
-                                        </table>
+                                                            </td>
+                                                           
+                                                            <td class="text-center"><?php echo e($Business1->first_name); ?></td>
+                                                            <td class="text-center"><?php echo e($Business1->Company_Name ? $Business1->Company_Name : 'N/A'); ?></td>
+                                                            <td class="text-center"><?php echo e($Business1->Reference_Name); ?></td>
+                                                            <td class="text-center"><?php echo e($Business1->Email ? $Business1->Email : 'N/A'); ?></td>
+                                                            <td class="text-center"><?php echo e($Business1->phonenumber); ?></td> 
+                                                            <td class="text-center"><?php echo e($Business1->Refer_for_message ? $Business1->Refer_for_message : 'N/A'); ?></td>                                                        
+                                                            <td class="text-center">
+                                                                <?php echo e(\Carbon\Carbon::parse($Business1->Reference_Date)->format('d-m-Y')); ?>
 
-                                        <div class="d-flex justify-content-center mt-3">
-                                            {{ $Business->links() }}
+                                                            </td>
+                                                            <!-- <td class="text-center"> <?php echo e($Business1->businesscomment !== null ? $Business1->businesscomment : 'N/A'); ?></td> -->
+                                                            <td class="text-center">         
+                                                                <?php echo e($Business1->isapproved_status == 1 ? 'Approved' : ($Business1->isapproved_status == 2 ? 'Rejected' : '')); ?>
+
+                                                            </td>                                                          
+                            
+                                                            <!-- <td>
+                                                                <a href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#EditModal"
+                                                                    onclick="getEditData(<?= $Business1->business_id ?>)"
+                                                                    class="btn btn-link p-0" title="Edit">
+                                                                    <span class="text-500 fas fa-edit"></span>
+                                                                </a>
+                                                                <a class="btn btn-link p-0" href="#"
+                                                                    data-bs-toggle="modal" title="Delete"
+                                                                    data-bs-target="#deleteRecordModal"
+                                                                    onclick="deleteData(<?= $Business1->business_id ?>);">
+                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                </a> 
+                                                                <a class="" href="#"
+                                                                    data-bs-toggle="modal" title="Status Changed"
+                                                                    data-bs-target="#statusModal"
+                                                                    onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
+                                                                    <i class="fas fa-plus-square" aria-hidden="true"></i>
+                                                                </a> 
+
+                                                            </td> -->
+                                                           
+                                                        </tr>
+                                                        <?php $i++; ?>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </tbody>                                                                                              
+                                            </table>
+                                           
                                         </div>
+                                        <div class="d-flex justify-content-center mt-3">
+                                        <?php echo e($Business->links()); ?>
+
+                                        </div>
+                                        <?php else: ?> 
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
+                                                    <div class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
+                                                        <h1 class="font-white text-center"> Connection Yet To Received </h1>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php endif; ?> 
                                     </div>
                                 </div>
                             </div>
@@ -100,17 +119,19 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog " style="background-color: white;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Edit Business</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                             </button>
                         </div>
-                        <form method="post" action="{{ route('Business.update') }}" enctype="multipart/form-data">
-                            @csrf
-                            @method('post')
+                        <form method="post" action="<?php echo e(route('Business.update')); ?>" enctype="multipart/form-data">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('post'); ?>
                             <div class="modal-body">
 
                                 <input type="hidden" name="business_id" id="business_id" value="">
@@ -120,7 +141,7 @@
                                         <label for="business_from_id"><span style="color:red;">*</span>Business
                                             Type</label>
                                         <select class="form-control" name="business_type" id="Editbusiness_type"
-                                            value="{{ old('business_type') }}" required>
+                                            value="<?php echo e(old('business_type')); ?>" required>
                                             <option value="1">Direct</option>
                                             <option value="2">Reference</option>
                                         </select>
@@ -130,38 +151,31 @@
                                         <select class="form-control" name="business_from" id="Editbusiness_from"
                                             required>
                                             <option value="" selected>Select Given By</option>
-                                            @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }}
+                                            <?php $__currentLoopData = $Data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($data->first_name); ?>"><?php echo e($data->first_name); ?>
+
                                                 </option>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
 
-                                    {{-- <div class="md-3">
-                                        <label for="business_from_id"><span style="color:red;">*</span>Given By</label>
-                                        <select class="form-control" data-choices name="business_from" id="Editbusiness_from">
-                                            <option value="" selected>Given By</option>
-                                            @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> --}}
+                                    
 
 
                                     <div class="md-3">
                                         <label for="business_to_id"><span style="color:red;">*</span>Given To</label>
                                         <select class="form-control" name="business_to" id="Editbusiness_to" required>
                                             <option value="" disabled selected>Select Given By</option>
-                                            @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $Data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($data->first_name); ?>"><?php echo e($data->first_name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                     <div class="md-3">
                                         <span style="color:red;">*</span>Amount
                                         <input type="number" class="form-control" name="Business_amount"
                                             id="EditBusiness_amount" placeholder="Enter Business_amount"
-                                            value="{{ old('Business_amount') }}" required>
+                                            value="<?php echo e(old('Business_amount')); ?>" required>
                                     </div>
                                     <div class="md-3">
                                         <span style="color:red;">*</span> Business date
@@ -203,14 +217,14 @@
                     </div>
                     <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
                         <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
-                        <a class="btn btn-danger" href="{{ route('logout') }}"
+                        <a class="btn btn-danger" href="<?php echo e(route('logout')); ?>"
                             onclick="event.preventDefault(); document.getElementById('user-delete-form').submit();">
                             Yes,
                             Delete It!
                         </a>
-                        <form id="user-delete-form" method="POST" action="{{ route('Business.delete') }}">
-                            @csrf
-                            @method('DELETE')
+                        <form id="user-delete-form" method="POST" action="<?php echo e(route('Business.delete')); ?>">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
                             <input type="hidden" name="id" id="deleteid" value="">
 
                         </form>
@@ -220,9 +234,9 @@
         </div>
     </div>
     <!--Delete modal End -->
-    {{-- @endforeach --}}
+    
 
-    {{-- model rejectedcomments --}}
+    
 
     <!-- Status Modal -->
     <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
@@ -239,54 +253,57 @@
                 </div>
                 <div class="modal-body">
                     <!-- Add a form for changing status and adding rejected comments -->
-                    <form action="{{ route('pendinglogincheck.statuspendinglogin') }}" method="post">
-                        @csrf
+                    <form action="<?php echo e(route('pendinglogincheck.statuspendinglogin')); ?>" method="post">
+                        <?php echo csrf_field(); ?>
                         <input type="hidden" name="id" id="Businessid" value="">
                         <div class="form-group">
                             <label for="newStatus">Update Status:</label>
-                            {{-- {{dd($data)}} --}}
-                            @if (isset($Business1->isapproved_status))
+                            
+                            <?php if(isset($Business1->isapproved_status)): ?>
                                 <!-- <select class="form-control" name="newStatus">
-                                            <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
-                                            </option>
-                                            <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
-                                        </select> -->
+                                        <option value="1" <?php echo e($Business1->isapproved_status == 1 ? 'selected' : ''); ?>>Approved
+                                        </option>
+                                        <option value="0" <?php echo e($Business1->isapproved_status == 0 ? 'selected' : ''); ?>>Rejected</option>
+                                    </select> -->
 
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
-                                    <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>
+                                    <option value="1" <?php echo e($Business1->isapproved_status == 1 ? 'selected' : ''); ?>>
                                         Approved</option>
-                                    <option value="2" {{ $Business1->isapproved_status == 2 ? 'selected' : '' }}>
+                                    <option value="2" <?php echo e($Business1->isapproved_status == 2 ? 'selected' : ''); ?>>
                                         Rejected</option>
                                 </select>
-                            @else
+                            <?php else: ?>
                                 <select class="form-control" name="newStatus">
                                     <option value="1">Approved</option>
                                     <option value="0">Pending</option>
                                 </select>
-                            @endif
+                            <?php endif; ?>
                         </div>
-                        <div class="form-group rejectedComments" id="rejectedComments" style="display : none;">
-                            <label for="rejectedComments">Rejected Comments:</label>
-                            <textarea class="form-control" name="businesscomment"></textarea>
-                        </div>
-
-
-                        <button type="submit" class="btn btn-success" style="margin-top: 20px;">Submit</button>
+                            <div class="form-group rejectedComments" id="rejectedComments" style="display : none;">
+                                <label for="rejectedComments">Rejected Comments:</label>
+                                <textarea class="form-control" name="businesscomment"></textarea>                
+                            </div>
+                  
+                        <!-- <div class="form-group">
+                                <label for="rejectedComments">Rejected Comments:</label>
+                                <textarea class="form-control" name="rejectedComments"></textarea>
+                            </div> -->
+                        <button type="submit" class="btn btn-success"  style="margin-top: 20px;">Save Changes</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- mode end rejectedcomments --}}
+    
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 
-    <script>
-        function toggleRejectedComments() {
+<script>
+    function toggleRejectedComments() {
             let newStatus = $("#newStatus").val();
             if (newStatus == 2) {
                 $("#rejectedComments").show();
@@ -304,12 +321,12 @@
                 rejectedComments.style.display = 'block';
             }
         }
-    </script>
+</script>
 
     <script>
         function getEditData(id) {
             // alert(id);
-            var url = "{{ route('Business.edit', ':id') }}";
+            var url = "<?php echo e(route('Business.edit', ':id')); ?>";
             url = url.replace(":id", id);
             if (id) {
                 $.ajax({
@@ -380,7 +397,7 @@
         }
     </script>
 
-    {{-- Add photo --}}
+    
     <script>
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -399,7 +416,7 @@
         });
     </script>
 
-    {{-- Edit photo --}}
+    
     <script>
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -464,11 +481,11 @@
         });
     </script>
 
-
+   
     <script>
         function getEditDatastatus(id) {
             // alert(id);
-            var url = "{{ route('Business.statusget', ':id') }}";
+            var url = "<?php echo e(route('Business.statusget', ':id')); ?>";
             url = url.replace(":id", id);
             if (id) {
                 $.ajax({
@@ -495,39 +512,41 @@
         }
     </script>
 
-    <script>
-        function exportExcel() {
-            // alert('hello');
-            var fromdate = $("#startdatepicker").val();
-            var todate = $("#enddatepicker").val();
-            // var first_name = $("#first_name").val();
+<script>
+    function exportExcel() {
+// alert('hello');
+        var fromdate = $("#startdatepicker").val();
+        var todate = $("#enddatepicker").val();
+        // var first_name = $("#first_name").val();
 
-            var strURL = "{{ route('Business.exportbusiness') }}";
-            strURL += "/" + fromdate + "/" + todate;
+        var strURL = "<?php echo e(route('Business.exportbusiness')); ?>";
+        strURL += "/" + fromdate +"/"+todate;
 
-            window.location.href = strURL;
-        }
-    </script>
+        window.location.href = strURL;
+    }
+</script>
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-    <script>
-        $(function() {
-            $("#startdatepicker").datepicker({
-                dateFormat: 'd-m-yy',
-                //minDate: 0
-            });
+<script>
 
-            $("#enddatepicker").datepicker({
-                dateFormat: 'd-m-yy',
-                //minDate: 0
-            });
+    
+    $(function() {
+        $("#startdatepicker").datepicker({
+            dateFormat: 'd-m-yy',
+            //minDate: 0
         });
-    </script>
+
+        $("#enddatepicker").datepicker({
+            dateFormat: 'd-m-yy',
+            //minDate: 0
+        });
+    });
+</script>
 
 
-    <!-- <script>
+<!-- <script>
         function RejectedComments() {
 
             alert('hello');
@@ -543,4 +562,6 @@
     </script> -->
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp laravel11\htdocs\live_codes\Evolve Business\resources\views/Reference/ReceivedReference.blade.php ENDPATH**/ ?>

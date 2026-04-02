@@ -188,7 +188,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/var/www/html/evolve_business_live/storage/framework/cache/data',
+        'path' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -353,7 +353,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'evolvf9q_evolve_business',
+        'database' => 'evolve_business',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -363,9 +363,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'evolvf9q_evolve_business',
+        'database' => 'evolve_business',
         'username' => 'root',
-        'password' => 'admin123',
+        'password' => '',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_general_ci',
@@ -383,9 +383,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'evolvf9q_evolve_business',
+        'database' => 'evolve_business',
         'username' => 'root',
-        'password' => 'admin123',
+        'password' => '',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -398,9 +398,9 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'evolvf9q_evolve_business',
+        'database' => 'evolve_business',
         'username' => 'root',
-        'password' => 'admin123',
+        'password' => '',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -538,7 +538,7 @@
     ),
     'temporary_files' => 
     array (
-      'local_path' => '/var/www/html/evolve_business_live/storage/framework/cache/laravel-excel',
+      'local_path' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\framework/cache/laravel-excel',
       'remote_disk' => NULL,
       'remote_prefix' => NULL,
       'force_resync_remote' => NULL,
@@ -552,12 +552,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/var/www/html/evolve_business_live/storage/app',
+        'root' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/var/www/html/evolve_business_live/storage/app/public',
+        'root' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
       ),
@@ -575,7 +575,7 @@
     ),
     'links' => 
     array (
-      '/var/www/html/evolve_business_live/public/storage' => '/var/www/html/evolve_business_live/storage/app/public',
+      'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\public\\storage' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\app/public',
     ),
   ),
   'hashing' => 
@@ -610,13 +610,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/var/www/html/evolve_business_live/storage/logs/laravel.log',
+        'path' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/var/www/html/evolve_business_live/storage/logs/laravel.log',
+        'path' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -667,7 +667,7 @@
       ),
       'emergency' => 
       array (
-        'path' => '/var/www/html/evolve_business_live/storage/logs/laravel.log',
+        'path' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\logs/laravel.log',
       ),
     ),
   ),
@@ -734,7 +734,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/var/www/html/evolve_business_live/resources/views/vendor/mail',
+        0 => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\resources\\views/vendor/mail',
       ),
     ),
   ),
@@ -882,7 +882,7 @@
     'lifetime' => '525600',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/var/www/html/evolve_business_live/storage/framework/sessions',
+    'files' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -902,9 +902,9 @@
   array (
     'paths' => 
     array (
-      0 => '/var/www/html/evolve_business_live/resources/views',
+      0 => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\resources\\views',
     ),
-    'compiled' => '/var/www/html/evolve_business_live/storage/framework/views',
+    'compiled' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business\\storage\\framework\\views',
   ),
   'image' => 
   array (
@@ -983,7 +983,7 @@
     array (
     ),
     'enable_runnable_solutions' => NULL,
-    'remote_sites_path' => '/var/www/html/evolve_business_live',
+    'remote_sites_path' => 'C:\\xampp laravel11\\htdocs\\live_codes\\Evolve Business',
     'local_sites_path' => '',
     'housekeeping_endpoint_prefix' => '_ignition',
     'settings_file_path' => '',

@@ -1,13 +1,13 @@
-@extends('layouts.app')
-@section('title', 'Pending List')
-@section('content')
+
+<?php $__env->startSection('title', 'Pending List'); ?>
+<?php $__env->startSection('content'); ?>
 
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
 
-                {{-- Alert Messages --}}
-                @include('common.alert')
+                
+                <?php echo $__env->make('common.alert', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
                 <div class="col-md-12 mt-3">
                     <div class="card mb-3">
@@ -44,22 +44,26 @@
                                             </thead>
                                             <tbody class="list">
                                                 <?php $i = 1; ?>
-                                                @foreach ($Business as $Business1)
+                                                <?php $__currentLoopData = $Business; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $Business1): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <tr>
                                                         <td class="text-center">
-                                                            {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
+                                                            <?php echo e($i + $Business->perPage() * ($Business->currentPage() - 1)); ?>
+
                                                         </td>
                                                         <td class="text-center">
-                                                            {{ $Business1->business_type == 1 ? 'Direct' : 'Reference' }}
+                                                            <?php echo e($Business1->business_type == 1 ? 'Direct' : 'Reference'); ?>
+
                                                         </td>
-                                                        <td class="text-center">{{ $Business1->business_from }}</td>
-                                                        <!-- <td class="text-center">{{ $Business1->business_to }}</td> -->
-                                                        <td class="text-center">{{ $Business1->Business_amount }}</td>
+                                                        <td class="text-center"><?php echo e($Business1->business_from); ?></td>
+                                                        <!-- <td class="text-center"><?php echo e($Business1->business_to); ?></td> -->
+                                                        <td class="text-center"><?php echo e($Business1->Business_amount); ?></td>
                                                         <td class="text-center">
-                                                            {{ \Carbon\Carbon::parse($Business1->business_Date)->format('d-m-Y') }}
+                                                            <?php echo e(\Carbon\Carbon::parse($Business1->business_Date)->format('d-m-Y')); ?>
+
                                                         </td>
                                                         <td class="text-center">
-                                                            {{ $Business1->isapproved_status == 0 ? 'Pending' : '' }}
+                                                            <?php echo e($Business1->isapproved_status == 0 ? 'Pending' : ''); ?>
+
                                                         </td>
 
                                                         <td>
@@ -84,13 +88,14 @@
                                                         </td>
                                                     </tr>
                                                     <?php $i++; ?>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </tbody>
 
                                         </table>
 
                                         <div class="d-flex justify-content-center mt-3">
-                                            {{ $Business->links() }}
+                                            <?php echo e($Business->links()); ?>
+
                                         </div>
                                     </div>
                                 </div>
@@ -108,9 +113,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </button>
                         </div>
-                        <form method="post" action="{{ route('Business.update') }}" enctype="multipart/form-data">
-                            @csrf
-                            @method('post')
+                        <form method="post" action="<?php echo e(route('Business.update')); ?>" enctype="multipart/form-data">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('post'); ?>
                             <div class="modal-body">
 
                                 <input type="hidden" name="business_id" id="business_id" value="">
@@ -120,7 +125,7 @@
                                         <label for="business_from_id"><span style="color:red;">*</span>Business
                                             Type</label>
                                         <select class="form-control" name="business_type" id="Editbusiness_type"
-                                            value="{{ old('business_type') }}" required>
+                                            value="<?php echo e(old('business_type')); ?>" required>
                                             <option value="1">Direct</option>
                                             <option value="2">Reference</option>
                                         </select>
@@ -130,38 +135,31 @@
                                         <select class="form-control" name="business_from" id="Editbusiness_from"
                                             required>
                                             <option value="" selected>Select Given By</option>
-                                            @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }}
+                                            <?php $__currentLoopData = $Data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($data->first_name); ?>"><?php echo e($data->first_name); ?>
+
                                                 </option>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
 
-                                    {{-- <div class="md-3">
-                                        <label for="business_from_id"><span style="color:red;">*</span>Given By</label>
-                                        <select class="form-control" data-choices name="business_from" id="Editbusiness_from">
-                                            <option value="" selected>Given By</option>
-                                            @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> --}}
+                                    
 
 
                                     <div class="md-3">
                                         <label for="business_to_id"><span style="color:red;">*</span>Given To</label>
                                         <select class="form-control" name="business_to" id="Editbusiness_to" required>
                                             <option value="" disabled selected>Select Given By</option>
-                                            @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $Data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($data->first_name); ?>"><?php echo e($data->first_name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                     <div class="md-3">
                                         <span style="color:red;">*</span>Amount
                                         <input type="number" class="form-control" name="Business_amount"
                                             id="EditBusiness_amount" placeholder="Enter Business_amount"
-                                            value="{{ old('Business_amount') }}" required>
+                                            value="<?php echo e(old('Business_amount')); ?>" required>
                                     </div>
                                     <div class="md-3">
                                         <span style="color:red;">*</span> Business date
@@ -203,14 +201,14 @@
                     </div>
                     <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
                         <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
-                        <a class="btn btn-danger" href="{{ route('logout') }}"
+                        <a class="btn btn-danger" href="<?php echo e(route('logout')); ?>"
                             onclick="event.preventDefault(); document.getElementById('user-delete-form').submit();">
                             Yes,
                             Delete It!
                         </a>
-                        <form id="user-delete-form" method="POST" action="{{ route('Business.delete') }}">
-                            @csrf
-                            @method('DELETE')
+                        <form id="user-delete-form" method="POST" action="<?php echo e(route('Business.delete')); ?>">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
                             <input type="hidden" name="id" id="deleteid" value="">
 
                         </form>
@@ -220,9 +218,9 @@
         </div>
     </div>
     <!--Delete modal End -->
-    {{-- @endforeach --}}
+    
 
-    {{-- model rejectedcomments --}}
+    
 
     <!-- Status Modal -->
     <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
@@ -239,32 +237,32 @@
                 </div>
                 <div class="modal-body">
                     <!-- Add a form for changing status and adding rejected comments -->
-                    <form action="{{ route('pendinglogincheck.statuspendinglogin') }}" method="post">
-                        @csrf
+                    <form action="<?php echo e(route('pendinglogincheck.statuspendinglogin')); ?>" method="post">
+                        <?php echo csrf_field(); ?>
                         <input type="hidden" name="id" id="Businessid" value="">
                         <div class="form-group">
                             <label for="newStatus">Update Status:</label>
-                            {{-- {{dd($data)}} --}}
-                            @if (isset($Business1->isapproved_status))
+                            
+                            <?php if(isset($Business1->isapproved_status)): ?>
                                 <!-- <select class="form-control" name="newStatus">
-                                            <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
+                                            <option value="1" <?php echo e($Business1->isapproved_status == 1 ? 'selected' : ''); ?>>Approved
                                             </option>
-                                            <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
+                                            <option value="0" <?php echo e($Business1->isapproved_status == 0 ? 'selected' : ''); ?>>Rejected</option>
                                         </select> -->
 
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
-                                    <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>
+                                    <option value="1" <?php echo e($Business1->isapproved_status == 1 ? 'selected' : ''); ?>>
                                         Approved</option>
-                                    <option value="2" {{ $Business1->isapproved_status == 2 ? 'selected' : '' }}>
+                                    <option value="2" <?php echo e($Business1->isapproved_status == 2 ? 'selected' : ''); ?>>
                                         Rejected</option>
                                 </select>
-                            @else
+                            <?php else: ?>
                                 <select class="form-control" name="newStatus">
                                     <option value="1">Approved</option>
                                     <option value="0">Pending</option>
                                 </select>
-                            @endif
+                            <?php endif; ?>
                         </div>
                         <div class="form-group rejectedComments" id="rejectedComments" style="display : none;">
                             <label for="rejectedComments">Rejected Comments:</label>
@@ -279,11 +277,11 @@
         </div>
     </div>
 
-    {{-- mode end rejectedcomments --}}
+    
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 
     <script>
         function toggleRejectedComments() {
@@ -309,7 +307,7 @@
     <script>
         function getEditData(id) {
             // alert(id);
-            var url = "{{ route('Business.edit', ':id') }}";
+            var url = "<?php echo e(route('Business.edit', ':id')); ?>";
             url = url.replace(":id", id);
             if (id) {
                 $.ajax({
@@ -380,7 +378,7 @@
         }
     </script>
 
-    {{-- Add photo --}}
+    
     <script>
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -399,7 +397,7 @@
         });
     </script>
 
-    {{-- Edit photo --}}
+    
     <script>
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -468,7 +466,7 @@
     <script>
         function getEditDatastatus(id) {
             // alert(id);
-            var url = "{{ route('Business.statusget', ':id') }}";
+            var url = "<?php echo e(route('Business.statusget', ':id')); ?>";
             url = url.replace(":id", id);
             if (id) {
                 $.ajax({
@@ -502,7 +500,7 @@
             var todate = $("#enddatepicker").val();
             // var first_name = $("#first_name").val();
 
-            var strURL = "{{ route('Business.exportbusiness') }}";
+            var strURL = "<?php echo e(route('Business.exportbusiness')); ?>";
             strURL += "/" + fromdate + "/" + todate;
 
             window.location.href = strURL;
@@ -543,4 +541,6 @@
     </script> -->
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp laravel11\htdocs\live_codes\Evolve Business\resources\views/pendinglogincheck/index.blade.php ENDPATH**/ ?>
