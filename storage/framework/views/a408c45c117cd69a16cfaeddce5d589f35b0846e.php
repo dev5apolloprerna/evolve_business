@@ -145,7 +145,7 @@
                             href="#sidebarProduct" data-bs-toggle="collapse" role="button" aria-expanded="false"
                             aria-controls="sidebarProduct">
                             <i class="fas fa-shopping-bag"></i>
-                            <span data-key="t-dashboards">Product</span>
+                            <span data-key="t-dashboards">Activity</span>
                             
                         </a>
                         <!-- Submenu -->
@@ -170,6 +170,20 @@
                                         href="<?php echo e(route('Visitor.index')); ?>">
                                         <i class="fas fa-user"></i>
                                         <span data-key="t-dashboards">Visitor</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link <?php if(request()->routeIs('Award.index')): ?> <?php echo e('active'); ?> <?php endif; ?>"
+                                        href="<?php echo e(route('Award.index')); ?>">
+                                        <i class="fas fa-award"></i>
+                                        <span data-key="t-dashboards">Award</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link <?php if(request()->routeIs('MemberAnnouncement.index')): ?> <?php echo e('active'); ?> <?php endif; ?>"
+                                        href="<?php echo e(route('MemberAnnouncement.index')); ?>">
+                                        <i class="fa fa-bullhorn"></i>
+                                        <span data-key="t-dashboards">Announcement</span>
                                     </a>
                                 </li>
                             </ul>

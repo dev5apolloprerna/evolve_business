@@ -93,14 +93,6 @@
 
                             </div>
 
-
-
-
-
-
-
-
-
                             <div class="h-100 p-3">
 
 
@@ -444,9 +436,9 @@
                                 </div>
 
                                 
-                               <!-- Chart Section  start-->
+                                <!-- Chart Section  start-->
                                 <!-- new code  -->
-                               <!-- new code ravi end  -->
+                                <!-- new code ravi end  -->
                                 <!-- Chart Section end -->
                             </div>
                         </div>
@@ -554,51 +546,49 @@
                                         </div>
 
                                     </div>
-                                <?php endif; ?>
-                            </div>
-
+                            <?php endif; ?>
                         </div>
-                        <div class="col-lg-12" style="height: 300px">
+
+                    </div>
+                    <div class="col-lg-12" style="height: 300px">
                         <!--new-->
 
-                            <div class="card" style="height: 300px">
+                        <div class="card" style="height: 300px">
 
-                                <div class="card-header align-items-center d-flex">
+                            <div class="card-header align-items-center d-flex">
 
-                                    <h4 class="card-title mb-0 flex-grow-1">Previous Meeting</h4>
+                                <h4 class="card-title mb-0 flex-grow-1">Previous Meeting</h4>
 
-                                </div>
-
-
-
-                                <div class="card-body cust-over pt-0">
-
-                                    <ul class="list-group list-group-flush border-dashed">
-
-                                        <?php $__currentLoopData = $previousMeetings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $meeting): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <li class="list-group-item ps-0">
-
-                                                <div class="row align-items-center g-3">
-
-                                                    <div class="col-auto">
-
-                                                        <div class="avatar-sm p-1 py-2 h-auto bg-light rounded-3">
-
-                                                            <div class="text-center">
-
-                                                                <h5 class="mb-0">
-
-                                                                    <?php echo e(Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('d')); ?>
+                            </div>
 
 
-                                                                </h5>
 
-                                                                <div class="text-muted">
+                            <div class="card-body cust-over pt-0">
 
-                                                                    <?php echo e(Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('D')); ?>
+                                <ul class="list-group list-group-flush border-dashed">
+
+                                    <?php $__currentLoopData = $previousMeetings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $meeting): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <li class="list-group-item ps-0">
+
+                                            <div class="row align-items-center g-3">
+
+                                                <div class="col-auto">
+
+                                                    <div class="avatar-sm p-1 py-2 h-auto bg-light rounded-3">
+
+                                                        <div class="text-center">
+
+                                                            <h5 class="mb-0">
+
+                                                                <?php echo e(Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('d')); ?>
 
 
-                                                                </div>
+                                                            </h5>
+
+                                                            <div class="text-muted">
+
+                                                                <?php echo e(Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('D')); ?>
+
 
                                                             </div>
 
@@ -606,59 +596,61 @@
 
                                                     </div>
 
-                                                    <div class="col">
+                                                </div>
 
-                                                        <h5 class="text-muted mt-0 mb-1 fs-14">
+                                                <div class="col">
 
-                                                            <?php echo e(Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('d.m.y H:i')); ?>
+                                                    <h5 class="text-muted mt-0 mb-1 fs-14">
 
-
-                                                            To
-
-                                                            <?php echo e(Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->End_date)->format('d.m.y H:i')); ?>
+                                                        <?php echo e(Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('d.m.y H:i')); ?>
 
 
-                                                        </h5>
+                                                        To
 
-                                                        <div class="d-flex justify-content-between">
+                                                        <?php echo e(Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->End_date)->format('d.m.y H:i')); ?>
 
-                                                            <a href="#"
-                                                                class="text-reset fs-15 mb-0"><?php echo e($meeting->Meeting_title); ?></a>
 
-                                                            <!-- <span class="badge bg-primary rounded-pill"><?php echo e($meeting->member_count); ?> Members</span> -->
+                                                    </h5>
 
-                                                            <a href="<?php echo e(route('MemberBusiness.Memberlist', $meeting->id)); ?>"
-                                                                class="btn btn-success btn-sm rounded-pill">
+                                                    <div class="d-flex justify-content-between">
 
-                                                                Members
+                                                        <a href="#"
+                                                            class="text-reset fs-15 mb-0"><?php echo e($meeting->Meeting_title); ?></a>
 
-                                                            </a>
+                                                        <!-- <span class="badge bg-primary rounded-pill"><?php echo e($meeting->member_count); ?> Members</span> -->
 
-                                                        </div>
+                                                        <a href="<?php echo e(route('MemberBusiness.Memberlist', $meeting->id)); ?>"
+                                                            class="btn btn-success btn-sm rounded-pill">
+
+                                                            Members
+
+                                                        </a>
 
                                                     </div>
 
                                                 </div>
 
-                                            </li>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </div>
 
-                                    </ul>
+                                        </li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                                    <div
-                                        class="align-items-center justify-content-center mt-2 row g-3 text-center text-sm-start">
+                                </ul>
 
-                                        <div class="col-sm-auto">
+                                <div
+                                    class="align-items-center justify-content-center mt-2 row g-3 text-center text-sm-start">
+
+                                    <div class="col-sm-auto">
 
 
-
-                                        </div>
 
                                     </div>
 
                                 </div>
 
                             </div>
+
+                        </div>
 
                         <!--new -->
 
@@ -1014,7 +1006,7 @@
 
 
 
-           
+
         </div>
 
     </div>
@@ -1343,4 +1335,5 @@
         }
     </script>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/evolve_business_live/resources/views/Memberhome.blade.php ENDPATH**/ ?>

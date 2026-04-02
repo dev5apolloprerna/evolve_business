@@ -95,14 +95,6 @@
 
                             </div>
 
-
-
-
-
-
-
-
-
                             <div class="h-100 p-3">
 
 
@@ -446,9 +438,9 @@
                                 </div>
 
                                 {{-- end business refrence Received --}}
-                               <!-- Chart Section  start-->
+                                <!-- Chart Section  start-->
                                 <!-- new code  -->
-                               <!-- new code ravi end  -->
+                                <!-- new code ravi end  -->
                                 <!-- Chart Section end -->
                             </div>
                         </div>
@@ -552,49 +544,47 @@
                                         </div>
 
                                     </div>
-                                @endif
-                            </div>
-
+                            @endif
                         </div>
-                        <div class="col-lg-12" style="height: 300px">
+
+                    </div>
+                    <div class="col-lg-12" style="height: 300px">
                         <!--new-->
 
-                            <div class="card" style="height: 300px">
+                        <div class="card" style="height: 300px">
 
-                                <div class="card-header align-items-center d-flex">
+                            <div class="card-header align-items-center d-flex">
 
-                                    <h4 class="card-title mb-0 flex-grow-1">Previous Meeting</h4>
+                                <h4 class="card-title mb-0 flex-grow-1">Previous Meeting</h4>
 
-                                </div>
+                            </div>
 
 
 
-                                <div class="card-body cust-over pt-0">
+                            <div class="card-body cust-over pt-0">
 
-                                    <ul class="list-group list-group-flush border-dashed">
+                                <ul class="list-group list-group-flush border-dashed">
 
-                                        @foreach ($previousMeetings as $meeting)
-                                            <li class="list-group-item ps-0">
+                                    @foreach ($previousMeetings as $meeting)
+                                        <li class="list-group-item ps-0">
 
-                                                <div class="row align-items-center g-3">
+                                            <div class="row align-items-center g-3">
 
-                                                    <div class="col-auto">
+                                                <div class="col-auto">
 
-                                                        <div class="avatar-sm p-1 py-2 h-auto bg-light rounded-3">
+                                                    <div class="avatar-sm p-1 py-2 h-auto bg-light rounded-3">
 
-                                                            <div class="text-center">
+                                                        <div class="text-center">
 
-                                                                <h5 class="mb-0">
+                                                            <h5 class="mb-0">
 
-                                                                    {{ Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('d') }}
+                                                                {{ Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('d') }}
 
-                                                                </h5>
+                                                            </h5>
 
-                                                                <div class="text-muted">
+                                                            <div class="text-muted">
 
-                                                                    {{ Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('D') }}
-
-                                                                </div>
+                                                                {{ Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('D') }}
 
                                                             </div>
 
@@ -602,57 +592,59 @@
 
                                                     </div>
 
-                                                    <div class="col">
+                                                </div>
 
-                                                        <h5 class="text-muted mt-0 mb-1 fs-14">
+                                                <div class="col">
 
-                                                            {{ Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('d.m.y H:i') }}
+                                                    <h5 class="text-muted mt-0 mb-1 fs-14">
 
-                                                            To
+                                                        {{ Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->start_date)->format('d.m.y H:i') }}
 
-                                                            {{ Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->End_date)->format('d.m.y H:i') }}
+                                                        To
 
-                                                        </h5>
+                                                        {{ Carbon\Carbon::createFromFormat('d.m.y H:i', $meeting->End_date)->format('d.m.y H:i') }}
 
-                                                        <div class="d-flex justify-content-between">
+                                                    </h5>
 
-                                                            <a href="#"
-                                                                class="text-reset fs-15 mb-0">{{ $meeting->Meeting_title }}</a>
+                                                    <div class="d-flex justify-content-between">
 
-                                                            <!-- <span class="badge bg-primary rounded-pill">{{ $meeting->member_count }} Members</span> -->
+                                                        <a href="#"
+                                                            class="text-reset fs-15 mb-0">{{ $meeting->Meeting_title }}</a>
 
-                                                            <a href="{{ route('MemberBusiness.Memberlist', $meeting->id) }}"
-                                                                class="btn btn-success btn-sm rounded-pill">
+                                                        <!-- <span class="badge bg-primary rounded-pill">{{ $meeting->member_count }} Members</span> -->
 
-                                                                Members
+                                                        <a href="{{ route('MemberBusiness.Memberlist', $meeting->id) }}"
+                                                            class="btn btn-success btn-sm rounded-pill">
 
-                                                            </a>
+                                                            Members
 
-                                                        </div>
+                                                        </a>
 
                                                     </div>
 
                                                 </div>
 
-                                            </li>
-                                        @endforeach
+                                            </div>
 
-                                    </ul>
+                                        </li>
+                                    @endforeach
 
-                                    <div
-                                        class="align-items-center justify-content-center mt-2 row g-3 text-center text-sm-start">
+                                </ul>
 
-                                        <div class="col-sm-auto">
+                                <div
+                                    class="align-items-center justify-content-center mt-2 row g-3 text-center text-sm-start">
+
+                                    <div class="col-sm-auto">
 
 
-
-                                        </div>
 
                                     </div>
 
                                 </div>
 
                             </div>
+
+                        </div>
 
                         <!--new -->
 
@@ -1007,7 +999,7 @@
 
 
 
-           
+
         </div>
 
     </div>
