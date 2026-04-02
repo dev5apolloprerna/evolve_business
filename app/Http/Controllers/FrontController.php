@@ -897,8 +897,8 @@ class FrontController extends Controller
     }
     public function frontlogin(Request $request)
     {
-        // $seo = MetaData::where(['id' => 12])->first();
-        return view('frontview.front-login');
+        $seo = MetaData::where(['id' => 12])->first();
+        return view('frontview.front-login', compact('seo'));
     }
     public function contectthankyou(Request $request)
     {

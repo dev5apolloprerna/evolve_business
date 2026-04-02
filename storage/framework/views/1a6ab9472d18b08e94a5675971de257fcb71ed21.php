@@ -9,3 +9,4 @@
         </div>
     </div>
 </footer>
+<?php /**PATH C:\xampp laravel11\htdocs\live_codes\Evolve Business\resources\views/common/footer.blade.php ENDPATH**/ ?>
