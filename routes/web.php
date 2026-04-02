@@ -46,6 +46,8 @@ use App\Http\Controllers\MemberVisitorController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClusterfestFeedbackController;
+use App\Http\Controllers\AwardController;
+use App\Http\Controllers\MemberAnnouncementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -231,6 +233,30 @@ Route::prefix('admin')->name('Visitor.')->middleware('auth')->group(
         Route::delete('/Visitor/delete', [VisitorController::class, 'delete'])->name('delete');
     }
 );
+//Award master
+Route::prefix('admin')->name('Award.')->middleware('auth')->group(
+    function () {
+        Route::get('/Award/index', [AwardController::class, 'index'])->name('index');
+        Route::get('/Award/create/{id?}', [AwardController::class, 'createnew'])->name('create');
+        Route::post('/Award/store', [AwardController::class, 'create'])->name('store');
+        Route::get('/Award/edit/{id?}', [AwardController::class, 'editview'])->name('edit');
+        Route::post('/Award/update', [AwardController::class, 'update'])->name('update');
+        Route::delete('/Award/delete', [AwardController::class, 'delete'])->name('delete');
+    }
+);
+
+//Award master
+Route::prefix('admin')->name('MemberAnnouncement.')->middleware('auth')->group(
+    function () {
+        Route::get('/MemberAnnouncement/index', [MemberAnnouncementController::class, 'index'])->name('index');
+        Route::get('/MemberAnnouncement/create/{id?}', [MemberAnnouncementController::class, 'createnew'])->name('create');
+        Route::post('/MemberAnnouncement/store', [MemberAnnouncementController::class, 'create'])->name('store');
+        Route::get('/MemberAnnouncement/edit/{id?}', [MemberAnnouncementController::class, 'editview'])->name('edit');
+        Route::post('/MemberAnnouncement/update', [MemberAnnouncementController::class, 'update'])->name('update');
+        Route::delete('/MemberAnnouncement/delete', [MemberAnnouncementController::class, 'delete'])->name('delete');
+    }
+);
+
 // Member Visitor
 Route::prefix('admin')->name('MemberVisitor.')->middleware('auth')->group(
     function () {
