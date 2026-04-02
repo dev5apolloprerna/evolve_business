@@ -114,6 +114,7 @@ class HomeController extends Controller
             $active = $users->count();
             $pending = $business->count();
             $approvecount = $approve->count();
+
             $rejectedcount = $rejected->count();
             $subexpricount = $Subscriptionexpri->count();
 
@@ -206,85 +207,6 @@ class HomeController extends Controller
                     ->sum('Business_amount'),
 
             ];
-
-            //         $given_data = Business::selectRaw('business_id, YEAR(business_Date) as year, MONTHNAME(business_Date) as month, SUM(Business_amount) as total_given')
-            //         ->where('business_type', 1)
-            //         ->where('iStatus', 1)
-            //         ->where('isDelete', 0)
-            //         ->where('isapproved_status', 1)
-            //   //     ->whereYear('business_Date', now()->year)
-            //         ->groupByRaw('YEAR(business_Date), MONTH(business_Date)')
-            //         ->orderByRaw('YEAR(business_Date) ASC, MONTH(business_Date) ASC')
-            //         ->get()
-            //         ->toArray();
-
-
-            // $Received_data = 
-            //             Business::selectRaw('business_id, YEAR(business_Date) as year, MONTHNAME(business_Date) as month, SUM(Business_amount) as total_received')
-            //             ->where('Business.business_type', 2)
-            //             ->where('iStatus', 1)
-            //             ->where('isDelete', 0)
-            //             ->whereIn('isapproved_status', [1])
-            //             ->groupByRaw('MONTHNAME(business_Date), YEAR(business_Date)')
-            //             ->orderBy('business_Date', 'asc')
-            //             ->get()->toArray();
-
-
-
-            // $combined_data = [];
-
-            // // Process given data
-            // foreach ($given_data as $data) {
-            //     $year = $data['year'];
-            //     $month = $data['month'];
-            //     $total_given = $data['total_given'];
-
-            //     // Ensure the combined data array has the year and month
-            //     if (!isset($combined_data[$year])) {
-            //         $combined_data[$year] = [];
-            //     }
-            //     if (!isset($combined_data[$year][$month])) {
-            //         $combined_data[$year][$month] = ['total_given' => 0, 'total_received' => 0];
-            //     }
-
-            //     // Add the total_given to the combined array
-            //     $combined_data[$year][$month]['total_given'] = $total_given;
-            // }
-
-            // // Process received data
-            // foreach ($Received_data as $data) {
-            //     $year = $data['year'];
-            //     $month = $data['month'];
-            //     $total_received = $data['total_received'];
-
-            //     // Ensure the combined data array has the year and month
-            //     if (!isset($combined_data[$year])) {
-            //         $combined_data[$year] = [];
-            //     }
-            //     if (!isset($combined_data[$year][$month])) {
-            //         $combined_data[$year][$month] = ['total_given' => 0, 'total_received' => 0];
-            //     }
-
-            //     // Add the total_received to the combined array
-            //     $combined_data[$year][$month]['total_received'] = $total_received;
-            // }
-
-            // // If you need the data in a specific format, you can convert the associative array to a list of objects or arrays
-
-            // $formatted_combined_data = [];
-
-            // foreach ($combined_data as $year => $months) {
-            //     foreach ($months as $month => $totals) {
-            //         $formatted_combined_data[] = [
-            //             'year' => $year,
-            //             'month' =>  $month,
-            //             'total_given' => $totals['total_given'],
-            //             'total_received' => $totals['total_received']
-            //         ];
-            //     }
-            // }
-
-
             # < ========================== last 12 months recode get Business Growth chart new =========================>
 
             $start = Carbon::now()->startOfMonth()->subMonths(11);
@@ -422,6 +344,7 @@ class HomeController extends Controller
             }
 
             $session = Auth::user();
+            // dd($session);
             $Product = 0;
             $Financed = 0;
             $NonFinanced = 0;
@@ -438,6 +361,7 @@ class HomeController extends Controller
                     'members.user_id' => $session->id,
                 ])
                 ->get();
+
 
             // CHECK MEMBERSHIP PLAN IS EXPRIED 
             $expiredMember = Members::where([
@@ -506,87 +430,6 @@ class HomeController extends Controller
                     ->sum('Business_amount'),
             ];
 
-            // $given_data = Business::selectRaw('business_id, YEAR(business_Date) as year, MONTHNAME(business_Date) as month, SUM(Business_amount) as total_given')
-            //     ->leftjoin('users', 'users.id', '=', 'Business.business_from_id')
-            //     ->where('users.id', $session->id)
-            //     ->where('Business.business_type', 1)
-            //     ->where('iStatus', 1)
-            //     ->where('isDelete', 0)
-            //     ->whereIn('isapproved_status', [1])
-            //     ->groupByRaw('MONTHNAME(business_Date), YEAR(business_Date) ')
-            //     ->orderBy('business_id', 'asc')
-            //     ->get()
-            //     ->toArray();
-
-
-            // $Received_data = Business::selectRaw('business_id, YEAR(business_Date) as year, MONTHNAME(business_Date) as month, SUM(Business_amount) as total_received')
-            //     ->join('users', 'users.id', '=', 'Business.business_from_id')
-            //     ->where('users.id', $session->id)
-            //     ->where('Business.business_type', 2)
-            //     ->where('iStatus', 1)
-            //     ->where('isDelete', 0)
-            //     ->whereIn('isapproved_status', [1])
-            //     ->groupByRaw('MONTHNAME(business_Date), YEAR(business_Date)')
-            //     ->orderBy('business_id', 'asc')
-            //     ->get()
-            //     ->toArray();
-
-            // $combined_data = [];
-            // foreach ($given_data as $data) {
-            //     $year = $data['year'];
-            //     $month = $data['month'];
-            //     $total_given = $data['total_given'];
-            //     if (!isset($combined_data[$year])) {
-            //         $combined_data[$year] = [];
-            //     }
-            //     if (!isset($combined_data[$year][$month])) {
-            //         $combined_data[$year][$month] = ['total_given' => 0, 'total_received' => 0];
-            //     }
-            //     $combined_data[$year][$month]['total_given'] = $total_given;
-            // }
-            // foreach ($Received_data as $data) {
-            //     $year = $data['year'];
-            //     $month = $data['month'];
-            //     $total_received = $data['total_received'];
-
-            //     if (!isset($combined_data[$year])) {
-            //         $combined_data[$year] = [];
-            //     }
-            //     if (!isset($combined_data[$year][$month])) {
-            //         $combined_data[$year][$month] = ['total_given' => 0, 'total_received' => 0];
-            //     }
-
-            //     $combined_data[$year][$month]['total_received'] = $total_received;
-            // }
-            // $monthOrder = [
-            //     'January' => 1,
-            //     'February' => 2,
-            //     'March' => 3,
-            //     'April' => 4,
-            //     'May' => 5,
-            //     'June' => 6,
-            //     'July' => 7,
-            //     'August' => 8,
-            //     'September' => 9,
-            //     'October' => 10,
-            //     'November' => 11,
-            //     'December' => 12,
-            // ];
-            // $formatted_combined_data = [];
-            // foreach ($combined_data as $year => $months) {
-            //     uksort($months, function ($a, $b) use ($monthOrder) {
-            //         return $monthOrder[$a] <=> $monthOrder[$b];
-            //     });
-            //     foreach ($months as $month => $totals) {
-            //         $formatted_combined_data[] = [
-            //             'year' => $year,
-            //             'month' => $month,
-            //             'total_given' => $totals['total_given'],
-            //             'total_received' => $totals['total_received']
-            //         ];
-            //     }
-            // }
-
             # =========================== last  12 months chart recode ==========================
 
             $start = Carbon::now()->startOfMonth()->subMonths(11);
@@ -649,93 +492,6 @@ class HomeController extends Controller
                 }
             }
             $formatted_combined_data = array_values($monthsList);
-
-            # =========================== last 12 months chart recode new code =================================
-
-            // To Received chart logic code start
-            //   $to_given_data = Business::selectRaw('business_id, YEAR(business_Date) as year, MONTHNAME(business_Date) as month, SUM(Business_amount) as total_given')
-            //         ->leftjoin('users', 'users.id', '=', 'Business.business_to_id')
-            //         ->where('users.id', $session->id)
-            //         ->where('Business.business_type', 1)
-            //         ->where('iStatus', 1)
-            //         ->where('isDelete', 0)
-            //         ->whereIn('isapproved_status', [1])
-            //         ->groupByRaw('MONTHNAME(business_Date), YEAR(business_Date) ')
-            //         ->orderBy('business_id', 'asc')
-            //         ->get()
-            //         ->toArray();
-
-            //     $to_Received_data = Business::selectRaw('business_id, YEAR(business_Date) as year, MONTHNAME(business_Date) as month, SUM(Business_amount) as total_received')
-            //         ->join('users', 'users.id', '=', 'Business.business_to_id')
-            //         ->where('users.id', $session->id)
-            //         ->where('Business.business_type', 2)
-            //         ->where('iStatus', 1)
-            //         ->where('isDelete', 0)
-            //         ->whereIn('isapproved_status', [1])
-            //         ->groupByRaw('MONTHNAME(business_Date), YEAR(business_Date)')
-            //         ->orderBy('business_id', 'asc')
-            //         ->get()
-            //         ->toArray();
-
-
-            //     $to_combined_data = [];
-            //     foreach ($to_given_data as $data) {
-            //         $year = $data['year'];
-            //         $month = $data['month'];
-            //         $total_given = $data['total_given'];
-            //         if (!isset($to_combined_data[$year])) {
-            //             $to_combined_data[$year] = [];
-            //         }
-            //         if (!isset($to_combined_data[$year][$month])) {
-            //             $to_combined_data[$year][$month] = ['total_given' => 0, 'total_received' => 0];
-            //         }
-            //         $to_combined_data[$year][$month]['total_given'] = $total_given;
-            //     }
-            //     foreach ($to_Received_data as $data) {
-            //         $year = $data['year'];
-            //         $month = $data['month'];
-            //         $total_received = $data['total_received'];
-
-            //         if (!isset($to_combined_data[$year])) {
-            //             $to_combined_data[$year] = [];
-            //         }
-            //         if (!isset($to_combined_data[$year][$month])) {
-            //             $to_combined_data[$year][$month] = ['total_given' => 0, 'total_received' => 0];
-            //         }
-            //         $to_combined_data[$year][$month]['total_received'] = $total_received;
-            //     }
-            //     $monthOrder = [
-            //         'January' => 1,
-            //         'February' => 2,
-            //         'March' => 3,
-            //         'April' => 4,
-            //         'May' => 5,
-            //         'June' => 6,
-            //         'July' => 7,
-            //         'August' => 8,
-            //         'September' => 9,
-            //         'October' => 10,
-            //         'November' => 11,
-            //         'December' => 12,
-            //     ];
-            //     $to_formatted_combined_data = [];
-            //     foreach ($to_combined_data as $year => $months) {
-            //         // Sort the months based on the defined order
-            //         uksort($months, function ($a, $b) use ($monthOrder) {
-            //             return $monthOrder[$a] <=> $monthOrder[$b];
-            //         });
-
-            //         // Format the sorted data
-            //         foreach ($months as $month => $totals) {
-            //             $to_formatted_combined_data[] = [
-            //                 'year' => $year,
-            //                 'month' => $month,
-            //                 'total_given' => $totals['total_given'],
-            //                 'total_received' => $totals['total_received']
-            //             ];
-            //         }
-            //     }
-            // To Received chart logic code end 
 
             # ================= last 12 months based data start to given start==========================
             $start = Carbon::now()->startOfMonth()->subMonths(11);
@@ -832,7 +588,6 @@ class HomeController extends Controller
                 ->count();
             // member book podcast date get code start
             $bookspodcast = Members::where('user_id', $session->id)->get();
-
             $BusinesscurrentMonth = Carbon::now()->startOfMonth()->subMonth()->month;
             $monthname =  date("F", mktime(0, 0, 0, $BusinesscurrentMonth, 1));
             if ($BusinesscurrentMonth == '12') {
@@ -844,7 +599,7 @@ class HomeController extends Controller
             // $BusinesscurrentMonth = Carbon::now()->month;
             //$BusinesscurrentYear = Carbon::now()->year; 
             // Top receivers in the current month and year
-
+            $membersget = members::where('user_id', $session->id)->first();
 
             $topDirect = Business::select('Business.business_from', 'members.companyname', DB::raw('SUM(Business_amount) as total_amount'))
                 ->leftjoin('members', 'members.user_id', '=', 'Business.business_from_id')
@@ -854,8 +609,8 @@ class HomeController extends Controller
                 ->where('Business.isapproved_status', 1)
                 ->where('Business.iStatus', 1)
                 ->where('Business.isDelete', 0)
-                ->where('Business.business_from_id', '!=', 121)
-                ->where('Business.business_from_id', '!=', 137)
+                ->where('members.citygroup_id', '=', $membersget->citygroup_id)
+                // ->where('Business.business_from_id', '!=', 121)
                 ->groupBy('business_from_id')
                 ->orderByDesc('total_amount')
                 ->limit(3)
@@ -883,8 +638,8 @@ class HomeController extends Controller
                 ->whereYear('Reference_Date', $BusinesscurrentYear)
                 ->whereMonth('Reference_Date', $BusinesscurrentMonth)
                 ->where('Reference.isapproved_status', 1)
-                ->where('Reference.Reference_from', '!=', 121)
-                ->where('Reference.Reference_from', '!=', 137)
+                ->where('members.citygroup_id', '=', $membersget->citygroup_id)
+                // ->where('Reference.Reference_from', '!=', 137)
                 ->where('Reference.iStatus', 1)
                 ->where('Reference.isDelete', 0)
                 ->groupBy('Reference_from')
