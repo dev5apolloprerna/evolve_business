@@ -12,6 +12,7 @@ use App\Models\subcategories;
 use App\Models\membershipplans;
 use App\Models\renewalhistory;
 use App\Models\Business;
+use App\Models\OneToOne;
 use App\Models\Member_metting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -292,20 +293,47 @@ class MemberBusinesscontroller extends Controller
             ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
             ->orderBy('Business.business_id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
-        //  dd($Business);
-        return view('pendinglogincheck.index', compact('Business', 'Data', 'Datadrop'));
+
+        $OneToOne = OneToOne::join('users', 'users.id', '=', 'one_to_one_detail.to_id')
+            ->where('users.id', $session->id)
+            ->select('one_to_one_detail.*')
+            ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
+            ->orderBy('one_to_one_detail.id', 'DESC')
+            ->paginate(env('PAR_PAGE_COUNT', 20));
+
+        return view('pendinglogincheck.index', compact('Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
     public function statuspendinglogin(Request $request)
     {
-
-
         DB::table('Business')->where('business_id', $request->id)->update([
             'isapproved_status' => $request->newStatus,
             'businesscomment'  => $request->businesscomment,
             'approved_by' => Auth::user()->user_type,
             'approved_by_id' => Auth::user()->id,
             'Business_received_date' => date('Y-m-d H:i:s'),
+
+        ]);
+
+        // update member_points status
+        DB::table('member_points')
+            ->where('business_id', $request->id)
+            ->update([
+                'status' => $request->newStatus,
+                'updated_at' => now()
+            ]);
+        return redirect()->back();
+    }
+
+    public function onestatuspendinglogin(Request $request)
+    {
+
+        DB::table('one_to_one_detail')->where('id', $request->id)->update([
+            'isapproved_status' => $request->newStatus,
+            'reject_comment'  => $request->businesscomment,
+            'approved_by' => Auth::user()->user_type,
+            'approved_by_id' => Auth::user()->id,
+            'receive_date' => date('Y-m-d H:i:s'),
 
         ]);
 

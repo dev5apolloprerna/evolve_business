@@ -11,6 +11,7 @@ use App\Models\Categories;
 use App\Models\subcategories;
 use App\Models\membershipplans;
 use App\Models\Business;
+use App\Models\OneToOne;
 use App\Models\Reference;
 use App\Models\members;
 use App\Models\renewalhistory;
@@ -334,15 +335,21 @@ class HomeController extends Controller
         } else {
 
             $user = Auth::user();
+            $loginPendingOneToOneCheck =
+                OneToOne::join('users', 'users.id', '=', 'one_to_one_detail.to_id')
+                ->where('users.id', $user->id)
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
+                ->orderBy('one_to_one_detail.id', 'DESC')
+                ->get();
+
             $loginPendingCheck = Business::join('users', 'users.id', '=', 'Business.business_to_id')
                 ->where('users.id', $user->id)
                 ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
                 ->orderBy('Business.business_id', 'DESC')
                 ->get();
-            if (!$loginPendingCheck->isEmpty()) {
+            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty()) {
                 return redirect()->route('pendinglogincheck.index');
             }
-
             $session = Auth::user();
             // dd($session);
             $Product = 0;

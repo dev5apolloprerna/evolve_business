@@ -38,7 +38,7 @@
                                                     </th>
                                                     <th scop="col">Status</th>
                                                     <!-- <th width="5%" class="sort" data-sort="Date">Available seats
-                                                                </th> -->
+                                                                                                                                                                                                                                                                                                    </th> -->
                                                     <th w scop="col">Action</th>
                                                 </tr>
                                             </thead>
@@ -64,17 +64,17 @@
 
                                                         <td>
                                                             <!-- <a href="#" data-bs-toggle="modal"
-                                                                        data-bs-target="#EditModal"
-                                                                        onclick="getEditData(<?= $Business1->business_id ?>)"
-                                                                        class="btn btn-link p-0" title="Edit">
-                                                                        <span class="text-500 fas fa-edit"></span>
-                                                                    </a>
-                                                                    <a class="btn btn-link p-0" href="#"
-                                                                        data-bs-toggle="modal" title="Delete"
-                                                                        data-bs-target="#deleteRecordModal"
-                                                                        onclick="deleteData(<?= $Business1->business_id ?>);">
-                                                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                    </a> -->
+                                                                                                                                                                                                                                                                                                            data-bs-target="#EditModal"
+                                                                                                                                                                                                                                                                                                            onclick="getEditData(<?= $Business1->business_id ?>)"
+                                                                                                                                                                                                                                                                                                            class="btn btn-link p-0" title="Edit">
+                                                                                                                                                                                                                                                                                                            <span class="text-500 fas fa-edit"></span>
+                                                                                                                                                                                                                                                                                                        </a>
+                                                                                                                                                                                                                                                                                                        <a class="btn btn-link p-0" href="#"
+                                                                                                                                                                                                                                                                                                            data-bs-toggle="modal" title="Delete"
+                                                                                                                                                                                                                                                                                                            data-bs-target="#deleteRecordModal"
+                                                                                                                                                                                                                                                                                                            onclick="deleteData(<?= $Business1->business_id ?>);">
+                                                                                                                                                                                                                                                                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                                                                                                                                                                                                                                                        </a> -->
                                                             <a class="" href="#" data-bs-toggle="modal"
                                                                 title="Status Changed" data-bs-target="#statusModal"
                                                                 onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
@@ -98,14 +98,89 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- one to one  --}}
+
+                <div class="col-md-12 mt-3">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Pending One To One List
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane preview-tab-pane active" role="tabpanel"
+                                    aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
+                                    id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
+                                    <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
+
+                                        <table class="table table-bordered table-striped fs--1 mb-0">
+                                            <thead class="bg-200 text-900">
+                                                <tr>
+                                                    <th scope="col">No</th>
+                                                    <th scop="col">Given By</th>
+                                                    <th scop="col">date</th>
+                                                    <th scop="col">Status</th>
+                                                    <th w scop="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="list">
+                                                <?php $i = 1; ?>
+                                                @foreach ($OneToOne as $One)
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            {{ $i + $OneToOne->perPage() * ($OneToOne->currentPage() - 1) }}
+                                                        </td>
+                                                        <td class="text-center">{{ $One->from }}</td>
+
+
+                                                        <td class="text-center">
+                                                            {{ \Carbon\Carbon::parse($One->date)->format('d-m-Y') }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{ $One->isapproved_status == 0 ? 'Pending' : '' }}
+                                                        </td>
+
+                                                        <td>
+                                                            <a class="" href="#" data-bs-toggle="modal"
+                                                                title="Status Changed" data-bs-target="#OneToOnestatusModal"
+                                                                onclick="getEditOneDatastatus(<?= $One->id ?>);">
+                                                                <i class="fas fa-plus-square" aria-hidden="true"></i>
+                                                            </a>
+
+                                                        </td>
+                                                    </tr>
+                                                    <?php $i++; ?>
+                                                @endforeach
+                                            </tbody>
+
+                                        </table>
+
+                                        <div class="d-flex justify-content-center mt-3">
+                                            {{ $OneToOne->links() }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
-            <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog " style="background-color: white;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Edit Business</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                             </button>
                         </div>
                         <form method="post" action="{{ route('Business.update') }}" enctype="multipart/form-data">
@@ -136,17 +211,6 @@
                                             @endforeach
                                         </select>
                                     </div>
-
-                                    {{-- <div class="md-3">
-                                        <label for="business_from_id"><span style="color:red;">*</span>Given By</label>
-                                        <select class="form-control" data-choices name="business_from" id="Editbusiness_from">
-                                            <option value="" selected>Given By</option>
-                                            @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> --}}
-
 
                                     <div class="md-3">
                                         <label for="business_to_id"><span style="color:red;">*</span>Given To</label>
@@ -247,10 +311,10 @@
                             {{-- {{dd($data)}} --}}
                             @if (isset($Business1->isapproved_status))
                                 <!-- <select class="form-control" name="newStatus">
-                                            <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
-                                            </option>
-                                            <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
-                                        </select> -->
+                                                                                                                                                                                                                                                                                <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
+                                                                                                                                                                                                                                                                                </option>
+                                                                                                                                                                                                                                                                                <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
+                                                                                                                                                                                                                                                                            </select> -->
 
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
@@ -267,6 +331,54 @@
                             @endif
                         </div>
                         <div class="form-group rejectedComments" id="rejectedComments" style="display : none;">
+                            <label for="rejectedComments">Rejected Comments:</label>
+                            <textarea class="form-control" name="businesscomment"></textarea>
+                        </div>
+
+
+                        <button type="submit" class="btn btn-success" style="margin-top: 20px;">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- One To One Status Modal -->
+    <div class="modal fade" id="OneToOnestatusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
+        aria-hidden="true">
+
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel">Change Status
+                        Comments</h5>
+                    <button type="button" class="btn btn-light" onclick="$('#OneToOnestatusModal').modal('hide')">
+                        Close
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add a form for changing status and adding rejected comments -->
+                    <form action="{{ route('pendinglogincheck.onestatuspendinglogin') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="id" id="OneToOneid" value="">
+                        <div class="form-group">
+                            <label for="newStatus">Update Status:</label>
+                            @if (isset($One->isapproved_status))
+                                <select class="form-control" name="newStatus" id="oneToOnenewStatus"
+                                    onchange="toggleoneRejectedComments()">
+                                    <option value="1" {{ $One->isapproved_status == 1 ? 'selected' : '' }}>
+                                        Approved</option>
+                                    <option value="2" {{ $One->isapproved_status == 2 ? 'selected' : '' }}>
+                                        Rejected</option>
+                                </select>
+                            @else
+                                <select class="form-control" name="newStatus">
+                                    <option value="1">Approved</option>
+                                    <option value="0">Pending</option>
+                                </select>
+                            @endif
+                        </div>
+                        <div class="form-group rejectedoneComments" id="rejectedoneComments" style="display : none;">
                             <label for="rejectedComments">Rejected Comments:</label>
                             <textarea class="form-control" name="businesscomment"></textarea>
                         </div>
@@ -307,163 +419,25 @@
     </script>
 
     <script>
-        function getEditData(id) {
-            // alert(id);
-            var url = "{{ route('Business.edit', ':id') }}";
-            url = url.replace(":id", id);
-            if (id) {
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    data: {
-                        id,
-                        id
-                    },
-                    success: function(data) {
-                        // console.log(data);
-                        var obj = JSON.parse(data);
-                        $("#Editbusiness_type").val(obj.business_type);
-                        $("#Editbusiness_from").val(obj.business_from);
-                        $("#Editbusiness_to").val(obj.business_to);
-                        $("#EditBusiness_amount").val(obj.Business_amount);
-                        $("#Editbusiness_Date").val(obj.business_Date);
-                        $('#business_id').val(id);
-                    }
-                });
-            }
-        }
-    </script>
-    <script>
-        function validateFile() {
-            var allowedExtension = ['jpeg', 'jpg', 'png',
-                'webp'
-            ];
-            var fileExtension = document.getElementById('photovalidate').value.split('.').pop().toLowerCase();
-            var isValidFile = false;
-
-            for (var index in allowedExtension) {
-
-                if (fileExtension === allowedExtension[index]) {
-                    isValidFile = true;
-                    break;
-                }
-            }
-
-            if (!isValidFile) {
-                alert('Allowed Extensions are : *.' + allowedExtension.join(', *.'));
-            }
-
-            return isValidFile;
-        }
-    </script>
-
-    <script>
-        function EditvalidateFile() {
-            //alert('hello');
-            var allowedExtension = ['jpeg', 'jpg', 'png', 'webp'];
-            var fileExtension = document.getElementById('Editphoto').value.split('.').pop().toLowerCase();
-            var isValidFile = false;
-            var image = document.getElementById('Editphoto').value;
-            for (var index in allowedExtension) {
-                if (fileExtension === allowedExtension[index]) {
-                    isValidFile = true;
-                    break;
-                }
-            }
-            if (image != "") {
-                if (!isValidFile) {
-                    alert('Allowed Extensions are : *.' + allowedExtension.join(', *.'));
-                }
-                return isValidFile;
-            }
-            return true;
-        }
-    </script>
-
-    {{-- Add photo --}}
-    <script>
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#hello').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-        $("#photovalidate").change(function() {
-            html =
-                '<img src="' + readURL(this) +
-                '"   id="hello" width="70px" height = "70px" > ';
-            $('#viewimg').html(html);
-        });
-    </script>
-
-    {{-- Edit photo --}}
-    <script>
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#hello').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-        $("#Editphoto").change(function() {
-            html =
-                '<img src="' + readURL(this) +
-                '"   id="hello" width="70px" height = "70px" > ';
-            $('#PHOTOID').html(html);
-        });
-    </script>
-    <script>
-        function deleteData(id) {
-            // alert(id);
-            $("#deleteid").val(id);
-        }
-    </script>
-
-
-    <script>
-        $(document).ready(function() {
-            getEditData();
-            // Initial state based on existing values
-            if ($("#Editispaid").val() === "Yes") {
-                $("#priceField").show();
+        function toggleoneRejectedComments() {
+            let newStatus = $("#oneToOnenewStatus").val();
+            if (newStatus == 2) {
+                $("#rejectedoneComments").show();
             } else {
-                $("#priceField").hide();
+                $("#rejectedoneComments").hide();
             }
 
-            if ($("#Editlimitedset").val() === "Yes") {
-                $("#setnumber").show();
-            } else {
-                $("#setnumber").hide();
+            var statusSelect = document.getElementById('oneToOnenewStatus');
+            var rejectedComments = document.querySelector('.form-group.rejectedoneComments');
+
+            // Hide rejectedComments by default
+            rejectedComments.style.display = 'none';
+
+            if (statusSelect.value == 2) {
+                rejectedComments.style.display = 'block';
             }
-
-            // Trigger change event to apply initial state
-            $("#Editispaid").trigger('change');
-            $("#Editlimitedset").trigger('change');
-
-            // Event listeners
-            $("#Editispaid").on('change', function() {
-                if ($(this).val() === "Yes") {
-                    $("#priceField").show();
-                } else {
-                    $("#priceField").hide();
-                }
-            });
-
-            $("#Editlimitedset").on('change', function() {
-                if ($(this).val() === "Yes") {
-                    $("#setnumber").show();
-                } else {
-                    $("#setnumber").hide();
-                }
-            });
-        });
+        }
     </script>
-
 
     <script>
         function getEditDatastatus(id) {
@@ -491,6 +465,32 @@
                 });
             }
             var name = $('#Businessid').val(id);
+
+        }
+    </script>
+
+    <script>
+        function getEditOneDatastatus(id) {
+            // alert(id);
+            var url = "{{ route('Business.statusonetooneget', ':id') }}";
+            url = url.replace(":id", id);
+            if (id) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        id,
+                        id
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        var obj = JSON.parse(data);
+                        $('#OneToOneid').val(id);
+                        $("#isapproved_status").val(obj.isapproved_status);
+                    }
+                });
+            }
+            var name = $('#OneToOneid').val(id);
 
         }
     </script>
@@ -525,22 +525,4 @@
             });
         });
     </script>
-
-
-    <!-- <script>
-        function RejectedComments() {
-
-            alert('hello');
-            var statusSelect = document.getElementById('newStatus');
-            var rejectedComments = document.querySelector('.form-group.rejectedComments');
-
-            if (statusSelect.value == 2) {
-                rejectedComments.style.display = 'block';
-            } else {
-                rejectedComments.style.display = 'none';
-            }
-        }
-    </script> -->
-
-
 @endsection
