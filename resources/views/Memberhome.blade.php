@@ -299,16 +299,6 @@
 
                                     {{-- end business refrence --}}
 
-
-
-
-
-
-
-
-
-
-
                                     {{-- start business refrence Received --}}
 
                                     <div class="col-xl-6 col-md-6">
@@ -430,9 +420,185 @@
                                     {{-- end pending business --}}
 
 
+                                    {{-- One To One Recieve start --}}
 
+                                    <div class="col-xl-6 col-md-6">
 
+                                        <!-- card -->
 
+                                        <div class="card card-animate" style="background: #6fbd59;">
+
+                                            <div class="card-body">
+
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="flex-grow-1 overflow-hidden">
+
+                                                        <p class="text-uppercase fw-bold text-white-50 text-truncate mb-0">
+
+                                                            One To One Received</p>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+
+                                                    <div>
+
+                                                        <h4 class="fs-22 fw-bold ff-secondary text-white mb-4">
+
+                                                            <span class="counter-value"
+                                                                data-target="{{ $oneTooneReceive }}">0</span>
+
+                                                        </h4>
+
+                                                        <a href="{{ route('MemberOneToOne.index') }}"
+                                                            class="text-decoration-underline text-white-50">View Detail
+
+                                                        </a>
+
+                                                    </div>
+
+                                                    <div class="avatar-sm flex-shrink-0">
+
+                                                        <span class="avatar-title bg-soft-light rounded fs-3">
+
+                                                            <i class="fas fa-times-circle"></i>
+
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div><!-- end card body -->
+
+                                        </div><!-- end card -->
+
+                                    </div>
+
+                                    {{-- One To One Recieve end --}}
+
+                                    {{-- One To One Given start --}}
+
+                                    <div class="col-xl-6 col-md-6">
+
+                                        <!-- card -->
+
+                                        <div class="card card-animate" style="background: #6fbd59;">
+
+                                            <div class="card-body">
+
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="flex-grow-1 overflow-hidden">
+
+                                                        <p class="text-uppercase fw-bold text-white-50 text-truncate mb-0">
+
+                                                            One To One Given</p>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+
+                                                    <div>
+
+                                                        <h4 class="fs-22 fw-bold ff-secondary text-white mb-4">
+
+                                                            <span class="counter-value"
+                                                                data-target="{{ $oneTooneGiven }}">0</span>
+
+                                                        </h4>
+
+                                                        <a href="{{ route('OneToOne.index') }}"
+                                                            class="text-decoration-underline text-white-50">View Detail
+
+                                                        </a>
+
+                                                    </div>
+
+                                                    <div class="avatar-sm flex-shrink-0">
+
+                                                        <span class="avatar-title bg-soft-light rounded fs-3">
+
+                                                            <i class="fas fa-times-circle"></i>
+
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div><!-- end card body -->
+
+                                        </div><!-- end card -->
+
+                                    </div>
+
+                                    {{-- One To One Given end --}}
+
+                                    {{-- Visitor start --}}
+
+                                    <div class="col-xl-6 col-md-6">
+
+                                        <!-- card -->
+
+                                        <div class="card card-animate" style="background: #6fbd59;">
+
+                                            <div class="card-body">
+
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="flex-grow-1 overflow-hidden">
+
+                                                        <p class="text-uppercase fw-bold text-white-50 text-truncate mb-0">
+
+                                                            Visitor</p>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="d-flex align-items-end justify-content-between mt-4">
+
+                                                    <div>
+
+                                                        <h4 class="fs-22 fw-bold ff-secondary text-white mb-4">
+
+                                                            <span class="counter-value"
+                                                                data-target="{{ $VisitorCount }}">0</span>
+
+                                                        </h4>
+
+                                                        <a href="{{ route('Visitor.index') }}"
+                                                            class="text-decoration-underline text-white-50">View Detail
+
+                                                        </a>
+
+                                                    </div>
+
+                                                    <div class="avatar-sm flex-shrink-0">
+
+                                                        <span class="avatar-title bg-soft-light rounded fs-3">
+
+                                                            <i class="fas fa-times-circle"></i>
+
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div><!-- end card body -->
+
+                                        </div><!-- end card -->
+
+                                    </div>
+
+                                    {{-- Visitor end --}}
 
 
                                 </div>
@@ -980,14 +1146,6 @@
 
 
                         <!--Business Reciver And Giver -->
-
-
-
-
-
-
-
-
 
                     </div>
 

@@ -29,7 +29,7 @@ class VisitorController extends Controller
             ->first();
 
         $id = $memberData->id;
-        $datas = Visitor::with('business_category')->paginate(env('PAR_PAGE_COUNT', 20));
+        $datas = Visitor::where('created_by', $user->id)->with('business_category')->paginate(env('PAR_PAGE_COUNT', 20));
         $count = $datas->count();
         // dd($datas);
         return view('Visitor.index', compact('datas', 'user', 'id', 'count'));
