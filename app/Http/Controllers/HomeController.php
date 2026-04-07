@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
+use App\Models\Visitor;
 use Session;
 use Carbon\Carbon;
 
@@ -395,6 +396,24 @@ class HomeController extends Controller
                 ->orderBy('Business.business_id', 'DESC')
                 ->get();
 
+            $oneToone_Receive = OneToOne::join('users', 'users.id', '=', 'one_to_one_detail.to_id')
+                ->where('users.id', $session->id)
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 1])
+                ->orderBy('one_to_one_detail.id', 'DESC')
+                ->get();
+
+            $oneToone_Given = OneToOne::join('users', 'users.id', '=', 'one_to_one_detail.from_id')
+                ->where('users.id', $session->id)
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 1])
+                ->orderBy('one_to_one_detail.id', 'DESC')
+                ->get();
+
+            $Visitor = Visitor::join('users', 'users.id', '=', 'visitors.created_by')
+                ->where('users.id', $session->id)
+                //->where(['iStatus' => 1])
+                ->orderBy('visitors.id', 'DESC')
+                ->get();
+
             $approve = Business::join('users', 'users.id', '=', 'Business.business_from_id')
                 ->where('users.id', $session->id)
                 ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 1])
@@ -416,6 +435,9 @@ class HomeController extends Controller
             $approvecount = $approve;
             $rejectedcount = $rejected->count();
 
+            $oneTooneReceive = $oneToone_Receive->count();
+            $oneTooneGiven = $oneToone_Given->count();
+            $VisitorCount = $Visitor->count();
             // form given chart logic code create start  
             $businessData = [
                 'totalGiven' => DB::table('Business')
@@ -703,7 +725,7 @@ class HomeController extends Controller
             $meetingscount = $meetings->count();
             $Announcement = DB::table('Announcement')->first();
 
-            return view('Memberhome', compact('previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'meetingscount', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopReferenceGivers', 'Top_Reference_Givers'));
+            return view('Memberhome', compact('oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'meetingscount', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopReferenceGivers', 'Top_Reference_Givers'));
         }
     }
 
