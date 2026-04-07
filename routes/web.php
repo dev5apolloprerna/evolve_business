@@ -48,6 +48,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClusterfestFeedbackController;
 use App\Http\Controllers\AwardController;
 use App\Http\Controllers\MemberAnnouncementController;
+use App\Http\Controllers\OneToOneController;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\MemberOneToOneController;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,6 +118,21 @@ Route::middleware(['check_approval'])->group(function () {
         Route::post('/MemberBusiness/status/{id?}', [MemberBusinesscontroller::class, 'status'])->name('status');
 
         Route::get('/Memberlist/{id?}', [MemberBusinesscontroller::class, 'member_listing'])->name('Memberlist');
+    });
+
+    //One to One route    
+    Route::prefix('admin')->name('OneToOne.')->middleware('auth')->group(function () {
+        Route::any('OneToOne/index', [OneToOneController::class, 'index'])->name('index');
+        Route::get('OneToOne/storeview', [OneToOneController::class, 'storeview1'])->name('storeview');
+        // Route::get('OneToOne/edit', [OneToOneController::class, 'editview'])->name('edit');
+        Route::post('OneToOne/create', [OneToOneController::class, 'create'])->name('create');
+        Route::get('OneToOne/{Id}', [OneToOneController::class, 'editview'])->name('edit');
+        Route::post('/OneToOne/update', [OneToOneController::class, 'update'])->name('update');
+        Route::delete('/OneToOne/delete', [OneToOneController::class, 'delete'])->name('delete');
+        Route::get('OneToOneReceived', [OneToOneController::class, 'OneToOneReceived1'])->name('OneToOneReceived');
+        Route::post('/OneToOne/status/{id?}', [OneToOneController::class, 'status'])->name('status');
+
+        Route::get('/OneToOnelist/{id?}', [OneToOneController::class, 'member_listing'])->name('Memberlist');
     });
 
     //Member Reference route start 
@@ -223,8 +241,9 @@ Route::prefix('admin')->name('Points.')->middleware('auth')->group(
 );
 
 //Visitor master
-Route::prefix('admin')->name('Visitor.')->middleware('auth')->group(
+Route::prefix('admin')->name('Visitor.')->middleware(['auth', 'check_approval'])->group(
     function () {
+
         Route::get('/Visitor/index', [VisitorController::class, 'index'])->name('index');
         Route::get('/Visitor/create/{id?}', [VisitorController::class, 'createnew'])->name('create');
         Route::post('/Visitor/store', [VisitorController::class, 'create'])->name('store');
@@ -234,7 +253,7 @@ Route::prefix('admin')->name('Visitor.')->middleware('auth')->group(
     }
 );
 //Award master
-Route::prefix('admin')->name('Award.')->middleware('auth')->group(
+Route::prefix('admin')->name('Award.')->middleware(['auth', 'check_approval'])->group(
     function () {
         Route::get('/Award/index', [AwardController::class, 'index'])->name('index');
         Route::get('/Award/create/{id?}', [AwardController::class, 'createnew'])->name('create');
@@ -246,7 +265,7 @@ Route::prefix('admin')->name('Award.')->middleware('auth')->group(
 );
 
 //Award master
-Route::prefix('admin')->name('MemberAnnouncement.')->middleware('auth')->group(
+Route::prefix('admin')->name('MemberAnnouncement.')->middleware(['auth', 'check_approval'])->group(
     function () {
         Route::get('/MemberAnnouncement/index', [MemberAnnouncementController::class, 'index'])->name('index');
         Route::get('/MemberAnnouncement/create/{id?}', [MemberAnnouncementController::class, 'createnew'])->name('create');
@@ -258,7 +277,7 @@ Route::prefix('admin')->name('MemberAnnouncement.')->middleware('auth')->group(
 );
 
 // Member Visitor
-Route::prefix('admin')->name('MemberVisitor.')->middleware('auth')->group(
+Route::prefix('admin')->name('MemberVisitor.')->middleware(['auth', 'check_approval'])->group(
     function () {
         Route::get('/MemberVisitor/index', [MemberVisitorController::class, 'index'])->name('index');
         Route::get('/MemberVisitor/create/{id?}', [MemberVisitorController::class, 'createnew'])->name('create');
@@ -271,6 +290,15 @@ Route::prefix('admin')->name('MemberVisitor.')->middleware('auth')->group(
     }
 );
 
+// Member Visitor
+Route::prefix('admin')->name('MemberOneToOne.')->middleware(['auth', 'check_approval'])->group(
+    function () {
+        Route::get('/MemberOneToOne/index', [MemberOneToOneController::class, 'index'])->name('index');
+        Route::post('/MemberOneToOne/update-status', [MemberOneToOneController::class, 'updateStatus'])->name('updateStatus');
+
+        Route::get('/MemberOneToOne/get-status/{id}', [MemberOneToOneController::class, 'getStatus'])->name('getStatus');
+    }
+);
 
 //category master
 Route::prefix('admin')->name('categories.')->middleware('auth')->group(function () {
@@ -421,10 +449,10 @@ Route::prefix('admin')->name('Event.')->middleware('auth')->group(function () {
     Route::delete('/Event/delete', [Eventcontroller::class, 'delete'])->name('delete');
 });
 
-
-
 //Business master  
-Route::prefix('admin')->name('Business.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('Business.')->middleware(['auth', 'check_approval'])->group(function () {
+    Route::any('productInquirylist', [FrontController::class, 'ProductInquiry_list'])->name('productInquirylist');
+
     Route::any('Business/index', [Businesscontroller::class, 'index'])->name('index');
     Route::get('Business/storeview', [Businesscontroller::class, 'storeview'])->name('storeview');
     Route::get('Business/edit', [Businesscontroller::class, 'editview'])->name('edit');
@@ -449,6 +477,8 @@ Route::prefix('admin')->name('Business.')->middleware('auth')->group(function ()
     Route::view('/Business/exportrejected_list', '/Business/exportrejected_list')->name('exportrejected_list');
     Route::post('Business/search', [Businesscontroller::class, 'search'])->name('search');
     Route::get('/Business/statusget/{id?}', [Businesscontroller::class, 'statusget'])->name('statusget');
+    Route::get('/Business/statusonetooneget/{id?}', [Businesscontroller::class, 'statusonetooneget'])->name('statusonetooneget');
+
     Route::any('Business-resendReminder', [Businesscontroller::class, 'Business_resend_Reminder'])->name('resendReminder');
 });
 
@@ -557,6 +587,7 @@ Route::prefix('admin')->name('Adminfrontimage.')->middleware('auth')->group(func
 Route::prefix('admin')->name('pendinglogincheck.')->middleware('auth')->group(function () {
     Route::get('pendinglogincheck/index', [MemberBusinesscontroller::class, 'indexpending'])->name('index');
     Route::post('/pendinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'statuspendinglogin'])->name('statuspendinglogin');
+    Route::post('/onependinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'onestatuspendinglogin'])->name('onestatuspendinglogin');
 });
 Route::prefix('admin')->name('Youngleaders.')->middleware('auth')->group(function () {
     Route::get('/Young-leaders', [FrontController::class, 'Young_leaders_index'])->name('index');
@@ -607,7 +638,6 @@ Route::get('/emailer', [FrontController::class, 'emailer'])->name('emailer');
 // front search 
 Route::any('Search/{id?}', [FrontController::class, 'adminsearch'])->name('Search');
 Route::post('ProductInquiry', [FrontController::class, 'ProductInquiry'])->name('ProductInquiry');
-Route::any('productInquirylist', [FrontController::class, 'ProductInquiry_list'])->name('productInquirylist');
 Route::delete('Productinquirydelete', [FrontController::class, 'ProductInquiry_delete'])->name('Productinquirydelete');
 Route::get('/visitor-registration-free', [FrontController::class, 'induction_morning_index'])->name('induction');
 Route::get('/cluster-visitor-registration', [FrontController::class, 'visitor_index'])->name('induction');

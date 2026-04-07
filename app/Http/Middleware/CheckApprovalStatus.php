@@ -13,7 +13,7 @@ use App\Models\Categories;
 use App\Models\subcategories;
 use App\Models\membershipplans;
 use App\Models\Business;
-use App\Models\renewalhistory;
+use App\Models\OneToOne;
 use App\Models\Adminuserpermission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -28,28 +28,33 @@ class CheckApprovalStatus
     {
         $user = Auth::user();
         // dd($user);
-        if($user->role_id == 2)
-        {
+        if ($user->role_id == 2) {
             $loginPendingCheck = Business::join('users', 'users.id', '=', 'Business.business_to_id')
                 ->where('users.id', $user->id)
                 ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
                 ->orderBy('Business.business_id', 'DESC')
                 ->get();
-        
-            if (!$loginPendingCheck->isEmpty()) 
-            {
+
+            $loginPendingOneToOneCheck =
+                OneToOne::join('users', 'users.id', '=', 'one_to_one_detail.to_id')
+                ->where('users.id', $user->id)
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
+                ->orderBy('one_to_one_detail.id', 'DESC')
+                ->get();
+
+            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty()) {
                 // foreach ($loginPendingCheck as $pendingCheck)
                 // {
                 //     if ($pendingCheck->isapproved_status == 0)
                 //     {
-                        // dd('enter');
-                        return redirect()->route('pendinglogincheck.index');
+                // dd('enter');
+                return redirect()->route('pendinglogincheck.index');
                 //     }
                 // }
             } else {
                 return $next($request);
             }
-        }    
+        }
         return $next($request);
     }
 }

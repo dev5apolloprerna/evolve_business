@@ -12,7 +12,9 @@
 </style>
 
 <div class="app-menu navbar-menu">
-    <?php $session = Auth::user(); ?>
+    <?php $session = Auth::user();
+    
+    ?>
     <div id="scrollbar">
         <div class="container-fluid">
             <div id="two-column-menu"></div>
@@ -88,10 +90,9 @@
 
                                     <li class="nav-item">
                                         <a href="{{ route('Points.index') }}" class="nav-link" data-key="t-chat">
-                                            <i class="fas fa-credit-card"></i>Points
+                                            <i class="fas fa-coins"></i>Points
                                         </a>
                                     </li>
-
 
                                 </ul>
                             </div>
@@ -159,8 +160,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link menu-link @if (request()->routeIs('productInquirylist')) {{ 'active' }} @endif"
-                                        href="{{ route('productInquirylist') }}">
+                                    <a class="nav-link menu-link @if (request()->routeIs('Business.productInquirylist')) {{ 'active' }} @endif"
+                                        href="{{ route('Business.productInquirylist') }}">
                                         <i class="fas fa-question-circle inquiry-icon"></i>
                                         <span data-key="t-dashboards">Product Inquiry</span>
                                     </a>
@@ -170,6 +171,18 @@
                                         href="{{ route('Visitor.index') }}">
                                         <i class="fas fa-user"></i>
                                         <span data-key="t-dashboards">Visitor</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link @if (request()->routeIs('OneToOne.index')) {{ 'active' }} @endif"
+                                        href="{{ route('OneToOne.index') }}">
+                                        <i class="fas fa-user"></i>
+                                        <span data-key="fas fa-handshake">OneToOne Given</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('MemberOneToOne.index') }}" class="nav-link" data-key="t-chat">
+                                        <i class="fas fa-handshake"></i>One To One Recieve
                                     </a>
                                 </li>
                                 <li class="nav-item">
