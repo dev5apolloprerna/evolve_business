@@ -23,8 +23,6 @@
 
         }
 
-
-
         .cust-over {
 
             height: 564px;
@@ -47,8 +45,6 @@
         {{--  <img src="{{ asset('assets/images/banner1.jpg') }}" alt="">  --}}
 
         {{--  </div>  --}}
-
-
 
         <div class="page-content">
 
@@ -422,9 +418,7 @@
 
                                     {{-- One To One Recieve start --}}
 
-                                    <div class="col-xl-6 col-md-6">
-
-                                        <!-- card -->
+                                    {{-- <div class="col-xl-6 col-md-6">
 
                                         <div class="card card-animate" style="background: #6fbd59;">
 
@@ -472,11 +466,11 @@
 
                                                 </div>
 
-                                            </div><!-- end card body -->
+                                            </div>
 
-                                        </div><!-- end card -->
+                                        </div>
 
-                                    </div>
+                                    </div> --}}
 
                                     {{-- One To One Recieve end --}}
 
@@ -496,7 +490,7 @@
 
                                                         <p class="text-uppercase fw-bold text-white-50 text-truncate mb-0">
 
-                                                            One To One Given</p>
+                                                            One To One</p>
 
                                                     </div>
 
@@ -621,8 +615,6 @@
 
                                 <h4 class="card-title mb-0 flex-grow-1">Your Upcoming Meeting</h4>
 
-
-
                             </div>
 
                             @if ($meetingscount > 0)
@@ -689,8 +681,6 @@
 
                                         <div class="col-sm-auto">
 
-
-
                                         </div>
 
                                     </div>
@@ -714,8 +704,8 @@
                         </div>
 
                     </div>
-                    <div class="col-lg-12" style="height: 300px">
-                        <!--new-->
+
+                    {{-- <div class="col-lg-12" style="height: 300px">
 
                         <div class="card" style="height: 300px">
 
@@ -812,45 +802,20 @@
 
                         </div>
 
-                        <!--new -->
-
-                    </div>
-
-
-
-
-
-
+                    </div> --}}
 
                 </div>
 
             </div>
-
-
 
         </div>
 
     </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
     <div class="container-fluid">
 
         <div class="row mt-4">
-
-
-
-
 
             <div class="col-lg-6">
 
@@ -875,12 +840,52 @@
                     </div>
 
 
-
                     <div class="card-body">
 
                         <!--Business Reciver And Giver -->
 
                         <div class="row">
+
+                            <div class="col-xl-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Member of the Month</h4>
+                                    </div>
+
+                                    <div class="card-body">
+                                        @if ($manOfTheMonth)
+                                            <table class="table table-bordered text-center">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Total Points</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>{{ $manOfTheMonth->first_name }}</td>
+                                                    <td>{{ $manOfTheMonth->email }}</td>
+                                                    <td>{{ $manOfTheMonth->total_points }}</td>
+                                                </tr>
+                                            </table>
+                                        @else
+                                            <div class="row">
+
+                                                <div
+                                                    class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
+
+                                                    <div
+                                                        class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
+
+                                                        <h1 class="font-white text-center"> No Data Found ! </h1>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="col-xl-12">
 

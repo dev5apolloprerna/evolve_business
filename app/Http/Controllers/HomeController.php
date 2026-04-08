@@ -14,6 +14,7 @@ use App\Models\Business;
 use App\Models\OneToOne;
 use App\Models\Reference;
 use App\Models\members;
+use App\Models\MemberPoint;
 use App\Models\renewalhistory;
 use App\Models\Adminuserpermission;
 use Illuminate\Support\Facades\DB;
@@ -408,6 +409,23 @@ class HomeController extends Controller
                 ->orderBy('one_to_one_detail.id', 'DESC')
                 ->get();
 
+            $BusinesscurrentMonth = Carbon::now()->startOfMonth()->subMonth()->month;
+            $monthname =  date("F", mktime(0, 0, 0, $BusinesscurrentMonth, 1));
+            if ($BusinesscurrentMonth == '12') {
+                $BusinesscurrentYear = Carbon::now()->subYear()->year;
+            } else {
+                $BusinesscurrentYear = Carbon::now()->year;
+            }
+
+            $manOfTheMonth = MemberPoint::join('users', 'users.id', '=', 'member_points.member_id')
+                ->whereYear('member_points.created_at', $BusinesscurrentYear)
+                ->whereMonth('member_points.created_at', $BusinesscurrentMonth)
+                ->select('users.first_name', 'users.email')
+                ->selectRaw('SUM(member_points.points) as total_points')
+                ->groupBy('member_points.member_id', 'users.first_name', 'users.email')
+                ->orderByDesc('total_points')
+                ->first();
+
             $Visitor = Visitor::join('users', 'users.id', '=', 'visitors.created_by')
                 ->where('users.id', $session->id)
                 //->where(['iStatus' => 1])
@@ -725,7 +743,7 @@ class HomeController extends Controller
             $meetingscount = $meetings->count();
             $Announcement = DB::table('Announcement')->first();
 
-            return view('Memberhome', compact('oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'meetingscount', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopReferenceGivers', 'Top_Reference_Givers'));
+            return view('Memberhome', compact('manOfTheMonth', 'oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'meetingscount', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopReferenceGivers', 'Top_Reference_Givers'));
         }
     }
 
