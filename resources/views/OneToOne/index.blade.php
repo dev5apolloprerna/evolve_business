@@ -55,8 +55,8 @@
                                                     class="btn btn-success">Cancel</button>
                                             </div>
                                             <!-- <button class="btn btn-success" type="button" onclick="exportExcel();">
-                                                                                                                                                                                                                                                                    <i class="fa-solid fa-file-excel fa-xl"></i>
-                                                                                                                                                                                                                                                                </button> -->
+                                                                                                                                                                                                                                                                                <i class="fa-solid fa-file-excel fa-xl"></i>
+                                                                                                                                                                                                                                                                            </button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -70,12 +70,12 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">One To One Given
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">One To One
                                     </h5>
                                 </div>
                                 <div>
                                     <!-- <a href="{{ route('OneToOne.OneToOneReceived') }}" class="btn btn-success">Received Business</a> -->
-                                    <a href="{{ route('OneToOne.storeview') }}" class="btn btn-success">Give New
+                                    <a href="{{ route('OneToOne.storeview') }}" class="btn btn-success">New
                                         One To One</a>
                                 </div>
                             </div>
@@ -93,9 +93,9 @@
                                                     <thead class="bg-200 text-900">
                                                         <tr>
                                                             <th width="2%" data-sort="Title">No</th>
-                                                            <th width="5%" data-sort="Date">Given To</th>
+                                                            <th width="5%" data-sort="Date">Meet To</th>
                                                             <th width="5%" data-sort="Date">Place</th>
-                                                            <th width="5%" data-sort="Date">Business date
+                                                            <th width="5%" data-sort="Date">Meeting date
                                                             </th>
                                                             <th width="5%" data-sort="Date">Comment
                                                             </th>

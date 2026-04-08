@@ -176,15 +176,15 @@
                                 <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('OneToOne.index')) {{ 'active' }} @endif"
                                         href="{{ route('OneToOne.index') }}">
-                                        <i class="fas fa-user"></i>
-                                        <span data-key="fas fa-handshake">OneToOne Given</span>
+                                        <i class="fas fa-handshake"></i>
+                                        <span data-key="fas fa-handshake">One To One</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                {{-- <li class="nav-item">
                                     <a href="{{ route('MemberOneToOne.index') }}" class="nav-link" data-key="t-chat">
                                         <i class="fas fa-handshake"></i>One To One Recieve
                                     </a>
-                                </li>
+                                </li> --}}
                                 <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('Award.index')) {{ 'active' }} @endif"
                                         href="{{ route('Award.index') }}">
@@ -352,12 +352,39 @@
                     @endif
                     <!-- member subscription expried date code start -->
                     @if ($session->role_id == 2)
-                        <?php $subexpri = App\Models\members::where('user_id', $session->id)->first(); ?>
+                        <?php $subexpri = App\Models\members::where('user_id', $session->id)->first();
+                        ?>
+                        @php
+                            $BusinesscurrentMonth = \Carbon\Carbon::now()->subMonth()->month;
+                            $monthname = date('F', mktime(0, 0, 0, $BusinesscurrentMonth, 1));
+
+                            if ($BusinesscurrentMonth == 12) {
+                                $BusinesscurrentYear = \Carbon\Carbon::now()->subYear()->year;
+                            } else {
+                                $BusinesscurrentYear = \Carbon\Carbon::now()->year;
+                            }
+                            $manOfTheMonth = App\Models\MemberPoint::join(
+                                'users',
+                                'users.id',
+                                '=',
+                                'member_points.member_id',
+                            )
+                                ->whereYear('member_points.created_at', $BusinesscurrentYear)
+                                ->whereMonth('member_points.created_at', $BusinesscurrentMonth)
+                                ->select('users.first_name', 'users.email')
+                                ->selectRaw('SUM(member_points.points) as total_points')
+                                ->groupBy('member_points.member_id', 'users.first_name', 'users.email')
+                                ->orderByDesc('total_points')
+                                ->first();
+
+                        @endphp
                 <li class="nav-item">
                     <a href="#" class="nav-link" data-key="t-chat">
                         <b> <i class="fas fa-calendar-alt"></i> SUBSCRIPTION EXPIRIES ON :-
-                            {{ isset($subexpri['SubscriptionExpiredDate']) ? date('d-m-Y', strtotime($subexpri['SubscriptionExpiredDate'])) : '' }}</b>
-
+                            {{ isset($subexpri['SubscriptionExpiredDate'])
+                                ? date('d-m-Y', strtotime($subexpri['SubscriptionExpiredDate']))
+                                : '' }}
+                            | Reward Point :- {{ $manOfTheMonth->total_points ?? 0 }}
                     </a>
                 </li>
                 @endif
