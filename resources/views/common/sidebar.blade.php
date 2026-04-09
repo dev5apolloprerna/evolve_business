@@ -153,19 +153,30 @@
                         <div class="collapse menu-dropdown" id="sidebarProduct">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
-                                    <a class="nav-link menu-link @if (request()->routeIs('MemberProducts.Productindex')) {{ 'active' }} @endif"
-                                        href="{{ route('MemberProducts.Productindex') }}">
-                                        <i class="fas fa-user-plus"></i>
-                                        <span data-key="t-dashboards">Add Product</span>
+                                    <a href="{{ route('MemberBusiness.index') }}" class="nav-link" data-key="t-chat">
+                                        <i class="fas fa-handshake"></i>Business Given
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('MemberBusiness.Received') }}" class="nav-link"
+                                        data-key="t-chat">
+                                        <i class="fas fa-check-circle"></i> Business Received
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link menu-link @if (request()->routeIs('Business.productInquirylist')) {{ 'active' }} @endif"
-                                        href="{{ route('Business.productInquirylist') }}">
-                                        <i class="fas fa-question-circle inquiry-icon"></i>
-                                        <span data-key="t-dashboards">Product Inquiry</span>
+                                    <a href="{{ route('Reference.index') }}" class="nav-link" data-key="t-chat">
+                                        <i class="fas fa-handshake"></i>Connection Given
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('Reference.ReceivedReference') }}" class="nav-link"
+                                        data-key="t-chat">
+                                        <i class="fas fa-check-circle"></i> Connection Received
+                                    </a>
+                                </li>
+
                                 <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('Visitor.index')) {{ 'active' }} @endif"
                                         href="{{ route('Visitor.index') }}">
@@ -248,23 +259,23 @@
                             href="#sidebarBusiness" data-bs-toggle="collapse" role="button" aria-expanded="false"
                             aria-controls="sidebarBusiness">
                             <i class="fas fa-building"></i>
-                            <span data-key="t-dashboards">Business</span>
+                            <span data-key="t-dashboards">Profile</span>
 
                         </a>
                         <div class="collapse menu-dropdown" id="sidebarBusiness">
                             <ul class="nav nav-sm flex-column">
-
                                 <li class="nav-item">
-                                    <a href="{{ route('MemberBusiness.index') }}" class="nav-link"
-                                        data-key="t-chat">
-                                        <i class="fas fa-handshake"></i>Business Given
+                                    <a class="nav-link menu-link @if (request()->routeIs('MemberProducts.Productindex')) {{ 'active' }} @endif"
+                                        href="{{ route('MemberProducts.Productindex') }}">
+                                        <i class="fas fa-user-plus"></i>
+                                        <span data-key="t-dashboards">Add Product</span>
                                     </a>
                                 </li>
-
                                 <li class="nav-item">
-                                    <a href="{{ route('MemberBusiness.Received') }}" class="nav-link"
-                                        data-key="t-chat">
-                                        <i class="fas fa-check-circle"></i> Business Received
+                                    <a class="nav-link menu-link @if (request()->routeIs('Business.productInquirylist')) {{ 'active' }} @endif"
+                                        href="{{ route('Business.productInquirylist') }}">
+                                        <i class="fas fa-question-circle inquiry-icon"></i>
+                                        <span data-key="t-dashboards">Product Inquiry</span>
                                     </a>
                                 </li>
                             </ul>
@@ -273,7 +284,7 @@
                 @endif
                 <!-- new code 08-04-2024 -->
                 @if ($session->role_id == 2)
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link menu-link @if (request()->routeIs('Reference.index')) {{ 'active' }} @endif"
                             href="#sidebarConnection" data-bs-toggle="collapse" role="button" aria-expanded="false"
                             aria-controls="sidebarConnection">
@@ -283,21 +294,10 @@
                         <div class="collapse menu-dropdown" id="sidebarConnection">
                             <ul class="nav nav-sm flex-column">
 
-                                <li class="nav-item">
-                                    <a href="{{ route('Reference.index') }}" class="nav-link" data-key="t-chat">
-                                        <i class="fas fa-handshake"></i>Connection Given
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('Reference.ReceivedReference') }}" class="nav-link"
-                                        data-key="t-chat">
-                                        <i class="fas fa-check-circle"></i> Connection Received
-                                    </a>
-                                </li>
+                              
                             </ul>
                         </div>
-                    </li>
+                    </li> --}}
                 @endif
                 <!-- new code 08-04-2024 -->
                 @if ($session->role_id == 1 || $session->role_id == 3)

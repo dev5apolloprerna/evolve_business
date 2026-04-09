@@ -418,9 +418,18 @@ class HomeController extends Controller
             }
 
             $manOfTheMonth = MemberPoint::join('users', 'users.id', '=', 'member_points.member_id')
+                ->join('members', 'members.user_id', '=', 'users.id')
+                ->join('city_groups', 'city_groups.id', '=', 'members.citygroup_id')
+                ->join('categories', 'categories.id', '=', 'members.category_id')
                 ->whereYear('member_points.created_at', $BusinesscurrentYear)
                 ->whereMonth('member_points.created_at', $BusinesscurrentMonth)
-                ->select('users.first_name', 'users.email')
+                ->select(
+                    'categories.name As categories_name',
+                    'city_groups.group_name',
+                    'users.first_name',
+                    'users.email',
+                    'members.*'
+                )
                 ->selectRaw('SUM(member_points.points) as total_points')
                 ->groupBy('member_points.member_id', 'users.first_name', 'users.email')
                 ->orderByDesc('total_points')
@@ -723,8 +732,8 @@ class HomeController extends Controller
                 )
                 ->where('mm.member_id', $Metting_member->id)
                 ->where(DB::raw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y')"), '>=', DB::raw("CURDATE()"))
-                ->orderBy(DB::raw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y')"), 'ASC')
-                ->get();
+                ->orderBy(DB::raw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y')"), 'DESC')
+                ->first();
 
             $previousMeetings = DB::table('Cluster_Meet')
                 ->select(
@@ -740,10 +749,10 @@ class HomeController extends Controller
                 ->get();
             // $meetings = $upcomingMeetings->merge($pastMeetings);
             $meetings = $upcomingMeetings;
-            $meetingscount = $meetings->count();
+            //$meetingscount = $meetings->count();
             $Announcement = DB::table('Announcement')->first();
 
-            return view('Memberhome', compact('manOfTheMonth', 'oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'meetingscount', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopReferenceGivers', 'Top_Reference_Givers'));
+            return view('Memberhome', compact('manOfTheMonth', 'oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopReferenceGivers', 'Top_Reference_Givers'));
         }
     }
 
