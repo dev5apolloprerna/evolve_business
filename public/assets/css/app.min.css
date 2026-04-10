@@ -836,7 +836,7 @@
 .navbar-menu {
     width: 250px;
     z-index: 1002;
-    background:   #78c046 !important;
+    background:   #61a143 !important;
     border-right: none !important;
     bottom: 0;
     margin-top: 0;
@@ -2338,7 +2338,7 @@ a {
     animation-fill-mode: both;
     margin: 0;
     z-index: 1000;
-    background: linear-gradient(to right, #78c046,#26a9cd) !important;
+    background: #61a143 !important;
     background-clip: padding-box;
     border: 0 solid var(--vz-border-color);
     border-radius: .3rem;
@@ -6750,7 +6750,7 @@ button {
 
 .card-header {
     border-bottom: 1px solid var(--vz-border-color);
-        background: #78c046 !important;
+        background: #61a143 !important;
     color: white
 }
 
@@ -18540,7 +18540,7 @@ input::placeholder {
 
 
 thead tr {
-    background-color: #27b58e !important;
+    background-color: #61a143 !important;
     color: white;
     text-align: center;
 }

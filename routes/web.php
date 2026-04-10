@@ -186,8 +186,6 @@ Route::prefix('profile')->name('profile.')->middleware('auth')->group(function (
     Route::post('/user-update', [HomeController::class, 'UserupdateProfile'])->name('Userupdate');
 });
 
-
-
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
 // Roles
@@ -440,6 +438,7 @@ Route::prefix('admin')->name('videogallery.')->middleware('auth')->group(functio
 
 //New and Event master
 Route::prefix('admin')->name('Event.')->middleware('auth')->group(function () {
+    Route::get('MemberEventList', [Eventcontroller::class, 'MemberEventList'])->name('MemberEventList');
     Route::get('Event/index', [Eventcontroller::class, 'index'])->name('index');
     Route::get('Event/storeview', [Eventcontroller::class, 'storeview'])->name('storeview');
     Route::get('Event/edit', [Eventcontroller::class, 'editview'])->name('Event.edit');
