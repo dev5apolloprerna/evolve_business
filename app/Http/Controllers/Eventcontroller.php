@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\Event;
 use Illuminate\Support\Facades\DB;
@@ -10,10 +11,15 @@ use Illuminate\Support\Str;
 
 class Eventcontroller extends Controller
 {
+    public function MemberEventList(Request $request)
+    {
+        $Events = Event::orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
+        return view('MemberEventList.index', compact('Events'));
+    }
     public function index(Request $request)
     {
         $Events = Event::orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
-         return view('Event.index', compact('Events'));
+        return view('Event.index', compact('Events'));
     }
     public function storeview()
     {
@@ -25,7 +31,7 @@ class Eventcontroller extends Controller
 
         $request->validate([
             'name' => 'required',
-           
+
         ]);
 
         $img = "";
@@ -39,7 +45,7 @@ class Eventcontroller extends Controller
             }
             $image->move($destinationpath, $img);
         }
-        $slug=Str::slug($request->name);
+        $slug = Str::slug($request->name);
         $Data = array(
             'name'            => $request->name,
             'user_id'   => auth()->id(),
@@ -50,10 +56,10 @@ class Eventcontroller extends Controller
             'price'           => $request->price,
             'limitedset'      => $request->limitedset,
             'setnumber'       => $request->setnumber,
-            'description'     =>$request->description,
+            'description'     => $request->description,
             'event_slug' => $slug,
             'created_at'      => date('Y-m-d H:i:s'),
-            'created_by'      => auth()->user()->id, 
+            'created_by'      => auth()->user()->id,
             'strIP' => $request->ip()
         );
         // dd($Data);
@@ -97,25 +103,25 @@ class Eventcontroller extends Controller
             //   $img = null;
         }
         // dd($img);
-        $slug=Str::slug($request->name);
+        $slug = Str::slug($request->name);
         $Event = DB::table('news_and_events')
             ->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $request->event_id])
             ->update([
-            'name'            => $request->name,
-            'user_id'   => auth()->id(),
-            'photo'           => $img,
-            'eventstart_date' => $request->eventstart_date,
-            'eventend_date' => $request->eventend_date,
-            'ispaid'          => $request->ispaid,
-            'price'           => $request->price,
-            'limitedset'      => $request->limitedset,
-            'setnumber'       => $request->setnumber,
-            'description' =>$request->description,
-            'event_slug' => $slug,
-            'updated_at' => date('Y-m-d H:i:s'),
-            'updated_by' => auth()->user()->id, 
+                'name'            => $request->name,
+                'user_id'   => auth()->id(),
+                'photo'           => $img,
+                'eventstart_date' => $request->eventstart_date,
+                'eventend_date' => $request->eventend_date,
+                'ispaid'          => $request->ispaid,
+                'price'           => $request->price,
+                'limitedset'      => $request->limitedset,
+                'setnumber'       => $request->setnumber,
+                'description' => $request->description,
+                'event_slug' => $slug,
+                'updated_at' => date('Y-m-d H:i:s'),
+                'updated_by' => auth()->user()->id,
             ]);
-        
+
         return redirect()->route('Event.index')->with('success', 'Event Updated Successfully.');
     }
     public function delete(Request $request)
@@ -130,25 +136,24 @@ class Eventcontroller extends Controller
         return redirect()->route('Event.index')->with('success', 'Event Deleted Successfully!.');
     }
 
-    public function Eventindex(Request $request,$id)
+    public function Eventindex(Request $request, $id)
     {
-       
+
         $eventname = DB::table('news_and_events')
-        ->select('news_and_events.name')->where(['news_and_events.iStatus' => 1, 'news_and_events.isDelete' => 0,'news_and_events.event_id' => $id])->first();
-        
+            ->select('news_and_events.name')->where(['news_and_events.iStatus' => 1, 'news_and_events.isDelete' => 0, 'news_and_events.event_id' => $id])->first();
+
         $inquiry = DB::table('member_news_comment')
-        ->select('member_news_comment.ispaid','member_news_comment.Payment_Status','member_news_comment.id', 'member_news_comment.news_id', 'member_news_comment.name as member_news_comment_name', 'member_news_comment.email', 'member_news_comment.companyname', 'member_news_comment.businesscategory','member_news_comment.phonenumber', 'member_news_comment.message','news_and_events.name','member_news_comment.referred_by','member_news_comment.reference_name')
-        ->leftjoin('news_and_events', 'member_news_comment.news_id', '=', 'news_and_events.event_id')
-        ->where(['member_news_comment.iStatus' => 1, 'member_news_comment.isDelete' => 0,'member_news_comment.news_id' => $id])
-        ->orderBy('id', 'DESC')
-        ->paginate(50);
-        return view('Eventinquiry.index',compact('inquiry','eventname'));
+            ->select('member_news_comment.ispaid', 'member_news_comment.Payment_Status', 'member_news_comment.id', 'member_news_comment.news_id', 'member_news_comment.name as member_news_comment_name', 'member_news_comment.email', 'member_news_comment.companyname', 'member_news_comment.businesscategory', 'member_news_comment.phonenumber', 'member_news_comment.message', 'news_and_events.name', 'member_news_comment.referred_by', 'member_news_comment.reference_name')
+            ->leftjoin('news_and_events', 'member_news_comment.news_id', '=', 'news_and_events.event_id')
+            ->where(['member_news_comment.iStatus' => 1, 'member_news_comment.isDelete' => 0, 'member_news_comment.news_id' => $id])
+            ->orderBy('id', 'DESC')
+            ->paginate(50);
+        return view('Eventinquiry.index', compact('inquiry', 'eventname'));
     }
     public function Eventdelete(Request $request)
     {
         // dd($request);
         DB::table('member_news_comment')->where(['iStatus' => 1, 'isDelete' => 0, 'id' => $request->id])->delete();
         return back()->with('success', 'Event inquiry Deleted Successfully!');
-
     }
 }

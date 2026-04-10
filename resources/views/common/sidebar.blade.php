@@ -210,6 +210,13 @@
                                         <span data-key="t-dashboards">Announcement</span>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link @if (request()->routeIs('Event.MemberEventList')) {{ 'active' }} @endif"
+                                        href="{{ route('Event.MemberEventList') }}">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span data-key="t-dashboards">Event</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>
