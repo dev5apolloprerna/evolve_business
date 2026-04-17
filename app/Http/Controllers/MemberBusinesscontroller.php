@@ -14,6 +14,7 @@ use App\Models\renewalhistory;
 use App\Models\Business;
 use App\Models\OneToOne;
 use App\Models\Member_metting;
+use App\Models\Event;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -301,7 +302,19 @@ class MemberBusinesscontroller extends Controller
             ->orderBy('one_to_one_detail.id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
 
-        return view('pendinglogincheck.index', compact('Business', 'Data', 'Datadrop', 'OneToOne'));
+
+        $Events = Event::where([
+            'iStatus' => 1,
+            'isDelete' => 0,
+        ])
+            ->whereNotIn('event_id', function ($query) {
+                $query->select('event_id')
+                    ->from('event_members')
+                    ->where('member_id', Auth::id());
+            })
+            ->orderBy('event_id', 'DESC')
+            ->paginate(env('PAR_PAGE_COUNT', 20));
+        return view('pendinglogincheck.index', compact('Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
     public function statuspendinglogin(Request $request)
@@ -344,6 +357,22 @@ class MemberBusinesscontroller extends Controller
                 'status' => $request->newStatus,
                 'updated_at' => now()
             ]);
+        return redirect()->back();
+    }
+
+    public function Eventpendinglogin(Request $request)
+    {
+
+        DB::table('event_members')->insert([
+            'event_id' => $request->id,
+            'member_id' => Auth::user()->id,
+            'created_at' => now()
+        ]);
+        DB::table('news_and_events')->where('event_id', $request->id)->update([
+            'isapproved_status' => $request->newStatus,
+            'member_id' => Auth::user()->id,
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
         return redirect()->back();
     }
 

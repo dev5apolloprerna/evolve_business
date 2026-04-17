@@ -24,17 +24,17 @@
                             <div class="card-body">
                                 <div class="live-preview">
                                     <!-- <form action="{{ route('OneToOne.create') }}" method="post"
-                                                                                                                                                                                                                    enctype="multipart/form-data"> -->
+                                                                                                                                                                                                                            enctype="multipart/form-data"> -->
                                     <form id="oneTooneForm" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row gy-3 mb-3">
 
                                             <!-- this same user name not select code start -->
                                             <div class="col-lg-4 col-md-6">
-                                                <label for="oneToone_to"><span style="color:red;">*</span>Given To</label>
+                                                <label for="oneToone_to"><span style="color:red;">*</span>Done With</label>
                                                 <select class="form-control" data-choices name="oneToone_to"
                                                     id="choices-single-default">
-                                                    <option value="" disabled selected>Select Given To</option>
+                                                    <option value="" disabled selected>Select Done With</option>
                                                     @foreach ($Data as $data)
                                                         @if ($data->id !== $session->id)
                                                             <option value="{{ $data->id }}">{{ $data->first_name }} -

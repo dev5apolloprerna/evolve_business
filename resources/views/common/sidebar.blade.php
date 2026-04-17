@@ -166,14 +166,14 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('Reference.index') }}" class="nav-link" data-key="t-chat">
-                                        <i class="fas fa-handshake"></i>Connection Given
+                                        <i class="fas fa-handshake"></i>Reference Given
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
                                     <a href="{{ route('Reference.ReceivedReference') }}" class="nav-link"
                                         data-key="t-chat">
-                                        <i class="fas fa-check-circle"></i> Connection Received
+                                        <i class="fas fa-check-circle"></i> Reference Received
                                     </a>
                                 </li>
 
@@ -208,13 +208,6 @@
                                         href="{{ route('MemberAnnouncement.index') }}">
                                         <i class="fa fa-bullhorn"></i>
                                         <span data-key="t-dashboards">Announcement</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link menu-link @if (request()->routeIs('Event.MemberEventList')) {{ 'active' }} @endif"
-                                        href="{{ route('Event.MemberEventList') }}">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        <span data-key="t-dashboards">Event</span>
                                     </a>
                                 </li>
                             </ul>
@@ -252,7 +245,7 @@
                                     <li class="nav-item">
                                         <a href="{{ route('Admin-Reference.index') }}" class="nav-link"
                                             data-key="t-chat">
-                                            <i class="fas fa-book"></i></i>Connection
+                                            <i class="fas fa-book"></i></i>Reference
                                         </a>
                                     </li>
                                 </ul>
@@ -287,6 +280,13 @@
                                 </li>
                             </ul>
                         </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link @if (request()->routeIs('Event.PastEventList')) {{ 'active' }} @endif"
+                            href="{{ route('Event.PastEventList') }}">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span data-key="t-dashboards">Event</span>
+                        </a>
                     </li>
                 @endif
                 <!-- new code 08-04-2024 -->

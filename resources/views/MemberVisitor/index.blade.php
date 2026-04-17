@@ -42,6 +42,7 @@
                                             <th scope="col">Member</th>
                                             <th scope="col">Business Name</th>
                                             <th scope="col">Business Category</th>
+                                            <th scope="col">Proof of payment</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
@@ -60,6 +61,15 @@
                                                 <td class="text-center">{{ $data->members->Contact_person }}</td>
                                                 <td class="text-center">{{ $data->business_name }}</td>
                                                 <td class="text-center">{{ $data->business_category->name ?? '' }}</td>
+                                                <td class="text-center">
+                                                    @if (empty($data->photo))
+                                                        <img src="{{ asset('assets/images/noimage.png') }}"
+                                                            style="width:50px;height:50px;">
+                                                    @else
+                                                        <img src="{{ asset('Visitor/' . $data->photo) }}"
+                                                            style="width:50px;height:50px;">
+                                                    @endif
+                                                </td>
                                                 <td class="text-center">
                                                     @if ($data->iStatus == 0)
                                                         Pending

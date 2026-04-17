@@ -14,6 +14,7 @@ use App\Models\subcategories;
 use App\Models\membershipplans;
 use App\Models\Business;
 use App\Models\OneToOne;
+use App\Models\Event;
 use App\Models\Adminuserpermission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -27,7 +28,6 @@ class CheckApprovalStatus
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
-        // dd($user);
         if ($user->role_id == 2) {
             $loginPendingCheck = Business::join('users', 'users.id', '=', 'Business.business_to_id')
                 ->where('users.id', $user->id)
@@ -42,7 +42,20 @@ class CheckApprovalStatus
                 ->orderBy('one_to_one_detail.id', 'DESC')
                 ->get();
 
-            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty()) {
+            $loginPendingEventCheck = Event::where([
+                'iStatus' => 1,
+                'isDelete' => 0,
+            ])
+                ->whereNotIn('event_id', function ($query) {
+                    $query->select('event_id')
+                        ->from('event_members')
+                        ->where('member_id', Auth::id());
+                })
+                ->orderBy('event_id', 'DESC')
+                ->get();
+
+
+            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty()) {
                 // foreach ($loginPendingCheck as $pendingCheck)
                 // {
                 //     if ($pendingCheck->isapproved_status == 0)

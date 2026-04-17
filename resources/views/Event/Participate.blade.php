@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Member Events List')
+@section('title', 'Participants Events List')
 @section('content')
 
     <div class="main-content">
@@ -8,37 +8,12 @@
                 <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
                 {{-- Alert Messages --}}
 
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <!-- Nav tabs -->
-                            <ul class="nav nav-tabs nav-justified nav-border-top nav-border-top-success mb-3">
-
-                                <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('Event.PastEventList') ? 'active' : '' }}"
-                                        href="{{ route('Event.PastEventList') }}">
-                                        <i class="fas fa-clock"></i> Past Event
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('Event.UpcomingEventList') ? 'active' : '' }}"
-                                        href="{{ route('Event.UpcomingEventList') }}">
-                                        <i class="fas fa-check-circle"></i> Upcoming Event
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </div><!-- end card-body -->
-                    </div>
-                </div>
-
                 <div class="col-md-12 mt-3">
                     <div class="card mb-3">
                         <div class="card-header">
                             <div class="row flex-between-end">
                                 <div class="col-auto align-self-center">
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Past Events List
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Events List
                                     </h5>
                                 </div>
                             </div>
@@ -59,7 +34,9 @@
                                                         <th width="5%" data-sort="Date">Events Date</th>
                                                         <th width="5%" data-sort="Date">Events Start Time</th>
                                                         <th width="5%" data-sort="Date">Events End Time</th>
-
+                                                        <th width="5%" data-sort="Date">Type</th>
+                                                        <th width="2%" data-sort="Title">Member</th>
+                                                        <th width="2%" data-sort="Title">Status</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="list">
@@ -77,8 +54,31 @@
                                                             <td class="text-center">
                                                                 {{ \Carbon\Carbon::parse($Event->eventstart_date)->format('d-m-Y') }}
                                                             </td>
-                                                            <td class="text-center">{{ $Event->eventstart_time }}</td>
-                                                            <td class="text-center">{{ $Event->eventend_time }}</td>
+                                                            <td class="text-center">
+                                                                {{ $Event->eventstart_time }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ $Event->eventend_time }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                @if ($Event->event_type == 1)
+                                                                    ESP
+                                                                @else
+                                                                    Training
+                                                                @endif
+
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ $Event->member->Contact_person ?? '' }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                @if ($Event->isapproved_status == 1)
+                                                                    Join
+                                                                @else
+                                                                    Not Join
+                                                                @endif
+
+                                                            </td>
 
                                                         </tr>
                                                         <?php $i++; ?>
@@ -100,6 +100,7 @@
         </div>
     </div>
     </div>
+
     {{-- @endforeach --}}
 @endsection
 

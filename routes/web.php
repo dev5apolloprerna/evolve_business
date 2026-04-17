@@ -438,7 +438,8 @@ Route::prefix('admin')->name('videogallery.')->middleware('auth')->group(functio
 
 //New and Event master
 Route::prefix('admin')->name('Event.')->middleware('auth')->group(function () {
-    Route::get('MemberEventList', [Eventcontroller::class, 'MemberEventList'])->name('MemberEventList');
+    Route::get('PastEventList', [Eventcontroller::class, 'PastEventList'])->name('PastEventList');
+    Route::get('UpcomingEventList', [Eventcontroller::class, 'UpcomingEventList'])->name('UpcomingEventList');
     Route::get('Event/index', [Eventcontroller::class, 'index'])->name('index');
     Route::get('Event/storeview', [Eventcontroller::class, 'storeview'])->name('storeview');
     Route::get('Event/edit', [Eventcontroller::class, 'editview'])->name('Event.edit');
@@ -477,6 +478,7 @@ Route::prefix('admin')->name('Business.')->middleware(['auth', 'check_approval']
     Route::post('Business/search', [Businesscontroller::class, 'search'])->name('search');
     Route::get('/Business/statusget/{id?}', [Businesscontroller::class, 'statusget'])->name('statusget');
     Route::get('/Business/statusonetooneget/{id?}', [Businesscontroller::class, 'statusonetooneget'])->name('statusonetooneget');
+    Route::get('/Business/statusEventget/{id?}', [Businesscontroller::class, 'statusEventget'])->name('statusEventget');
 
     Route::any('Business-resendReminder', [Businesscontroller::class, 'Business_resend_Reminder'])->name('resendReminder');
 });
@@ -587,11 +589,11 @@ Route::prefix('admin')->name('pendinglogincheck.')->middleware('auth')->group(fu
     Route::get('pendinglogincheck/index', [MemberBusinesscontroller::class, 'indexpending'])->name('index');
     Route::post('/pendinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'statuspendinglogin'])->name('statuspendinglogin');
     Route::post('/onependinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'onestatuspendinglogin'])->name('onestatuspendinglogin');
+    Route::post('/Eventpendinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'Eventpendinglogin'])->name('Eventpendinglogin');
 });
 Route::prefix('admin')->name('Youngleaders.')->middleware('auth')->group(function () {
     Route::get('/Young-leaders', [FrontController::class, 'Young_leaders_index'])->name('index');
 });
-
 
 //front route
 Route::any('/', [FrontController::class, 'index'])->name('FrontIndex');
@@ -679,6 +681,7 @@ Route::prefix('admin')->name('Contactinquiry.')->middleware('auth')->group(funct
 // front Event inquiry admin display Eventinquiry
 Route::prefix('admin')->name('Eventinquiry.')->middleware('auth')->group(function () {
     Route::get('/Eventinquiry/index/{id?}', [Eventcontroller::class, 'Eventindex'])->name('index');
+    Route::get('/Event/Participate/{id?}', [Eventcontroller::class, 'EventParticipate'])->name('EventParticipate');
     Route::delete('/Eventinquiry/delete', [Eventcontroller::class, 'Eventdelete'])->name('delete');
 });
 //DASHBORAD EXPRIED ROUTE

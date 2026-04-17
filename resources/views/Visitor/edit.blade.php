@@ -17,12 +17,12 @@
                 @include('common.alert')
 
                 <!-- <div class="row">
-                                                                <div class="col-10">
-                                                                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                                                        <h4 class="mb-sm-0">Add Members</h4>
-                                                                    </div>
-                                                                </div>
-                                                            </div> -->
+                                                                                    <div class="col-10">
+                                                                                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                                                                            <h4 class="mb-sm-0">Add Members</h4>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div> -->
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
@@ -91,6 +91,27 @@
                                                         autocomplete="off" value="{{ $data->business_name }}" required>
                                                 </div>
 
+                                                <div class="col-lg-4 col-md-6">
+                                                    <span style="color:red;"></span> Proof Of Payment
+                                                    <input type="file" class="form-control" name="photo" id="editphoto"
+                                                        value="{{ $data->photo }}" placeholder="Enter Image">
+                                                    {{-- <p class="help-block">Please upload a photo for your profile.</p> --}}
+                                                    <input type="hidden" name="hiddenPhoto" class="form-control"
+                                                        value="{{ old('photo') ? old('photo') : $data->photo }}"
+                                                        id="hiddenPhoto">
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div id="viewimg">
+                                                        @if ($data->photo)
+                                                            <img src="{{ asset('Visitor') . '/' . $data->photo }}"
+                                                                alt="" height="70" width="70">
+                                                        @else
+                                                            <img src="https://groath.in/assets/images/noimage.png"
+                                                                alt="No Image" height="70" width="70">
+                                                        @endif
+
+                                                    </div>
+                                                </div>
 
                                             </div>
 

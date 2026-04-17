@@ -1,12 +1,11 @@
-
 @extends('layouts.app')
-@section('title', 'Connection  List')
+@section('title', 'Reference List')
 @section('content')
-<?php $session = auth()->user(); ?>
+    <?php $session = auth()->user(); ?>
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
-                
+
                 {{-- Alert Messages --}}
                 @include('common.alert')
                 <div class="col-md-12 mt-3">
@@ -14,106 +13,116 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Connection Given
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Reference Given
                                     </h5>
                                 </div>
                                 <div>
-                                <a href="#" data-bs-toggle="modal"
-                                       data-bs-target="#EditModal1"
-                                       onclick="referencegetData()"
-                                       class="btn btn-success" title="">Give New Connection
-                                </a>                                                             
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#EditModal1"
+                                        onclick="referencegetData()" class="btn btn-success" title="">Give New
+                                        Reference
+                                    </a>
                                 </div>
                             </div>
                         </div>
-            
+
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane preview-tab-pane active" role="tabpanel"
                                     aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
                                     id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
                                     <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
-                                        @if($Count > 0)
-                                        <div class="table-responsive scrollbar">
-                                            <table class="table table-bordered table-striped fs--1 mb-0">
-                                                <thead class="bg-200 text-900">
-                                                    <tr>
-                                                        <th width="2%" data-sort="Title">Sr No</th>
-                                                        <th width="5%" data-sort="Date">Given To</th>
-                                                        <th width="5%" data-sort="Date">Company Name</th>
-                                                        <th width="5%" data-sort="Date">Connection Name</th>
-                                                        <th width="5%" data-sort="Date">Email</th>
-                                                        <th width="5%" data-sort="Date">Phone Number
-                                                        </th>
-                                                        <th width="5%" data-sort="Date">Connection Date</th>
-                                                        <th width="5%" data-sort="Date">Connection For Message</th>
-                                                        <th width="5%" data-sort="Date">Rejected Comment</th>
-                                                        <th width="5%" data-sort="Date">Status</th>
-                                                        
-                                                        <th width="5%" data-sort="Action">Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="list">
-                                                    <?php $i = 1;                                                
-                                                    ?>
-                                                    @foreach ($Business as $Business1)
+                                        @if ($Count > 0)
+                                            <div class="table-responsive scrollbar">
+                                                <table class="table table-bordered table-striped fs--1 mb-0">
+                                                    <thead class="bg-200 text-900">
                                                         <tr>
-                                                            <td class="text-center">
-                                                                {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
-                                                            </td>
-                                                            <td class="text-center">{{ $Business1->first_name }}</td>
-                                                            <td class="text-center">{{ $Business1->Company_Name ? $Business1->Company_Name : 'N/A'}}</td>
-                                                            <td class="text-center">{{ $Business1->Reference_Name }}</td>
-                                                            <td class="text-center">{{ $Business1->Email ? $Business1->Email : 'N/A'}}</td>
-                                                            <td class="text-center">{{ $Business1->phonenumber }}</td>
+                                                            <th width="2%" data-sort="Title">Sr No</th>
+                                                            <th width="5%" data-sort="Date">Given To</th>
+                                                            <th width="5%" data-sort="Date">Company Name</th>
+                                                            <th width="5%" data-sort="Date">Reference Name</th>
+                                                            <th width="5%" data-sort="Date">Email</th>
+                                                            <th width="5%" data-sort="Date">Phone Number
+                                                            </th>
+                                                            <th width="5%" data-sort="Date">Reference Date</th>
+                                                            <th width="5%" data-sort="Date">Reference For Message</th>
+                                                            <th width="5%" data-sort="Date">Rejected Comment</th>
+                                                            <th width="5%" data-sort="Date">Status</th>
 
-                                                            <td class="text-center">
-                                                                {{ \Carbon\Carbon::parse($Business1->Reference_Date)->format('d-m-Y') }}
-                                                            </td>
-                                                            <td class="text-center">{{ $Business1->Refer_for_message ? $Business1->Refer_for_message : 'N/A' }}</td>
-                                                            <td class="text-center"> {{ $Business1->Referencecomment !== null ? $Business1->Referencecomment : 'N/A' }}</td>
-                                                            <td class="text-center">
-                                                            {{ $Business1->isapproved_status == 0 ? 'Pending' : ($Business1->isapproved_status == 1 ? 'Approved' : 'Rejected') }}
-                                                            </td>
-
-                                                            <td class="text-center">
-                                                                @if($Business1->isapproved_status == 0) <!-- Check if status is pending -->
-                                                                    <!-- <a href="#" data-bs-toggle="modal"
-                                                                    data-bs-target="#EditModal"
-                                                                    onclick="getEditData(<?= $Business1->Reference_id ?>)"
-                                                                    class="" title="Edit">
-                                                                        <span class="text-500 fas fa-edit"></span>
-                                                                    </a> -->
-                                                                    <a class="" href="#"
-                                                                    data-bs-toggle="modal" title="Delete"
-                                                                    data-bs-target="#deleteRecordModal"
-                                                                    onclick="deleteData(<?= $Business1->Reference_id ?>);">
-                                                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                    </a>
-                                                                @else
-                                                                    N/A
-                                                                @endif
-                                                            </td>
-                                                           
+                                                            <th width="5%" data-sort="Action">Action</th>
                                                         </tr>
-                                                        <?php $i++; ?>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                           
-                                        </div>
-                                        <div class="d-flex justify-content-center mt-3">
-                                      {{$Business->links()}}
-                                        </div>
-                                        @else 
+                                                    </thead>
+                                                    <tbody class="list">
+                                                        <?php $i = 1;
+                                                        ?>
+                                                        @foreach ($Business as $Business1)
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
+                                                                </td>
+                                                                <td class="text-center">{{ $Business1->first_name }}</td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->Company_Name ? $Business1->Company_Name : 'N/A' }}
+                                                                </td>
+                                                                <td class="text-center">{{ $Business1->Reference_Name }}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->Email ? $Business1->Email : 'N/A' }}</td>
+                                                                <td class="text-center">{{ $Business1->phonenumber }}</td>
+
+                                                                <td class="text-center">
+                                                                    {{ \Carbon\Carbon::parse($Business1->Reference_Date)->format('d-m-Y') }}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->Refer_for_message ? $Business1->Refer_for_message : 'N/A' }}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->Referencecomment !== null ? $Business1->Referencecomment : 'N/A' }}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->isapproved_status == 0 ? 'Pending' : ($Business1->isapproved_status == 1 ? 'Approved' : 'Rejected') }}
+                                                                </td>
+
+                                                                <td class="text-center">
+                                                                    @if ($Business1->isapproved_status == 0)
+                                                                        <!-- Check if status is pending -->
+                                                                        <!-- <a href="#" data-bs-toggle="modal"
+                                                                                                data-bs-target="#EditModal"
+                                                                                                onclick="getEditData(<?= $Business1->Reference_id ?>)"
+                                                                                                class="" title="Edit">
+                                                                                                    <span class="text-500 fas fa-edit"></span>
+                                                                                                </a> -->
+                                                                        <a class="" href="#"
+                                                                            data-bs-toggle="modal" title="Delete"
+                                                                            data-bs-target="#deleteRecordModal"
+                                                                            onclick="deleteData(<?= $Business1->Reference_id ?>);">
+                                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    @else
+                                                                        N/A
+                                                                    @endif
+                                                                </td>
+
+                                                            </tr>
+                                                            <?php $i++; ?>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                            <div class="d-flex justify-content-center mt-3">
+                                                {{ $Business->links() }}
+                                            </div>
+                                        @else
                                             <div class="row">
-                                                <div class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
-                                                    <div class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
-                                                        <h1 class="font-white text-center"> Connection Yet To Give </h1>
+                                                <div
+                                                    class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
+                                                    <div
+                                                        class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
+                                                        <h1 class="font-white text-center"> Reference Yet To Give </h1>
                                                     </div>
                                                 </div>
                                             </div>
-                                            @endif
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -122,14 +131,12 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
+            <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog " style="background-color: white;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Edit Connection</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Reference</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </button>
                         </div>
                         <form method="post" action="{{ route('Reference.update') }}" enctype="multipart/form-data">
@@ -150,16 +157,16 @@
                                         </select>
                                     </div>
                                     <!-- <div class="md-3">
-                                        <label for="business_from_id"><span style="color:red;">*</span>Given By</label>
-                                        <select class="form-control" name="business_from" id="Editbusiness_from"
-                                            required>
-                                            <option value="" selected>Select Given By</option>
-                                            @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div> -->
+                                                                    <label for="business_from_id"><span style="color:red;">*</span>Given By</label>
+                                                                    <select class="form-control" name="business_from" id="Editbusiness_from"
+                                                                        required>
+                                                                        <option value="" selected>Select Given By</option>
+                                                                        @foreach ($Data as $data)
+    <option value="{{ $data->first_name }}">{{ $data->first_name }}
+                                                                            </option>
+    @endforeach
+                                                                    </select>
+                                                                </div> -->
 
                                     {{-- <div class="md-3">
                                         <label for="business_from_id"><span style="color:red;">*</span>Given By</label>
@@ -170,21 +177,23 @@
                                             @endforeach
                                         </select>
                                     </div> --}}
-                              <!-- this same user name not select code start -->
+                                    <!-- this same user name not select code start -->
                                     <div class="md-3">
                                         <label for="business_to_id"><span style="color:red;">*</span>Given To</label>
                                         <select class="form-control" name="business_to" id="Editbusiness_to" required>
                                             <option value="" disabled selected>Select Given By</option>
                                             @foreach ($Data as $data)
-                                                @if ($data->id !== $session->id) {{-- Check if the user is not the currently logged-in user --}}
-                                                    <option value="{{ $data->first_name }}">{{ $data->first_name }}</option>
+                                                @if ($data->id !== $session->id)
+                                                    {{-- Check if the user is not the currently logged-in user --}}
+                                                    <option value="{{ $data->first_name }}">{{ $data->first_name }}
+                                                    </option>
                                                 @endif
                                             @endforeach
                                         </select>
                                     </div>
 
-                              <!-- this same user name not select code end -->
-                                
+                                    <!-- this same user name not select code end -->
+
                                     <div class="md-3">
                                         <span style="color:red;">*</span>Amount
                                         <input type="number" class="form-control" name="Business_amount"
@@ -275,10 +284,10 @@
                             {{-- {{dd($data)}} --}}
                             @if (isset($Business1->isapproved_status))
                                 <!-- <select class="form-control" name="newStatus">
-                                        <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
-                                        </option>
-                                        <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
-                                    </select> -->
+                                                                    <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
+                                                                    </option>
+                                                                    <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
+                                                                </select> -->
 
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
@@ -294,7 +303,7 @@
                                 </select>
                             @endif
                         </div>
-                            @foreach($Business as $business)
+                        @foreach ($Business as $business)
                             <div class="form-group rejectedComments"
                                 style="display: {{ $business->isapproved_status == 2 ? 'block' : 'none' }}">
                                 <label for="rejectedComments">Rejected Comments:</label>
@@ -303,9 +312,9 @@
                         @endforeach
 
                         <!-- <div class="form-group">
-                                <label for="rejectedComments">Rejected Comments:</label>
-                                <textarea class="form-control" name="rejectedComments"></textarea>
-                            </div> -->
+                                                            <label for="rejectedComments">Rejected Comments:</label>
+                                                            <textarea class="form-control" name="rejectedComments"></textarea>
+                                                        </div> -->
                         <button type="submit" class="btn btn-success">Save Changes</button>
                     </form>
                 </div>
@@ -318,72 +327,78 @@
 
     <!-- add model start -->
     <div class="modal fade" id="EditModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog " style="background-color: white;">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Add Connection</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </button>
-                        </div>
-                        <form method="post" action="{{ route('Reference.create') }}" enctype="multipart/form-data">
-                            @csrf
-                            @method('post')
-                            <div class="modal-body">
-                                <input type="hidden" name="" id="" value="">
-                                <div class="row">
-                                    <div class="mb-3" >
-                                        <label for="Reference_to"><span style="color:red;">*</span>Given To</label>
-                                        <select class="form-control" data-choices name="Reference_to" id="choices-single-default">
-                                            <option value="" disabled selected>Select Given To</option>
-                                            @foreach ($Data as $data)
-                                                @if ($data->id !== $session->id) 
-                                                    <option value="{{ $data->id }}">{{ $data->first_name }} - ({{$data->mobile_number}})</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="mb-3" >
-                                        <span style="color:red;">*</span>Connection Name</label>
-                                        <input class="form-control" id="Editname" name="Reference_Name" type="text"
-                                            placeholder="Enter Connection Name" value="{{ old('Reference_Name') }}" required>
-                                        </div><br>                                    
-                                    </div>
-                                    <div class="mb-3" >
-                                        <span style="color:red;"></span>Company Name
-                                        <input type="Text" class="form-control" name="Company_Name"
-                                            id="Company_Name" placeholder="Enter Company Name " >
-                                    </div>
-                                    <div class="mb-3" >
-                                        <span style="color:red;">*</span>Phone number
-                                        <input type="phonenumber" class="form-control" name="phonenumber"
-                                            id="phonenumber" placeholder="Enter phonenumber  " oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');" onKeyPress="if(this.value.length==10) return false;" maxlength="10" minlength="10" value="{{old('phonenumber')}}"required>
-                                    </div>
-                                    <div class="mb-3" >
-                                        <span style="color:red;"></span>Email
-                                        <input type="Text" class="form-control" name="Email"
-                                            id="Email" placeholder="Enter Email  ">
-                                    </div>
-                                   
-                                    <div class="mb-3" >
-                                        <span style="color:red;"></span>Refer for message
-                                        <input type="Text" class="form-control" name="Refer_for_message"
-                                            id="Refer_for_message" placeholder="Enter Refer for message"maxlength="50" >
-                                    </div>
-                                    <!-- <div class="mb-3" >
-                                        <span style="color:red;">*</span> Reference date
-                                        <input type="date" class="form-control" name="Reference_Date"
-                                            id="Reference_Date" placeholder="Enter Reference Date" required>
-                                    </div> -->
-                                <div class="modal-footer">
-                                    <input type="submit" class="btn btn-success">
-
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                </div>
-                        </form>
-                    </div>
+        <div class="modal-dialog " style="background-color: white;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Reference</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </button>
                 </div>
+                <form method="post" action="{{ route('Reference.create') }}" enctype="multipart/form-data">
+                    @csrf
+                    @method('post')
+                    <div class="modal-body">
+                        <input type="hidden" name="" id="" value="">
+                        <div class="row">
+                            <div class="mb-3">
+                                <label for="Reference_to"><span style="color:red;">*</span>Given To</label>
+                                <select class="form-control" data-choices name="Reference_to"
+                                    id="choices-single-default">
+                                    <option value="" disabled selected>Select Given To</option>
+                                    @foreach ($Data as $data)
+                                        @if ($data->id !== $session->id)
+                                            <option value="{{ $data->id }}">{{ $data->first_name }} -
+                                                ({{ $data->mobile_number }})
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <span style="color:red;">*</span>Reference Name</label>
+                                <input class="form-control" id="Editname" name="Reference_Name" type="text"
+                                    placeholder="Enter Reference Name" value="{{ old('Reference_Name') }}" required>
+                            </div><br>
+                        </div>
+                        <div class="mb-3">
+                            <span style="color:red;"></span>Company Name
+                            <input type="Text" class="form-control" name="Company_Name" id="Company_Name"
+                                placeholder="Enter Company Name ">
+                        </div>
+                        <div class="mb-3">
+                            <span style="color:red;">*</span>Phone number
+                            <input type="phonenumber" class="form-control" name="phonenumber" id="phonenumber"
+                                placeholder="Enter phonenumber  "
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                                onKeyPress="if(this.value.length==10) return false;" maxlength="10" minlength="10"
+                                value="{{ old('phonenumber') }}"required>
+                        </div>
+                        <div class="mb-3">
+                            <span style="color:red;"></span>Email
+                            <input type="Text" class="form-control" name="Email" id="Email"
+                                placeholder="Enter Email  ">
+                        </div>
+
+                        <div class="mb-3">
+                            <span style="color:red;"></span>Refer for message
+                            <input type="Text" class="form-control" name="Refer_for_message" id="Refer_for_message"
+                                placeholder="Enter Refer for message"maxlength="50">
+                        </div>
+                        <!-- <div class="mb-3" >
+                                                                    <span style="color:red;">*</span> Reference date
+                                                                    <input type="date" class="form-control" name="Reference_Date"
+                                                                        id="Reference_Date" placeholder="Enter Reference Date" required>
+                                                                </div> -->
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-success">
+
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        </div>
+                </form>
             </div>
         </div>
+    </div>
+    </div>
     </div>
     </div>
     <!-- add model end -->
@@ -418,29 +433,29 @@
             }
         }
     </script>
-   <script>
-    function referencegetData() {
-        var url = "{{ route('Reference.storeview') }}";
+    <script>
+        function referencegetData() {
+            var url = "{{ route('Reference.storeview') }}";
 
-        $.ajax({
-            url: url,
-            type: 'GET',
-            success: function(data) {
-                var obj = JSON.parse(data);
-                $("#id").val(obj.id);
-                $("#Editfirst_name").val(obj.first_name);
-                $("#Editbusiness_to").val(obj.business_to);
-                $("#EditBusiness_amount").val(obj.Business_amount);
-                $("#Editbusiness_Date").val(obj.business_Date);
-              
-                $('#business_id').val(obj.id);
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-</script>
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    var obj = JSON.parse(data);
+                    $("#id").val(obj.id);
+                    $("#Editfirst_name").val(obj.first_name);
+                    $("#Editbusiness_to").val(obj.business_to);
+                    $("#EditBusiness_amount").val(obj.Business_amount);
+                    $("#Editbusiness_Date").val(obj.business_Date);
+
+                    $('#business_id').val(obj.id);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    </script>
 
     <script>
         function validateFile() {
@@ -593,24 +608,22 @@
     </script>
 
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-<script>
+    <script>
+        $(function() {
+            $("#startdatepicker").datepicker({
+                dateFormat: 'd-m-yy',
+                //minDate: 0
+            });
 
-    
-    $(function() {
-        $("#startdatepicker").datepicker({
-            dateFormat: 'd-m-yy',
-            //minDate: 0
+            $("#enddatepicker").datepicker({
+                dateFormat: 'd-m-yy',
+                //minDate: 0
+            });
         });
-
-        $("#enddatepicker").datepicker({
-            dateFormat: 'd-m-yy',
-            //minDate: 0
-        });
-    });
-</script>
+    </script>
 
 
 

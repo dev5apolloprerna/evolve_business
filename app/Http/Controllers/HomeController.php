@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
+use App\Models\Event;
 use App\Models\Visitor;
 use Session;
 use Carbon\Carbon;
@@ -190,9 +191,6 @@ class HomeController extends Controller
                 })
                 ->get();
             $paymenttotal = $datas->sum('amount');
-
-
-
             //new code start
             $businessData = [
                 'totalGiven' => DB::table('Business')
@@ -349,7 +347,20 @@ class HomeController extends Controller
                 ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
                 ->orderBy('Business.business_id', 'DESC')
                 ->get();
-            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty()) {
+
+            $loginPendingEventCheck = Event::where([
+                'iStatus' => 1,
+                'isDelete' => 0,
+            ])
+                ->whereNotIn('event_id', function ($query) {
+                    $query->select('event_id')
+                        ->from('event_members')
+                        ->where('member_id', Auth::id());
+                })
+                ->orderBy('event_id', 'DESC')
+                ->get();
+
+            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty()) {
                 return redirect()->route('pendinglogincheck.index');
             }
             $session = Auth::user();
@@ -656,7 +667,6 @@ class HomeController extends Controller
             //$BusinesscurrentYear = Carbon::now()->year; 
             // Top receivers in the current month and year
             $membersget = members::where('user_id', $session->id)->first();
-
             $topDirect = Business::select('Business.business_from', 'members.companyname', DB::raw('SUM(Business_amount) as total_amount'))
                 ->leftjoin('members', 'members.user_id', '=', 'Business.business_from_id')
                 ->whereYear('business_Date', $BusinesscurrentYear)
@@ -669,7 +679,7 @@ class HomeController extends Controller
                 // ->where('Business.business_from_id', '!=', 121)
                 ->groupBy('business_from_id')
                 ->orderByDesc('total_amount')
-                ->limit(3)
+                ->limit(1)
                 ->get();
 
 
@@ -681,8 +691,7 @@ class HomeController extends Controller
                 ->where('Business.isapproved_status', 1)
                 ->where('Business.iStatus', 1)
                 ->where('Business.isDelete', 0)
-                ->where('Business.business_from_id', '!=', 121)
-                ->where('Business.business_from_id', '!=', 137)
+                // ->where('Business.business_from_id', '!=', 121)
                 ->groupBy('business_from_id')
                 ->orderByDesc('total_amount')
                 ->limit(3)
