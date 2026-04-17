@@ -5,7 +5,7 @@
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
-            <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
+                <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
                 {{-- Alert Messages --}}
                 @include('common.alert')
                 <div class="d-flex justify-content-end mb-3">
@@ -34,13 +34,10 @@
                                                         <th width="2%" data-sort="Title">Sr No</th>
                                                         <th width="2%" data-sort="Title">Events Name</th>
                                                         <th width="2%" data-sort="Title">Photo</th>
-                                                        <th width="5%" data-sort="Date">Events start Date</th>
-                                                        <th width="5%" data-sort="Date">Events End Date</th>
-                                                        <th width="5%" data-sort="Date">IS Paid</th>
-                                                        <th width="5%" data-sort="Date">Price</th>
-                                                        <th width="5%" data-sort="Date">Limited Set</th>
-                                                        <th width="5%" data-sort="Date">Set Number
-                                                        </th>
+                                                        <th width="5%" data-sort="Date">Events Date</th>
+                                                        <th width="5%" data-sort="Date">Events Start Time</th>
+                                                        <th width="5%" data-sort="Date">Events End Time</th>
+                                                        <th width="5%" data-sort="Date">Type</th>
                                                         <th width="5%" data-sort="Action">Action</th>
                                                     </tr>
                                                 </thead>
@@ -53,31 +50,27 @@
                                                             </td>
                                                             <td class="text-center">{{ $Event->name }}</td>
                                                             <td class="text-center">
-                                                                 <img src="{{ asset('event') . '/' . $Event->photo }}"
-                                                                                style="width: 50px;height: 50px;">
+                                                                <img src="{{ asset('event') . '/' . $Event->photo }}"
+                                                                    style="width: 50px;height: 50px;">
                                                             </td>
                                                             <td class="text-center">
                                                                 {{ \Carbon\Carbon::parse($Event->eventstart_date)->format('d-m-Y') }}
                                                             </td>
                                                             <td class="text-center">
-                                                                {{ \Carbon\Carbon::parse($Event->eventend_date)->format('d-m-Y') }}
+                                                                {{ $Event->eventstart_time }}
                                                             </td>
-                                                            <td class="text-center">{{ $Event->ispaid }}</td>
                                                             <td class="text-center">
-                                                                @if (isset($Event->price))
-                                                                    {{ $Event->price }}
-                                                                @else
-                                                                    N/A
-                                                                @endif
+                                                                {{ $Event->eventend_time }}
                                                             </td>
-                                                            <td class="text-center">{{ $Event->limitedset }}</td>
                                                             <td class="text-center">
-                                                                @if (isset($Event->setnumber))
-                                                                    {{ $Event->setnumber }}
+                                                                @if ($Event->event_type == 1)
+                                                                    ESP
                                                                 @else
-                                                                    N/A
+                                                                    Training
                                                                 @endif
+
                                                             </td>
+
                                                             <td class="d-flex gap-2 justify-content-center">
                                                                 <a href="#" data-bs-toggle="modal"
                                                                     data-bs-target="#EditModal"
@@ -90,8 +83,16 @@
                                                                     onclick="deleteData(<?= $Event->event_id ?>);">
                                                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                                                 </a>
-                                                                <a class="" href="{{ route('Eventinquiry.index', $Event->event_id) }}" title="Event Inquiry">
-                                                                    <i class="fa fa-question-circle" aria-hidden="true"></i> 
+                                                                {{-- <a class=""
+                                                                    href="{{ route('Eventinquiry.index', $Event->event_id) }}"
+                                                                    title="Event Inquiry">
+                                                                    <i class="fa fa-question-circle" aria-hidden="true"></i>
+                                                                </a> --}}
+
+                                                                <a class=""
+                                                                    href="{{ route('Eventinquiry.EventParticipate', $Event->event_id) }}"
+                                                                    title="Event Participate">
+                                                                    <i class="fa fa-question-circle" aria-hidden="true"></i>
                                                                 </a>
 
                                                             </td>
@@ -102,8 +103,8 @@
                                             </table>
                                         </div>
                                         <div class="d-flex justify-content-center mt-3">
-                                   
-                                      {{ $Events->links() }}
+
+                                            {{ $Events->links() }}
                                         </div>
                                     </div>
                                 </div>
@@ -134,57 +135,41 @@
                                             placeholder="Enter Name" value="{{ old('name') }}" required>
                                     </div><br>
                                     <div class="mb-3">
-                                         <span style="color:red;">*</span>Photo</label>
-                                         <input type="file" name="photo" class="form-control" id="Editphoto" >
-                                         <input type="hidden" name="hiddenPhoto" class="form-control" id="hiddenPhoto">
-                                         <div id="PHOTOID">
-                                         </div>
+                                        <span style="color:red;">*</span>Photo</label>
+                                        <input type="file" name="photo" class="form-control" id="Editphoto">
+                                        <input type="hidden" name="hiddenPhoto" class="form-control" id="hiddenPhoto">
+                                        <div id="PHOTOID">
+                                        </div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <span style="color:red;">*</span>Events start Date
+                                        <span style="color:red;">*</span>Events Date
                                         <input type="date" class="form-control" name="eventstart_date"
                                             id="Editeventstart_date" placeholder="Enter Event Start Date"
                                             value="{{ old('eventstart_date') }}" required>
                                     </div>
                                     <div class="mb-3">
-                                        <span style="color:red;">*</span>Events End Date
-                                        <input type="date" class="form-control" name="eventend_date"
-                                            id="Editeventend_date" placeholder="Enter Event End Date"
-                                            value="{{ old('eventend_date') }}" required>
+                                        <span style="color:red;">*</span>Events Start Time
+                                        <input type="text" class="form-control" name="eventstart_time"
+                                            id="Editeventstart_time" placeholder="Enter Event Start Time"
+                                            value="{{ old('eventstart_time') }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span style="color:red;">*</span>Events End Time
+                                        <input type="text" class="form-control" name="eventend_time"
+                                            id="Editeventend_time" placeholder="Enter Event End Time"
+                                            value="{{ old('eventend_time') }}" required>
                                     </div>
                                     {{-- NEW START --}}
                                     <div class="mb-3">
-                                        <span style="color:red;">*</span> IS Paid
-                                        <select class="form-control" name="ispaid" id="Editispaid"
-                                            value="{{ old('ispaid') }}" required>
-                                            <option value="No" {{ old('ispaid') == 'No' ? 'selected' : '' }}>No
+                                        <span style="color:red;">*</span> Events Type
+                                        <select class="form-control" name="event_type" id="Editeventtype"
+                                            value="{{ old('event_type') }}" required>
+                                            <option value="1" {{ old('event_type') == 1 ? 'selected' : '' }}>ESP
                                             </option>
-                                            <option value="Yes" {{ old('ispaid') == 'Yes' ? 'selected' : '' }}>Yes
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3" id="priceField"
-                                        style="{{ old('ispaid') == 'Yes' ? '' : 'display:none;' }}">
-                                        <label for="price">Price:</label>
-                                        <input type="number" class="form-control" name="price" id="Editprice"
-                                            placeholder="Enter Price" value="{{ old('price') }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <span style="color:red;">*</span> Limited set
-                                        <select class="form-control" name="limitedset" id="Editlimitedset"
-                                            value="{{ old('limitedset') }}" required>
-                                            <option value="No" {{ old('limitedset') == 'No' ? 'selected' : '' }}>No
-                                            </option>
-                                            <option value="Yes" {{ old('limitedset') == 'Yes' ? 'selected' : '' }}>Yes
+                                            <option value="2" {{ old('event_type') == 2 ? 'selected' : '' }}>Training
                                             </option>
                                         </select>
-                                    </div>
-                                    <div class="mb-3" id="setnumber"
-                                        style="{{ old('limitedset') == 'Yes' ? '' : 'display:none;' }}">
-                                        <label for="setnumber">Set Number:</label>
-                                        <input type="number" class="form-control" name="setnumber" id="Editsetnumber"
-                                            placeholder="Enter setnumber" value="{{ old('setnumber') }}">
                                     </div>
 
                                     {{-- NEW END  --}}
@@ -192,8 +177,8 @@
                                         <label for="description">
                                             <span style="color:red;">*</span>Description
                                         </label>
-                                        <textarea style="width:100%;"  class="form-control" name="description" id="Editdescription" placeholder="Enter Description"
-                                            rows="4" maxlength="500" autocomplete="off" required></textarea>
+                                        <textarea style="width:100%;" class="form-control" name="description" id="Editdescription"
+                                            placeholder="Enter Description" rows="4" maxlength="500" autocomplete="off" required></textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -307,11 +292,9 @@
                         var obj = JSON.parse(data);
                         $("#Editname").val(obj.name);
                         $("#Editeventstart_date").val(obj.eventstart_date);
-                        $("#Editeventend_date").val(obj.eventend_date);
-                        $("#Editispaid").val(obj.ispaid);
-                        $("#Editprice").val(obj.price);
-                        $("#Editlimitedset").val(obj.limitedset);
-                        $("#Editsetnumber").val(obj.setnumber);
+                        $("#Editeventstart_time").val(obj.eventstart_time);
+                        $("#Editeventend_time").val(obj.eventend_time);
+                        $("#Editeventtype").val(obj.event_type);
                         $("#Editdescription").val(obj.description);
                         // alert(obj.photo);
                         $('#hiddenPhoto').val(obj.photo);
@@ -488,17 +471,19 @@
             });
         });
     </script>
-    
-    
+
+
     <script>
         $(document).ready(function() {
             // Function to initialize NicEdit within the modal
             function initNicEdit() {
-                new nicEditor({ fullPanel: true }).panelInstance('Editdescription');
+                new nicEditor({
+                    fullPanel: true
+                }).panelInstance('Editdescription');
             }
 
             // Attach NicEdit initialization to modal shown event
-            $('#EditModal').on('shown.bs.modal', function () {
+            $('#EditModal').on('shown.bs.modal', function() {
                 initNicEdit();
             });
         });

@@ -1,11 +1,10 @@
-
 @extends('layouts.app')
-@section('title', 'Connection Received List')
+@section('title', 'Reference Received List')
 @section('content')
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
-                
+
                 {{-- Alert Messages --}}
                 @include('common.alert')
 
@@ -14,7 +13,7 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Connection Received
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Reference Received
                                     </h5>
                                 </div>
                             </div>
@@ -25,88 +24,96 @@
                                     aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
                                     id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
                                     <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
-                                        @if($Count > 0)
-                                        <div class="table-responsive scrollbar">
-                                            <table class="table table-bordered table-striped fs--1 mb-0">
-                                                <thead class="bg-200 text-900">
-                                                    <tr>
-                                                        <th scope="col">Sr No</th>                                            
-                                                        <th scop="col">Given By</th>
-                                                        <th scop="col">Company Name</th>
-                                                        <th scop="col">Connection Name</th>
-                                                        <th scop="col">Email</th>
-                                                        <th scop="col">Phone Number
-                                                        </th>
-                                                        <th scop="col">Connection For Message</th>
-                                                        <th scop="col">Connection Date</th>                                                                         
-                                                        <th scop="col">Status</th>                                                                                               
-                                                        {{-- <th w scop="col">Action</th> --}}
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="list">
-                                                    <?php $i = 1;                                               
-                                                    ?>
-                                                    @foreach ($Business as $Business1)
+                                        @if ($Count > 0)
+                                            <div class="table-responsive scrollbar">
+                                                <table class="table table-bordered table-striped fs--1 mb-0">
+                                                    <thead class="bg-200 text-900">
                                                         <tr>
-                                                            <td class="text-center">
-                                                                {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
-                                                            </td>
-                                                           
-                                                            <td class="text-center">{{ $Business1->first_name }}</td>
-                                                            <td class="text-center">{{ $Business1->Company_Name ? $Business1->Company_Name : 'N/A'}}</td>
-                                                            <td class="text-center">{{ $Business1->Reference_Name }}</td>
-                                                            <td class="text-center">{{ $Business1->Email ? $Business1->Email : 'N/A'}}</td>
-                                                            <td class="text-center">{{ $Business1->phonenumber }}</td> 
-                                                            <td class="text-center">{{ $Business1->Refer_for_message ? $Business1->Refer_for_message : 'N/A' }}</td>                                                        
-                                                            <td class="text-center">
-                                                                {{ \Carbon\Carbon::parse($Business1->Reference_Date)->format('d-m-Y') }}
-                                                            </td>
-                                                            <!-- <td class="text-center"> {{ $Business1->businesscomment !== null ? $Business1->businesscomment : 'N/A' }}</td> -->
-                                                            <td class="text-center">         
-                                                                {{ $Business1->isapproved_status == 1 ? 'Approved' : ($Business1->isapproved_status == 2 ? 'Rejected' : '') }}
-                                                            </td>                                                          
-                            
-                                                            <!-- <td>
-                                                                <a href="#" data-bs-toggle="modal"
-                                                                    data-bs-target="#EditModal"
-                                                                    onclick="getEditData(<?= $Business1->business_id ?>)"
-                                                                    class="btn btn-link p-0" title="Edit">
-                                                                    <span class="text-500 fas fa-edit"></span>
-                                                                </a>
-                                                                <a class="btn btn-link p-0" href="#"
-                                                                    data-bs-toggle="modal" title="Delete"
-                                                                    data-bs-target="#deleteRecordModal"
-                                                                    onclick="deleteData(<?= $Business1->business_id ?>);">
-                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                </a> 
-                                                                <a class="" href="#"
-                                                                    data-bs-toggle="modal" title="Status Changed"
-                                                                    data-bs-target="#statusModal"
-                                                                    onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
-                                                                    <i class="fas fa-plus-square" aria-hidden="true"></i>
-                                                                </a> 
-
-                                                            </td> -->
-                                                           
+                                                            <th scope="col">Sr No</th>
+                                                            <th scop="col">Given By</th>
+                                                            <th scop="col">Company Name</th>
+                                                            <th scop="col">Reference Name</th>
+                                                            <th scop="col">Email</th>
+                                                            <th scop="col">Phone Number
+                                                            </th>
+                                                            <th scop="col">Reference For Message</th>
+                                                            <th scop="col">Reference Date</th>
+                                                            <th scop="col">Status</th>
+                                                            {{-- <th w scop="col">Action</th> --}}
                                                         </tr>
-                                                        <?php $i++; ?>
-                                                    @endforeach
-                                                </tbody>                                                                                              
-                                            </table>
-                                           
-                                        </div>
-                                        <div class="d-flex justify-content-center mt-3">
-                                        {{$Business->links()}}
-                                        </div>
-                                        @else 
+                                                    </thead>
+                                                    <tbody class="list">
+                                                        <?php $i = 1;
+                                                        ?>
+                                                        @foreach ($Business as $Business1)
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
+                                                                </td>
+
+                                                                <td class="text-center">{{ $Business1->first_name }}</td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->Company_Name ? $Business1->Company_Name : 'N/A' }}
+                                                                </td>
+                                                                <td class="text-center">{{ $Business1->Reference_Name }}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->Email ? $Business1->Email : 'N/A' }}</td>
+                                                                <td class="text-center">{{ $Business1->phonenumber }}</td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->Refer_for_message ? $Business1->Refer_for_message : 'N/A' }}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ \Carbon\Carbon::parse($Business1->Reference_Date)->format('d-m-Y') }}
+                                                                </td>
+                                                                <!-- <td class="text-center"> {{ $Business1->businesscomment !== null ? $Business1->businesscomment : 'N/A' }}</td> -->
+                                                                <td class="text-center">
+                                                                    {{ $Business1->isapproved_status == 1 ? 'Approved' : ($Business1->isapproved_status == 2 ? 'Rejected' : '') }}
+                                                                </td>
+
+                                                                <!-- <td>
+                                                                        <a href="#" data-bs-toggle="modal"
+                                                                            data-bs-target="#EditModal"
+                                                                            onclick="getEditData(<?= $Business1->business_id ?>)"
+                                                                            class="btn btn-link p-0" title="Edit">
+                                                                            <span class="text-500 fas fa-edit"></span>
+                                                                        </a>
+                                                                        <a class="btn btn-link p-0" href="#"
+                                                                            data-bs-toggle="modal" title="Delete"
+                                                                            data-bs-target="#deleteRecordModal"
+                                                                            onclick="deleteData(<?= $Business1->business_id ?>);">
+                                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                        </a>
+                                                                        <a class="" href="#"
+                                                                            data-bs-toggle="modal" title="Status Changed"
+                                                                            data-bs-target="#statusModal"
+                                                                            onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
+                                                                            <i class="fas fa-plus-square" aria-hidden="true"></i>
+                                                                        </a>
+
+                                                                    </td> -->
+
+                                                            </tr>
+                                                            <?php $i++; ?>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                            <div class="d-flex justify-content-center mt-3">
+                                                {{ $Business->links() }}
+                                            </div>
+                                        @else
                                             <div class="row">
-                                                <div class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
-                                                    <div class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
-                                                        <h1 class="font-white text-center"> Connection Yet To Received </h1>
+                                                <div
+                                                    class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
+                                                    <div
+                                                        class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
+                                                        <h1 class="font-white text-center"> Reference Yet To Received </h1>
                                                     </div>
                                                 </div>
                                             </div>
-                                            @endif 
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -115,14 +122,12 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
+            <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog " style="background-color: white;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Edit Business</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </button>
                         </div>
                         <form method="post" action="{{ route('Business.update') }}" enctype="multipart/form-data">
@@ -264,10 +269,10 @@
                             {{-- {{dd($data)}} --}}
                             @if (isset($Business1->isapproved_status))
                                 <!-- <select class="form-control" name="newStatus">
-                                        <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
-                                        </option>
-                                        <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
-                                    </select> -->
+                                                <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
+                                                </option>
+                                                <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
+                                            </select> -->
 
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
@@ -283,16 +288,16 @@
                                 </select>
                             @endif
                         </div>
-                            <div class="form-group rejectedComments" id="rejectedComments" style="display : none;">
-                                <label for="rejectedComments">Rejected Comments:</label>
-                                <textarea class="form-control" name="businesscomment"></textarea>                
-                            </div>
-                  
+                        <div class="form-group rejectedComments" id="rejectedComments" style="display : none;">
+                            <label for="rejectedComments">Rejected Comments:</label>
+                            <textarea class="form-control" name="businesscomment"></textarea>
+                        </div>
+
                         <!-- <div class="form-group">
-                                <label for="rejectedComments">Rejected Comments:</label>
-                                <textarea class="form-control" name="rejectedComments"></textarea>
-                            </div> -->
-                        <button type="submit" class="btn btn-success"  style="margin-top: 20px;">Save Changes</button>
+                                        <label for="rejectedComments">Rejected Comments:</label>
+                                        <textarea class="form-control" name="rejectedComments"></textarea>
+                                    </div> -->
+                        <button type="submit" class="btn btn-success" style="margin-top: 20px;">Save Changes</button>
                     </form>
                 </div>
             </div>
@@ -305,8 +310,8 @@
 
 @section('scripts')
 
-<script>
-    function toggleRejectedComments() {
+    <script>
+        function toggleRejectedComments() {
             let newStatus = $("#newStatus").val();
             if (newStatus == 2) {
                 $("#rejectedComments").show();
@@ -324,7 +329,7 @@
                 rejectedComments.style.display = 'block';
             }
         }
-</script>
+    </script>
 
     <script>
         function getEditData(id) {
@@ -484,7 +489,7 @@
         });
     </script>
 
-   
+
     <script>
         function getEditDatastatus(id) {
             // alert(id);
@@ -515,41 +520,39 @@
         }
     </script>
 
-<script>
-    function exportExcel() {
-// alert('hello');
-        var fromdate = $("#startdatepicker").val();
-        var todate = $("#enddatepicker").val();
-        // var first_name = $("#first_name").val();
+    <script>
+        function exportExcel() {
+            // alert('hello');
+            var fromdate = $("#startdatepicker").val();
+            var todate = $("#enddatepicker").val();
+            // var first_name = $("#first_name").val();
 
-        var strURL = "{{ route('Business.exportbusiness') }}";
-        strURL += "/" + fromdate +"/"+todate;
+            var strURL = "{{ route('Business.exportbusiness') }}";
+            strURL += "/" + fromdate + "/" + todate;
 
-        window.location.href = strURL;
-    }
-</script>
+            window.location.href = strURL;
+        }
+    </script>
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-<script>
+    <script>
+        $(function() {
+            $("#startdatepicker").datepicker({
+                dateFormat: 'd-m-yy',
+                //minDate: 0
+            });
 
-    
-    $(function() {
-        $("#startdatepicker").datepicker({
-            dateFormat: 'd-m-yy',
-            //minDate: 0
+            $("#enddatepicker").datepicker({
+                dateFormat: 'd-m-yy',
+                //minDate: 0
+            });
         });
-
-        $("#enddatepicker").datepicker({
-            dateFormat: 'd-m-yy',
-            //minDate: 0
-        });
-    });
-</script>
+    </script>
 
 
-<!-- <script>
+    <!-- <script>
         function RejectedComments() {
 
             alert('hello');

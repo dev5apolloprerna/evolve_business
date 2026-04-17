@@ -48,10 +48,22 @@ class VisitorController extends Controller
             'memberid' => 'required',
             'name' => 'required',
         ]);
+        $img = "";
+        if ($request->hasFile('photo')) {
+            $root = $_SERVER['DOCUMENT_ROOT'];
+            $image = $request->file('photo');
+            $img = time() . '.' . $image->getClientOriginalExtension();
+            $destinationpath = $root . '/Visitor/';
+            if (!file_exists($destinationpath)) {
+                mkdir($destinationpath, 0755, true);
+            }
+            $image->move($destinationpath, $img);
+        }
         $Data = array(
             'member_id' => $request->memberid,
             'name'    => $request->name,
             'phone'    => $request->phone,
+            'photo'   => $img,
             'email'    => $request->email,
             'business_catgory'    => $request->business_category_id,
             'business_name'    => $request->business_name,
@@ -67,10 +79,8 @@ class VisitorController extends Controller
 
     public function editview(Request $request, $id)
     {
-        // dd($request);
         $data = Visitor::where(['id' => $id])
             ->first();
-        // echo json_encode($data);
 
         return view('Visitor.edit', compact('data'));
     }
@@ -81,11 +91,33 @@ class VisitorController extends Controller
             'name' => 'required',
 
         ]);
+        $img = "";
+        if ($request->hasFile('photo')) {
+            $root = $_SERVER['DOCUMENT_ROOT'];
+            $image = $request->file('photo');
+            $img = time() . '.' . $image->getClientOriginalExtension();
+            $destinationpath = $root . '/Visitor/';
+            if (!file_exists($destinationpath)) {
+                mkdir($destinationpath, 0755, true);
+            }
+            $image->move($destinationpath, $img);
+            $oldImg = $request->input('hiddenPhoto') ? $request->input('hiddenPhoto') : null;
+
+            if ($oldImg != null || $oldImg != "") {
+                if (file_exists($destinationpath . $oldImg)) {
+                    unlink($destinationpath . $oldImg);
+                }
+            }
+        } else {
+            $oldImg = $request->input('hiddenPhoto');
+            $img = $oldImg;
+        }
 
         $Data = array(
             'member_id' => $request->member_id,
             'name'    => $request->name,
             'phone'    => $request->phone,
+            'photo'    => $img,
             'email'    => $request->email,
             'business_catgory'    => $request->business_category_id,
             'business_name'    => $request->business_name,

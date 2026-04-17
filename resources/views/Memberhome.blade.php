@@ -116,6 +116,50 @@
         }
     </style>
 
+    <style>
+        .simple-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #eee;
+            transition: 0.25s ease;
+        }
+
+        .simple-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px);
+        }
+
+        .sr-no {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .amount {
+            font-weight: 600;
+            color: #28a745;
+            font-size: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .icon {
+            font-size: 18px;
+            color: #6c757d;
+        }
+
+        .text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+    </style>
+
     <!-- ============================================================== -->
 
     <!-- Start right Content here -->
@@ -334,7 +378,7 @@
 
                                                         <p class="text-uppercase fw-bold text-white-50 text-truncate mb-0">
 
-                                                            Connection Given</p>
+                                                            Reference Given</p>
 
                                                     </div>
 
@@ -394,7 +438,7 @@
 
                                                         <p class="text-uppercase fw-bold text-white-50 text-truncate mb-0">
 
-                                                            Connection Received</p>
+                                                            Reference Received</p>
 
                                                     </div>
 
@@ -903,7 +947,7 @@
 
                                 <div class="card mb-3" style="height: 600px">
 
-                                    <div class="card-header">
+                                    {{-- <div class="card-header">
 
                                         <div class="d-flex justify-content-between align-items-center">
 
@@ -920,7 +964,7 @@
 
                                         </div>
 
-                                    </div>
+                                    </div> --}}
 
 
                                     <div class="card-body">
@@ -937,86 +981,50 @@
 
                                                     <div class="card-header align-items-center d-flex">
 
-                                                        <h4 class="card-title mb-0 flex-grow-1"> Direct Business</h4>
+                                                        <h4 class="card-title mb-0 flex-grow-1"> Highest Business Giver
+                                                        </h4>
 
                                                     </div><!-- end card header -->
 
-                                                    <div class="card-body">
+                                                    <div class="row">
+                                                        @foreach ($topDirect as $index => $receiver)
+                                                            <div class="col-lg-8 mt-2 col-md-6 col-sm-12 mb-3">
+                                                                <div class="simple-card">
 
-                                                        <div class="table-responsive table-card">
+                                                                    <!-- Top Row -->
+                                                                    {{-- <div
+                                                                        class="d-flex justify-content-between align-items-center mb-3">
+                                                                        <span class="sr-no">#{{ $index + 1 }}</span>
+                                                                        <span class="amount">
+                                                                            <i class="ri-money-rupee-circle-line me-1"></i>
+                                                                            {{ $receiver->total_amount }}
+                                                                        </span>
+                                                                    </div> --}}
 
-                                                            @if ($topDirectcount > 0)
+                                                                    <!-- Name -->
+                                                                    <div class="info-row">
+                                                                        <i class="ri-user-3-line icon"></i>
+                                                                        <span
+                                                                            class="text">{{ $receiver->business_from }}</span>
+                                                                    </div>
 
-                                                                <table
-                                                                    class="table table-borderless table-hover table-nowrap align-middle mb-0">
+                                                                    <!-- Company -->
+                                                                    <div class="info-row">
+                                                                        <i class="ri-building-line icon"></i>
+                                                                        <span
+                                                                            class="text">{{ $receiver->companyname }}</span>
+                                                                    </div>
 
-                                                                    <thead class="table-light">
-
-                                                                        <tr class="text-muted">
-
-                                                                            <th scope="col">Sr.No</th>
-
-                                                                            <th scope="col">Name</th>
-
-                                                                            <th scope="col">Company Name</th>
-
-                                                                            <th scope="col">Amount</th>
-
-
-
-                                                                        </tr>
-
-                                                                    </thead>
-
-                                                                    <tbody>
-
-
-
-                                                                        @foreach ($topDirect as $index => $receiver)
-                                                                            <tr>
-
-                                                                                <td>{{ $index + 1 }}</td>
-
-                                                                                <td>{{ $receiver->business_from }}</td>
-
-                                                                                <td>{{ $receiver->companyname }}</td>
-
-                                                                                <td>{{ $receiver->total_amount }}</td>
-
-
-
-                                                                            </tr>
-                                                                        @endforeach
-
-                                                                    </tbody><!-- end tbody -->
-
-                                                                </table><!-- end table -->
-                                                            @else
-                                                                <div class="row">
-
-                                                                    <div
-                                                                        class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
-
-                                                                        <div
-                                                                            class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
-
-                                                                            <h1 class="font-white text-center"> No Data
-                                                                                Found !
-                                                                            </h1>
-
-                                                                        </div>
-
+                                                                    <div class="info-row">
+                                                                        <i class="fas fa-rupee-sign"></i>
+                                                                        <span
+                                                                            class="amount">{{ $receiver->total_amount }}</span>
                                                                     </div>
 
                                                                 </div>
-
-
-
-                                                            @endif
-
-                                                        </div><!-- end table responsive -->
-
-                                                    </div><!-- end card body -->
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
 
                                                 </div><!-- end card -->
 
@@ -1115,7 +1123,7 @@
 
                                                     <div class="card-header align-items-center d-flex">
 
-                                                        <h4 class="card-title mb-0 flex-grow-1">Connection Given</h4>
+                                                        <h4 class="card-title mb-0 flex-grow-1">Reference Given</h4>
 
                                                     </div><!-- end card header -->
 

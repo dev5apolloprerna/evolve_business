@@ -13,6 +13,7 @@ class Visitor extends Model
         'name',
         'phone',
         'email',
+        'photo',
         'business_name',
         'business_catgory',
         'member_id',

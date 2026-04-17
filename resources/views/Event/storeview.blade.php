@@ -5,7 +5,7 @@
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
-            <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
+                <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
 
                 @if ($errors->any())
                     @foreach ($errors->all() as $error)
@@ -18,73 +18,87 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Add Events</h5>
-                        </div>
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Add Events</h5>
+                            </div>
                             <div class="card-body">
                                 <div class="live-preview">
-                                    <form action="{{ route('Event.create') }}" method="post"
-                                        enctype="multipart/form-data">
+                                    <form action="{{ route('Event.create') }}" method="post" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row gy-3 mb-3">
-                                                 <div class="col-lg-4 col-md-6">
-                                                    <span style="color:red;">*</span>Events Name
-                                                    <input class="form-control" id="basic-form-name" name="name" type="text"
-                                                        placeholder="Enter Name" value="{{ old('name') }}" required>
-                                                </div>
-                                                <!-- new -->
-                                                <div class="col-lg-4 col-md-6">
+                                            <div class="col-lg-4 col-md-6">
+                                                <span style="color:red;">*</span>Events Name
+                                                <input class="form-control" id="basic-form-name" name="name"
+                                                    type="text" placeholder="Enter Name" value="{{ old('name') }}"
+                                                    required>
+                                            </div>
+                                            <!-- new -->
+                                            <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;">*</span>Photo
-                                                    <input class="form-control" type="file" name="photo" id="photovalidate"
-                                                        value="{{ old('photo') }}" required>
-                                                </div>
-                                                <!-- new -->
-                                            
-                                                <div class="col-lg-4 col-md-6">
-                                                    <span style="color:red;">*</span>Events start Date
-                                                    <input type="date" class="form-control" name="eventstart_date"
-                                                    id="" placeholder="Enter Event Start Date" value="{{ old('eventstart_date') }}" required>
-                                                </div>
-                                                <div class="col-lg-4 col-md-6">
-                                                    <span style="color:red;">*</span>Events End Date
-                                                    <input type="date" class="form-control" name="eventend_date"
-                                                    id="" placeholder="Enter Event End Date" value="{{ old('eventend_date') }}" required>
-                                                </div>
-                                                <div class="col-lg-4 col-md-6">
-                                                    <span style="color:red;">*</span> IS Paid
-                                                    <select class="form-control" name="ispaid" id="ispaid" value="{{ old('ispaid') }}"  required>
-                                                        <option value="No">No</option>
-                                                        <option value="Yes">Yes</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-lg-4 col-md-6" id="priceField" style="display:none;">
-                                                    <span style="color:red;">*</span> Price
-                                                    <input type="number" class="form-control" name="price" id="price" placeholder="Enter Price" value="{{ old('price') }}">
-                                                </div>
-                                                <div class="col-lg-4 col-md-6">
-                                                    <span style="color:red;">*</span> Limited set
-                                                    <select class="form-control" name="limitedset" id="limitedset" value="{{ old('limitedset') }}" required>
-                                                        <option value="No">No</option>
-                                                        <option value="Yes">Yes</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-lg-4 col-md-6" id="setnumber" style="display:none;">
-                                                    <span style="color:red;">*</span>Set Number: 
-                                                    <input type="number" class="form-control" name="setnumber" id="setnumber" placeholder="Enter setnumber" value="{{ old('setnumber') }}">
-                                                </div>
-                                                <div>                                                   
-                                                    <span style="color:red;">*</span>Description                                                
-                                                    <textarea class="form-control" name="description" id="description" placeholder="Enter Description" rows="4" maxlength="500" autocomplete="off"></textarea>
-                                                </div>
+                                                <input class="form-control" type="file" name="photo" id="photovalidate"
+                                                    value="{{ old('photo') }}" required>
+                                            </div>
+                                            <!-- new -->
+
+                                            <div class="col-lg-4 col-md-6">
+                                                <span style="color:red;">*</span>Events Date
+                                                <input type="date" class="form-control" name="eventstart_date"
+                                                    id="" placeholder="Enter Event Start Date"
+                                                    value="{{ old('eventstart_date') }}" required>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6">
+                                                <span style="color:red;">*</span>Events Start Time
+                                                <input class="form-control" id="basic-form-name" name="eventstart_time"
+                                                    type="text" placeholder="Enter Start Time"
+                                                    value="{{ old('eventstart_time') }}" required>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6">
+                                                <span style="color:red;">*</span>Events End Time
+                                                <input class="form-control" id="basic-form-name" name="eventend_time"
+                                                    type="text" placeholder="Enter End Time"
+                                                    value="{{ old('eventend_time') }}" required>
+                                            </div>
+                                            {{-- <div class="col-lg-4 col-md-6">
+                                                <span style="color:red;">*</span>Events End Date
+                                                <input type="date" class="form-control" name="eventend_date"
+                                                    id="" placeholder="Enter Event End Date"
+                                                    value="{{ old('eventend_date') }}" required>
+                                            </div> --}}
+                                            <div class="col-lg-4 col-md-6">
+                                                <span style="color:red;">*</span>Events Type
+                                                <select class="form-control" name="event_type" id="event_type"
+                                                    value="{{ old('event_type') }}" required>
+                                                    <option value="1">ESP</option>
+                                                    <option value="2">Training</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6" id="priceField" style="display:none;">
+                                                <span style="color:red;">*</span> Price
+                                                <input type="number" class="form-control" name="price" id="price"
+                                                    placeholder="Enter Price" value="{{ old('price') }}">
+                                            </div>
+
+                                            <div class="col-lg-4 col-md-6" id="setnumber" style="display:none;">
+                                                <span style="color:red;">*</span>Set Number:
+                                                <input type="number" class="form-control" name="setnumber" id="setnumber"
+                                                    placeholder="Enter setnumber" value="{{ old('setnumber') }}">
+                                            </div>
+                                            <div>
+                                                <span style="color:red;">*</span>Description
+                                                <textarea class="form-control" name="description" id="description" placeholder="Enter Description" rows="4"
+                                                    maxlength="500" autocomplete="off"></textarea>
+                                            </div>
                                             <div class="text-center">
-                                            <button type="submit" class="btn btn-success btn-user"
+                                                <button type="submit" class="btn btn-success btn-user"
                                                     style="width:
                                                     81px; height: 36px;">Submit</button>
-                                                <button type="button" class="btn btn-danger btn-user" style="width:
-                                                    81px; height: 34px;" onclick="cancelForm()">Cancel</button>
+                                                <button type="button" class="btn btn-danger btn-user"
+                                                    style="width:
+                                                    81px; height: 34px;"
+                                                    onclick="cancelForm()">Cancel</button>
                                             </div>
                                         </div>
-                                     </div>
+                                </div>
                                 </form>
                             </div>
                         </div>
@@ -205,45 +219,45 @@
         });
     </script>
 
-<script>
-    $(document).ready(function(){
-        $("#priceField").hide();
-        $("#ispaid").change(function(){
-            if($(this).val() === "Yes"){
-                $("#priceField").show();
-            } else {
-                $("#priceField").hide();
-            }
+    <script>
+        $(document).ready(function() {
+            $("#priceField").hide();
+            $("#ispaid").change(function() {
+                if ($(this).val() === "Yes") {
+                    $("#priceField").show();
+                } else {
+                    $("#priceField").hide();
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
-    $(document).ready(function(){
-        $("#setnumber").hide();
-        $("#limitedset").change(function(){
-            if($(this).val() === "Yes"){
-                $("#setnumber").show();
-            } else {
-                $("#setnumber").hide();
-            }
+    <script>
+        $(document).ready(function() {
+            $("#setnumber").hide();
+            $("#limitedset").change(function() {
+                if ($(this).val() === "Yes") {
+                    $("#setnumber").show();
+                } else {
+                    $("#setnumber").hide();
+                }
+            });
         });
-    });
-</script>
-<script>
+    </script>
+    <script>
         $(window).on('load', function() {
             $('#description').ckeditor();
         });
     </script>
 
-<script type="text/javascript">
- 
- bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
-</script>
-<script>
-     function cancelForm() {
-         window.location.reload(); 
-     }
- </script>
+    <script type="text/javascript">
+        bkLib.onDomLoaded(function() {
+            nicEditors.allTextAreas()
+        });
+    </script>
+    <script>
+        function cancelForm() {
+            window.location.reload();
+        }
+    </script>
 @endsection
-

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use validate;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BusinessStatusMail;
+use App\Models\Event;
 use App\Models\OneToOne;
 use Illuminate\Support\Str;
 
@@ -326,6 +327,13 @@ class Businesscontroller extends Controller
     public function statusonetooneget(Request $request)
     {
         $data = OneToOne::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $request->id])->first();
+        // dd($Business);  
+        echo json_encode($data);
+    }
+
+    public function statusEventget(Request $request)
+    {
+        $data = Event::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $request->id])->first();
         // dd($Business);  
         echo json_encode($data);
     }

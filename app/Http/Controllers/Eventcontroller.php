@@ -8,18 +8,50 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use validate;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class Eventcontroller extends Controller
 {
-    public function MemberEventList(Request $request)
+    public function PastEventList(Request $request)
     {
-        $Events = Event::orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
+
+        $today = Carbon::today();
+        $Events = Event::where([
+            'iStatus' => 1,
+            'isDelete' => 0,
+            'isapproved_status' => 1
+        ])
+            ->where('member_id', auth()->user()->id)
+            ->whereDate('eventstart_date', '<', $today)
+            ->orderBy('eventstart_date', 'DESC')
+            ->paginate(20);
+        // $Events = Event::orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
         return view('MemberEventList.index', compact('Events'));
+    }
+
+    public function UpcomingEventList(Request $request)
+    {
+        $today = Carbon::today();
+        $Events = Event::where([
+            'iStatus' => 1,
+            'isDelete' => 0,
+            'isapproved_status' => 1
+        ])
+            ->where('member_id', auth()->user()->id)
+            ->whereDate('eventstart_date', '>=', $today)
+            ->orderBy('eventstart_date', 'ASC')
+            ->paginate(20);
+        return view('MemberEventList.UpcomingEvent', compact('Events'));
     }
     public function index(Request $request)
     {
         $Events = Event::orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
         return view('Event.index', compact('Events'));
+    }
+    public function EventParticipate(Request $request)
+    {
+        $Events = Event::with('member')->orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
+        return view('Event.Participate', compact('Events'));
     }
     public function storeview()
     {
@@ -27,7 +59,6 @@ class Eventcontroller extends Controller
     }
     public function create(Request $request)
     {
-        // dd($request->all());
 
         $request->validate([
             'name' => 'required',
@@ -51,7 +82,9 @@ class Eventcontroller extends Controller
             'user_id'   => auth()->id(),
             'photo'           => $img,
             'eventstart_date' => $request->eventstart_date,
-            'eventend_date'   => $request->eventend_date,
+            'eventstart_time'   => $request->eventstart_time,
+            'eventend_time'   => $request->eventend_time,
+            'event_type'   => $request->event_type,
             'ispaid'          => $request->ispaid,
             'price'           => $request->price,
             'limitedset'      => $request->limitedset,
@@ -73,8 +106,6 @@ class Eventcontroller extends Controller
     }
     public function update(Request $request)
     {
-        // dd($request);
-
         $img = "";
         if ($request->hasFile('photo')) {
             $root = $_SERVER['DOCUMENT_ROOT'];
@@ -111,11 +142,9 @@ class Eventcontroller extends Controller
                 'user_id'   => auth()->id(),
                 'photo'           => $img,
                 'eventstart_date' => $request->eventstart_date,
-                'eventend_date' => $request->eventend_date,
-                'ispaid'          => $request->ispaid,
-                'price'           => $request->price,
-                'limitedset'      => $request->limitedset,
-                'setnumber'       => $request->setnumber,
+                'eventstart_time' => $request->eventstart_time,
+                'eventend_time' => $request->eventend_time,
+                'event_type'          => $request->event_type,
                 'description' => $request->description,
                 'event_slug' => $slug,
                 'updated_at' => date('Y-m-d H:i:s'),

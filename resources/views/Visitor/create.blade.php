@@ -16,12 +16,12 @@
                 @include('common.alert')
 
                 <!-- <div class="row">
-                                                                                                                                                                                                                    <div class="col-10">
-                                                                                                                                                                                                                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                                                                                                                                                                                                            <h4 class="mb-sm-0">Add Members</h4>
-                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                </div> -->
+                                                                                                                                                                                                                                <div class="col-10">
+                                                                                                                                                                                                                                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                                                                                                                                                                                                                        <h4 class="mb-sm-0">Add Members</h4>
+                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                            </div> -->
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
@@ -81,6 +81,15 @@
                                                     id="business_name" placeholder="Enter Business Name" maxlength="70"
                                                     autocomplete="off" required>
                                             </div>
+                                            <div class="col-lg-4 col-md-6">
+                                                <label for="photo"><span style="color:red;">*</span>Proof Of
+                                                    Payment</label>
+                                                <input type="file" class="form-control" name="photo" id="photovalidate"
+                                                    placeholder="Enter photo" value="{{ old('photo') }}" required>
+
+                                                <div id="viewimg" style="margin-top:10px;"></div>
+
+                                            </div>
                                         </div>
 
                                         <div class="row gy-3">
@@ -108,4 +117,57 @@
 @endsection
 
 @section('scripts')
+    <script>
+        function validateFile() {
+            var allowedExtension = ['jpeg', 'jpg', 'png',
+                'webp'
+            ];
+            var fileExtension = document.getElementById('photovalidate').value.split('.').pop().toLowerCase();
+            var isValidFile = false;
+
+            for (var index in allowedExtension) {
+
+                if (fileExtension === allowedExtension[index]) {
+                    isValidFile = true;
+                    break;
+                }
+            }
+
+            if (!isValidFile) {
+                alert('Allowed Extensions are : *.' + allowedExtension.join(', *.'));
+            }
+
+            return isValidFile;
+        }
+    </script>
+
+    {{-- Add photo --}}
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#hello').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#photovalidate").change(function() {
+            var input = this;
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $('#viewimg').html(
+                        '<img src="' + e.target.result +
+                        '" width="100" height="100" style="border:1px solid #ccc; padding:5px;">'
+                    );
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+    </script>
+
 @endsection

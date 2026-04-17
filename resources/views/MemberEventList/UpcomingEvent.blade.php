@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Member Events List')
+@section('title', 'Upcoming Events List')
 @section('content')
 
     <div class="main-content">
@@ -38,7 +38,7 @@
                         <div class="card-header">
                             <div class="row flex-between-end">
                                 <div class="col-auto align-self-center">
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Past Events List
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Upcoming Events List
                                     </h5>
                                 </div>
                             </div>
@@ -59,7 +59,6 @@
                                                         <th width="5%" data-sort="Date">Events Date</th>
                                                         <th width="5%" data-sort="Date">Events Start Time</th>
                                                         <th width="5%" data-sort="Date">Events End Time</th>
-
                                                     </tr>
                                                 </thead>
                                                 <tbody class="list">
@@ -77,7 +76,9 @@
                                                             <td class="text-center">
                                                                 {{ \Carbon\Carbon::parse($Event->eventstart_date)->format('d-m-Y') }}
                                                             </td>
+
                                                             <td class="text-center">{{ $Event->eventstart_time }}</td>
+
                                                             <td class="text-center">{{ $Event->eventend_time }}</td>
 
                                                         </tr>
