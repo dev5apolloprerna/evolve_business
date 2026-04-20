@@ -734,13 +734,14 @@
                     </div>
 
 
-                    <div class="col-lg-6 mt-3" style="height: 1100px">
+                    <div class="col-lg-6 mt-3" style="height: 1670px">
 
                         <div class="row" style="height: 300px">
                             <div class="col-12 col-md-6 col-lg-12">
                                 <div class="card">
                                     @if ($manOfTheMonth)
-                                        <div class="member-title text-center mb-2">
+                                        <div class="member-title text-white pt-2 text-center"
+                                            style="background: #61a143;">
                                             Member of the Last Month
                                         </div>
                                         <div class="card-header stf">
@@ -945,27 +946,269 @@
 
                                 </div>
 
-                                <div class="card mb-3" style="height: 600px">
+                                <div class="card mb-3" style="height: 420px">
 
-                                    {{-- <div class="card-header">
+                                    <div class="card-body">
+                                        <div class="row">
 
-                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="col-xl-12">
+                                                <div class="card">
+                                                    @if ($topDirect)
+                                                        <div class="member-title text-white text-center pt-2"
+                                                            style="background: #61a143;">
+                                                            Highest Business Giver
+                                                        </div>
+                                                        <div class="card-header stf">
+                                                            @if ($topDirect->Company_logo == null)
+                                                                <img class="cmp-lg"
+                                                                    src="https://groath.in/assets/images/users/user1.png"
+                                                                    alt="No image" class="company-logo">
+                                                            @else
+                                                                <img class="cmp-lg"
+                                                                    src="{{ asset('Company_logo') . '/' . $topDirect->Company_logo }}"
+                                                                    alt="No image" class="company-logo">
+                                                            @endif
+                                                            <div>
+                                                                <h6 class="cmp-name text-white text-center mb-0">
+                                                                    {{ $topDirect->companyname }}
+                                                                </h6>
+                                                                <p class="cmp-name text-white text-center mb-0"
+                                                                    style="font-size: 13px;">
+                                                                    {{ $topDirect->categories_name ?? '' }}</p>
+                                                            </div>
+                                                        </div>
 
-                                            <div>
+                                                        <div class="card-body br1  ">
+                                                            <div class="d-flex align-items-center user-main-box">
 
-                                                <h5 class="card-title mb-0" data-anchor="data-anchor">Top 3 Giver Of
-                                                    The Month -
+                                                                <!-- LEFT SIDE -->
+                                                                <div class="user-left text-center">
+                                                                    @if ($topDirect->profile_photo == null)
+                                                                        <img class="user-img"
+                                                                            src="https://groath.in/assets/images/users/undraw_profile.webp"
+                                                                            alt="No image">
+                                                                    @else
+                                                                        <img class="user-img"
+                                                                            src="{{ asset('profile_photo') . '/' . $topDirect->profile_photo }}"
+                                                                            alt="No image">
+                                                                    @endif
 
-                                                    {{ $monthname }}
+                                                                    <div class="user-name mt-2">
+                                                                        {{ $topDirect->business_from }} <br>
+                                                                        <small>{{ $topDirect->group_name ?? 'No group name' }}</small>
+                                                                    </div>
+                                                                </div>
 
-                                                </h5>
+                                                                <!-- RIGHT SIDE -->
+                                                                <div class="user-right ms-4">
 
+                                                                    <div class="info-item">
+                                                                        <i class="fa fa-envelope"></i>
+                                                                        {{ $topDirect->email }}
+                                                                    </div>
+
+                                                                    <div class="info-item">
+                                                                        <i class="fa fa-phone"></i>
+                                                                        {{ $topDirect->phonenumber }}
+                                                                    </div>
+
+                                                                    <div class="info-item">
+                                                                        <i class="fa fa-inr"></i>
+                                                                        {{ $topDirect->total_amount }}
+                                                                    </div>
+
+                                                                    <div class="site-social-icons mt-3">
+                                                                        @if (isset($topDirect->phonenumber))
+                                                                            <a href="https://wa.me/91{{ $topDirect->phonenumber }}"
+                                                                                target="_blank">
+                                                                                <i class="fa-brands fa-whatsapp"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (isset($topDirect->facebook_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $topDirect->facebook_link }}">
+                                                                                <i class="fa-brands fa-facebook-f"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (isset($topDirect->instagram_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $topDirect->instagram_link }}">
+                                                                                <i class="fa-brands fa-instagram"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (isset($topDirect->youtube_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $topDirect->youtube_link }}">
+                                                                                <i class="fa-brands fa-youtube"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (isset($topDirect->linkedin_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $topDirect->linkedin_link }}">
+                                                                                <i class="fa-brands fa-linkedin"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (!empty($topDirect->google_link) && $topDirect->google_link !== '-')
+                                                                            <a target="_blank"
+                                                                                href="{{ $topDirect->google_link }}">
+                                                                                <i class="fa-brands fa-google-plus-g"></i>
+                                                                            </a>
+                                                                        @endif
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="card-header stf text-center text-white">
+                                                            No Highest Business Giver Not Found
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
 
                                         </div>
+                                    </div>
 
-                                    </div> --}}
+                                </div>
 
+                                <div class="card mb-3" style="height: 420px">
+
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-xl-12">
+                                                <div class="card">
+                                                    @if ($topReference)
+                                                        <div class="member-title text-center pt-2 text-white "
+                                                            style="background: #61a143;">
+                                                            Highest References Connection
+                                                        </div>
+                                                        <div class="card-header stf">
+                                                            @if ($topReference->Company_logo == null)
+                                                                <img class="cmp-lg"
+                                                                    src="https://groath.in/assets/images/users/user1.png"
+                                                                    alt="No image" class="company-logo">
+                                                            @else
+                                                                <img class="cmp-lg"
+                                                                    src="{{ asset('Company_logo') . '/' . $topReference->Company_logo }}"
+                                                                    alt="No image" class="company-logo">
+                                                            @endif
+                                                            <div>
+                                                                <h6 class="cmp-name text-white text-center mb-0">
+                                                                    {{ $topReference->companyname }}
+                                                                </h6>
+                                                                <p class="cmp-name text-white text-center mb-0"
+                                                                    style="font-size: 13px;">
+                                                                    {{ $topReference->categories_name ?? '' }}</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="card-body br1 p-4 mb-2">
+                                                            <div class="d-flex align-items-center user-main-box">
+
+                                                                <!-- LEFT SIDE -->
+                                                                <div class="user-left text-center">
+                                                                    @if ($topReference->profile_photo == null)
+                                                                        <img class="user-img"
+                                                                            src="https://groath.in/assets/images/users/undraw_profile.webp"
+                                                                            alt="No image">
+                                                                    @else
+                                                                        <img class="user-img"
+                                                                            src="{{ asset('profile_photo') . '/' . $topReference->profile_photo }}"
+                                                                            alt="No image">
+                                                                    @endif
+
+                                                                    <div class="user-name mt-2">
+                                                                        {{ $topReference->business_from }} <br>
+                                                                        <small>{{ $topReference->group_name ?? 'No group name' }}</small>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- RIGHT SIDE -->
+                                                                <div class="user-right ms-4">
+
+                                                                    <div class="info-item">
+                                                                        <i class="fa fa-envelope"></i>
+                                                                        {{ $topReference->email }}
+                                                                    </div>
+
+                                                                    <div class="info-item">
+                                                                        <i class="fa fa-phone"></i>
+                                                                        {{ $topReference->phonenumber }}
+                                                                    </div>
+
+                                                                    <div class="info-item">
+                                                                        <i class="fa fa-inr"></i>
+                                                                        {{ $topReference->total_amount }}
+                                                                    </div>
+
+                                                                    <div class="site-social-icons mt-3">
+                                                                        @if (isset($topReference->phonenumber))
+                                                                            <a href="https://wa.me/91{{ $topReference->phonenumber }}"
+                                                                                target="_blank">
+                                                                                <i class="fa-brands fa-whatsapp"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (isset($topReference->facebook_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $topReference->facebook_link }}">
+                                                                                <i class="fa-brands fa-facebook-f"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (isset($topReference->instagram_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $topReference->instagram_link }}">
+                                                                                <i class="fa-brands fa-instagram"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (isset($topReference->youtube_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $topReference->youtube_link }}">
+                                                                                <i class="fa-brands fa-youtube"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (isset($topReference->linkedin_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $topReference->linkedin_link }}">
+                                                                                <i class="fa-brands fa-linkedin"></i>
+                                                                            </a>
+                                                                        @endif
+
+                                                                        @if (!empty($topReference->google_link) && $topReference->google_link !== '-')
+                                                                            <a target="_blank"
+                                                                                href="{{ $topReference->google_link }}">
+                                                                                <i class="fa-brands fa-google-plus-g"></i>
+                                                                            </a>
+                                                                        @endif
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="card-header stf text-center text-white">
+                                                            No Reference Connection Giver Not Found
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="card mb-3" style="height: 420px">
 
                                     <div class="card-body">
 
@@ -973,247 +1216,126 @@
 
                                         <div class="row">
 
-
-
                                             <div class="col-xl-12">
-
                                                 <div class="card">
-
-                                                    <div class="card-header align-items-center d-flex">
-
-                                                        <h4 class="card-title mb-0 flex-grow-1"> Highest Business Giver
-                                                        </h4>
-
-                                                    </div><!-- end card header -->
-
-                                                    <div class="row">
-                                                        @foreach ($topDirect as $index => $receiver)
-                                                            <div class="col-lg-8 mt-2 col-md-6 col-sm-12 mb-3">
-                                                                <div class="simple-card">
-
-                                                                    <!-- Top Row -->
-                                                                    {{-- <div
-                                                                        class="d-flex justify-content-between align-items-center mb-3">
-                                                                        <span class="sr-no">#{{ $index + 1 }}</span>
-                                                                        <span class="amount">
-                                                                            <i class="ri-money-rupee-circle-line me-1"></i>
-                                                                            {{ $receiver->total_amount }}
-                                                                        </span>
-                                                                    </div> --}}
-
-                                                                    <!-- Name -->
-                                                                    <div class="info-row">
-                                                                        <i class="ri-user-3-line icon"></i>
-                                                                        <span
-                                                                            class="text">{{ $receiver->business_from }}</span>
-                                                                    </div>
-
-                                                                    <!-- Company -->
-                                                                    <div class="info-row">
-                                                                        <i class="ri-building-line icon"></i>
-                                                                        <span
-                                                                            class="text">{{ $receiver->companyname }}</span>
-                                                                    </div>
-
-                                                                    <div class="info-row">
-                                                                        <i class="fas fa-rupee-sign"></i>
-                                                                        <span
-                                                                            class="amount">{{ $receiver->total_amount }}</span>
-                                                                    </div>
-
-                                                                </div>
+                                                    @if ($TopOneToOne)
+                                                        <div class="member-title text-center text-white pt-2"
+                                                            style="background: #61a143;">
+                                                            Highest One To One
+                                                        </div>
+                                                        <div class="card-header stf">
+                                                            @if ($TopOneToOne->Company_logo == null)
+                                                                <img class="cmp-lg"
+                                                                    src="https://groath.in/assets/images/users/user1.png"
+                                                                    alt="No image" class="company-logo">
+                                                            @else
+                                                                <img class="cmp-lg"
+                                                                    src="{{ asset('Company_logo') . '/' . $TopOneToOne->Company_logo }}"
+                                                                    alt="No image" class="company-logo">
+                                                            @endif
+                                                            <div>
+                                                                <h6 class="cmp-name text-white text-center mb-0">
+                                                                    {{ $TopOneToOne->companyname }}
+                                                                </h6>
+                                                                <p class="cmp-name text-white text-center mb-0"
+                                                                    style="font-size: 13px;">
+                                                                    {{ $TopOneToOne->categories_name ?? '' }}</p>
                                                             </div>
-                                                        @endforeach
-                                                    </div>
+                                                        </div>
 
-                                                </div><!-- end card -->
+                                                        <div class="card-body br1 p-4 mb-2">
+                                                            <div class="d-flex align-items-center user-main-box">
 
-                                            </div>
+                                                                <!-- LEFT SIDE -->
+                                                                <div class="user-left text-center">
+                                                                    @if ($TopOneToOne->profile_photo == null)
+                                                                        <img class="user-img"
+                                                                            src="https://groath.in/assets/images/users/undraw_profile.webp"
+                                                                            alt="No image">
+                                                                    @else
+                                                                        <img class="user-img"
+                                                                            src="{{ asset('profile_photo') . '/' . $TopOneToOne->profile_photo }}"
+                                                                            alt="No image">
+                                                                    @endif
 
+                                                                    <div class="user-name mt-2">
+                                                                        {{ $TopOneToOne->from }} <br>
+                                                                        <small>{{ $TopOneToOne->group_name ?? 'No group name' }}</small>
+                                                                    </div>
+                                                                </div>
 
+                                                                <!-- RIGHT SIDE -->
+                                                                <div class="user-right ms-4">
 
-                                            <div class="col-xl-12">
+                                                                    <div class="info-item">
+                                                                        <i class="fa fa-envelope"></i>
+                                                                        {{ $TopOneToOne->email }}
+                                                                    </div>
 
-                                                <div class="card">
+                                                                    <div class="info-item">
+                                                                        <i class="fa fa-phone"></i>
+                                                                        {{ $TopOneToOne->phonenumber }}
+                                                                    </div>
+                                                                    <div class="site-social-icons mt-3">
+                                                                        @if (isset($TopOneToOne->phonenumber))
+                                                                            <a href="https://wa.me/91{{ $TopOneToOne->phonenumber }}"
+                                                                                target="_blank">
+                                                                                <i class="fa-brands fa-whatsapp"></i>
+                                                                            </a>
+                                                                        @endif
 
-                                                    <div class="card-header align-items-center d-flex">
+                                                                        @if (isset($TopOneToOne->facebook_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $TopOneToOne->facebook_link }}">
+                                                                                <i class="fa-brands fa-facebook-f"></i>
+                                                                            </a>
+                                                                        @endif
 
-                                                        <h4 class="card-title mb-0 flex-grow-1">Reference Business</h4>
+                                                                        @if (isset($TopOneToOne->instagram_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $TopOneToOne->instagram_link }}">
+                                                                                <i class="fa-brands fa-instagram"></i>
+                                                                            </a>
+                                                                        @endif
 
-                                                    </div><!-- end card header -->
+                                                                        @if (isset($TopOneToOne->youtube_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $TopOneToOne->youtube_link }}">
+                                                                                <i class="fa-brands fa-youtube"></i>
+                                                                            </a>
+                                                                        @endif
 
-                                                    <div class="card-body">
+                                                                        @if (isset($TopOneToOne->linkedin_link))
+                                                                            <a target="_blank"
+                                                                                href="{{ $TopOneToOne->linkedin_link }}">
+                                                                                <i class="fa-brands fa-linkedin"></i>
+                                                                            </a>
+                                                                        @endif
 
-                                                        <div class="table-responsive table-card">
-
-                                                            @if ($topReferencecount > 0)
-
-                                                                <table
-                                                                    class="table table-borderless table-hover table-nowrap align-middle mb-0">
-
-                                                                    <thead class="table-light">
-
-                                                                        <tr class="text-muted">
-
-                                                                            <th scope="col">Sr.No</th>
-
-                                                                            <th scope="col">Name</th>
-
-                                                                            <th scope="col">Company Name</th>
-
-                                                                            <th scope="col">Amount</th>
-
-                                                                        </tr>
-
-                                                                    </thead>
-
-                                                                    <tbody>
-
-                                                                        @foreach ($topReference as $index => $Giver)
-                                                                            <tr>
-
-                                                                                <td>{{ $index + 1 }}</td>
-
-                                                                                <td>{{ $Giver->business_from }}</td>
-
-                                                                                <td>{{ $Giver->companyname }}</td>
-
-                                                                                <td>{{ $Giver->total_amount }}</td>
-
-                                                                            </tr>
-                                                                        @endforeach
-
-                                                                    </tbody><!-- end tbody -->
-
-                                                                </table><!-- end table -->
-                                                            @else
-                                                                <div class="row">
-
-                                                                    <div
-                                                                        class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
-
-                                                                        <div
-                                                                            class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
-
-                                                                            <h1 class="font-white text-center"> No Data
-                                                                                Found !
-                                                                            </h1>
-
-                                                                        </div>
-
+                                                                        @if (!empty($TopOneToOne->google_link) && $TopOneToOne->google_link !== '-')
+                                                                            <a target="_blank"
+                                                                                href="{{ $TopOneToOne->google_link }}">
+                                                                                <i class="fa-brands fa-google-plus-g"></i>
+                                                                            </a>
+                                                                        @endif
                                                                     </div>
 
                                                                 </div>
 
-                                                            @endif
-
-                                                        </div><!-- end table responsive -->
-
-                                                    </div><!-- end card body -->
-
-                                                </div><!-- end card -->
-
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="card-header stf text-center text-white">
+                                                            No One To One Not Found
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
-
-                                            {{-- connection given start --}}
-
-                                            <div class="col-xl-12">
-
-                                                <div class="card">
-
-                                                    <div class="card-header align-items-center d-flex">
-
-                                                        <h4 class="card-title mb-0 flex-grow-1">Reference Given</h4>
-
-                                                    </div><!-- end card header -->
-
-                                                    <div class="card-body">
-
-                                                        <div class="table-responsive table-card">
-
-                                                            @if ($TopReferenceGivers > 0)
-
-                                                                <table
-                                                                    class="table table-borderless table-hover table-nowrap align-middle mb-0">
-
-                                                                    <thead class="table-light">
-
-                                                                        <tr class="text-muted">
-
-                                                                            <th scope="col">Sr.No</th>
-
-                                                                            <th scope="col">Name</th>
-
-                                                                            <th scope="col">Company Name</th>
-
-                                                                            <th scope="col">Total references</th>
-
-                                                                        </tr>
-
-                                                                    </thead>
-
-                                                                    <tbody>
-
-                                                                        @foreach ($Top_Reference_Givers as $index => $Giver)
-                                                                            <tr>
-
-                                                                                <td>{{ $index + 1 }}</td>
-
-                                                                                <td>{{ $Giver->Contact_person }}</td>
-
-                                                                                <td>{{ $Giver->companyname }}</td>
-
-                                                                                <td>{{ $Giver->total_references }}</td>
-
-                                                                            </tr>
-                                                                        @endforeach
-
-                                                                    </tbody><!-- end tbody -->
-
-                                                                </table><!-- end table -->
-                                                            @else
-                                                                <div class="row">
-
-                                                                    <div
-                                                                        class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
-
-                                                                        <div
-                                                                            class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
-
-                                                                            <h1 class="font-white text-center"> No Data
-                                                                                Found !
-                                                                            </h1>
-
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                </div>
-
-                                                            @endif
-
-                                                        </div><!-- end table responsive -->
-
-                                                    </div><!-- end card body -->
-
-                                                </div><!-- end card -->
-
-                                            </div>
-
-                                            {{-- connection given end --}}
-
-
 
                                         </div>
-
-
-
-                                        <!--Business Reciver And Giver -->
-
                                     </div>
 
                                 </div>
-
 
                             </div>
 
@@ -1222,9 +1344,6 @@
                     </div>
 
                 </div>
-
-
-
 
             </div>
 
