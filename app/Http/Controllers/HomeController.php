@@ -667,7 +667,7 @@ class HomeController extends Controller
             //$BusinesscurrentYear = Carbon::now()->year; 
             // Top receivers in the current month and year
             $membersget = members::where('user_id', $session->id)->first();
-            $topDirect = Business::select('Business.business_from', 'members.companyname', DB::raw('SUM(Business_amount) as total_amount'))
+            $topDirect = Business::select('Business.business_from', 'members.*', DB::raw('SUM(Business_amount) as total_amount'))
                 ->leftjoin('members', 'members.user_id', '=', 'Business.business_from_id')
                 ->whereYear('business_Date', $BusinesscurrentYear)
                 ->whereMonth('business_Date', $BusinesscurrentMonth)
@@ -680,10 +680,10 @@ class HomeController extends Controller
                 ->groupBy('business_from_id')
                 ->orderByDesc('total_amount')
                 ->limit(1)
-                ->get();
+                ->first();
 
 
-            $topReference = Business::select('Business.business_from', 'members.companyname', DB::raw('SUM(Business_amount) as total_amount'))
+            $topReference = Business::select('Business.business_from', 'members.*', DB::raw('SUM(Business_amount) as total_amount'))
                 ->join('members', 'members.user_id', '=', 'Business.business_from_id')
                 ->whereYear('business_Date', $BusinesscurrentYear)
                 ->whereMonth('business_Date', $BusinesscurrentMonth)
@@ -694,25 +694,25 @@ class HomeController extends Controller
                 // ->where('Business.business_from_id', '!=', 121)
                 ->groupBy('business_from_id')
                 ->orderByDesc('total_amount')
-                ->limit(3)
-                ->get();
+                ->limit(1)
+                ->first();
 
-            $Top_Reference_Givers = DB::table('Reference')
-                ->select('Reference_from', 'members.Contact_person', 'members.companyname', DB::raw('count(*) as total_references'))
-                ->leftjoin('members', 'members.user_id', '=', 'Reference.Reference_from')
-                ->whereYear('Reference_Date', $BusinesscurrentYear)
-                ->whereMonth('Reference_Date', $BusinesscurrentMonth)
-                ->where('Reference.isapproved_status', 1)
+            $TopOneToOne = DB::table('one_to_one_detail')
+                ->select('from', 'members.*', DB::raw('count(*) as total_references'))
+                ->leftjoin('members', 'members.user_id', '=', 'one_to_one_detail.created_by')
+                ->whereYear('receive_date', $BusinesscurrentYear)
+                ->whereMonth('receive_date', $BusinesscurrentMonth)
+                ->where('one_to_one_detail.isapproved_status', 1)
                 ->where('members.citygroup_id', '=', $membersget->citygroup_id)
                 // ->where('Reference.Reference_from', '!=', 137)
-                ->where('Reference.iStatus', 1)
-                ->where('Reference.isDelete', 0)
-                ->groupBy('Reference_from')
+                ->where('one_to_one_detail.iStatus', 1)
+                ->where('one_to_one_detail.isDelete', 0)
+                ->groupBy('from')
                 ->orderByDesc('total_references')
-                ->limit(3)
-                ->get();
+                ->limit(1)
+                ->first();
 
-            $TopReferenceGivers = $Top_Reference_Givers->count();
+            //$TopOneToOne = $topOneToOne->count();
             $topDirectcount = $topDirect->count();
             $topReferencecount = $topReference->count();
             //search option code in member user 
@@ -761,7 +761,7 @@ class HomeController extends Controller
             //$meetingscount = $meetings->count();
             $Announcement = DB::table('Announcement')->first();
 
-            return view('Memberhome', compact('manOfTheMonth', 'oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopReferenceGivers', 'Top_Reference_Givers'));
+            return view('Memberhome', compact('manOfTheMonth', 'oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopOneToOne'));
         }
     }
 

@@ -4,7 +4,7 @@
             <div class="col-sm-6">
                 <script>
                     document.write(new Date().getFullYear())
-                </script> © Evolve Business Community
+                </script> © Evolv Business Community
             </div>
         </div>
     </div>

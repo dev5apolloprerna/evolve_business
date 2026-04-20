@@ -48,9 +48,10 @@ class Eventcontroller extends Controller
         $Events = Event::orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
         return view('Event.index', compact('Events'));
     }
-    public function EventParticipate(Request $request)
+    public function EventParticipate(Request $request, $id)
     {
-        $Events = Event::with('member')->orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
+
+        $Events = Event::with('member')->where('event_id', $id)->orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
         return view('Event.Participate', compact('Events'));
     }
     public function storeview()
