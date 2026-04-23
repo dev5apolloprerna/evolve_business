@@ -350,6 +350,7 @@ Route::prefix('admin')->name('members.')->middleware('auth')->group(function () 
     Route::get('/Arrival/{user_id?}', [memberscontroller::class, 'Arrival'])->name('Arrival');
     Route::any('/Archive', [memberscontroller::class, 'Archive_index'])->name('Archive');
     Route::get('/Arrival_member/{user_id?}', [memberscontroller::class, 'Arrival_member_back'])->name('Arrival_member');
+    Route::get('/members/activity/{id}', [memberscontroller::class, 'activity'])->name('activity');
 });
 
 //Products_service master
