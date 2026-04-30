@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Events List')
+@section('title', 'Approve Events List')
 @section('content')
 
     <div class="main-content">
@@ -15,14 +15,16 @@
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs nav-justified nav-border-top nav-border-top-success mb-3" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link active" href="{{ route('Event.index') }}">
+                                    <a class="nav-link {{ request()->routeIs('Event.index') ? 'active' : '' }}"
+                                        href="{{ route('Event.index') }}">
                                         <i class="fas fa-clock"></i> Pending
                                     </a>
                                 </li>
 
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" href="{{ route('Event.approvelist') }}" role="tab"
-                                        aria-selected="false" tabindex="-1">
+                                    <a class="nav-link {{ request()->routeIs('Event.approvelist') ? 'active' : '' }}"
+                                        href="{{ route('Event.approvelist') }}" role="tab" aria-selected="false"
+                                        tabindex="-1">
                                         <i class="fas fa-check-circle"></i> Approved
                                     </a>
                                 </li>
@@ -573,7 +575,7 @@
             var todate = $("#enddatepicker").val();
             // var first_name = $("#first_name").val();
 
-            var strURL = "{{ route('Event.exportevent') }}";
+            var strURL = "{{ route('Event.exporteventapprove') }}";
             strURL += "/" + fromdate + "/" + todate;
 
             window.location.href = strURL;

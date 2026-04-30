@@ -4,6 +4,11 @@
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <li class="mb-5" style="color:red">{{ $error }}</li>
+                    @endforeach
+                @endif
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-md-12">
@@ -42,10 +47,10 @@
                                                             <label for="Ppttaken_1">PPT taken 1</label>
                                                             <select name="ppt_taken_1" class="form-control">
                                                                 <option value="">--please select--</option>
-                                                                @foreach ($allmembers as $allmeb)
-                                                                    <option value="{{ $allmeb->id }}"
-                                                                        {{ in_array($allmeb->id, $pptTaken1) ? 'selected' : '' }}>
-                                                                        {{ $allmeb->Contact_person }}</option>
+                                                                @foreach ($members as $member)
+                                                                    <option value="{{ $member->member_id }}"
+                                                                        {{ in_array($member->member_id, $pptTaken1) ? 'selected' : '' }}>
+                                                                        {{ $member->Contact_person }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -56,10 +61,10 @@
                                                             <label for="Ppttaken_1">PPT Taken 2</label>
                                                             <select name="ppt_taken_2" class="form-control">
                                                                 <option value="">--please select--</option>
-                                                                @foreach ($allmembers as $allmeb)
-                                                                    <option value="{{ $allmeb->id }}"
-                                                                        {{ in_array($allmeb->id, $pptTaken2) ? 'selected' : '' }}>
-                                                                        {{ $allmeb->Contact_person }}</option>
+                                                                @foreach ($members as $member)
+                                                                    <option value="{{ $member->member_id }}"
+                                                                        {{ in_array($member->member_id, $pptTaken2) ? 'selected' : '' }}>
+                                                                        {{ $member->Contact_person }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -70,10 +75,10 @@
                                                             <label for="Ppttaken_1">Brand Showcase 1</label>
                                                             <select name="brand_showcase_1" class="form-control">
                                                                 <option value="">--please select--</option>
-                                                                @foreach ($allmembers as $allmeb)
-                                                                    <option value="{{ $allmeb->id }}"
-                                                                        {{ in_array($allmeb->id, $brand_showcase_1) ? 'selected' : '' }}>
-                                                                        {{ $allmeb->Contact_person }}</option>
+                                                                @foreach ($members as $member)
+                                                                    <option value="{{ $member->member_id }}"
+                                                                        {{ in_array($member->member_id, $brand_showcase_1) ? 'selected' : '' }}>
+                                                                        {{ $member->Contact_person }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -84,10 +89,10 @@
                                                             <label for="Ppttaken_1">Brand Showcase 2</label>
                                                             <select name="brand_showcase_2" class="form-control">
                                                                 <option value="">--please select--</option>
-                                                                @foreach ($allmembers as $allmeb)
-                                                                    <option value="{{ $allmeb->id }}"
-                                                                        {{ in_array($allmeb->id, $brand_showcase_2) ? 'selected' : '' }}>
-                                                                        {{ $allmeb->Contact_person }}</option>
+                                                                @foreach ($members as $member)
+                                                                    <option value="{{ $member->member_id }}"
+                                                                        {{ in_array($member->member_id, $brand_showcase_2) ? 'selected' : '' }}>
+                                                                        {{ $member->Contact_person }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>

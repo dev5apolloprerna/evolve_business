@@ -131,10 +131,13 @@ Route::middleware(['check_approval'])->group(function () {
         Route::delete('/OneToOne/delete', [OneToOneController::class, 'delete'])->name('delete');
         Route::get('OneToOneReceived', [OneToOneController::class, 'OneToOneReceived1'])->name('OneToOneReceived');
         Route::post('/OneToOne/status/{id?}', [OneToOneController::class, 'status'])->name('status');
-
         Route::get('/OneToOnelist/{id?}', [OneToOneController::class, 'member_listing'])->name('Memberlist');
     });
-
+    Route::any('OneToOne/pending', [OneToOneController::class, 'pending'])->name('OneToOne_pending');
+    Route::any('/OneToOne/approved', [OneToOneController::class, 'approved'])->name('OneToOne_approved');
+    Route::any('/OneToOne/rejectlist', [OneToOneController::class, 'rejectlist'])->name('OneToOne_rejectlist');
+    Route::get('/OneToOne/export/{status}', [OneToOneController::class, 'exportExcel'])
+        ->name('OneToOneexport');
     //Member Reference route start 
     Route::prefix('admin')->name('Reference.')->middleware('auth')->group(function () {
         Route::any('Reference/index', [Referencecontroller::class, 'index'])->name('index');
@@ -277,7 +280,9 @@ Route::prefix('admin')->name('MemberAnnouncement.')->middleware(['auth', 'check_
 // Member Visitor
 Route::prefix('admin')->name('MemberVisitor.')->middleware(['auth', 'check_approval'])->group(
     function () {
-        Route::get('/MemberVisitor/index', [MemberVisitorController::class, 'index'])->name('index');
+        Route::any('/MemberVisitor/index', [MemberVisitorController::class, 'index'])->name('index');
+        Route::any('/MemberVisitor/approved', [MemberVisitorController::class, 'approved'])->name('membervisitor_approved');
+        Route::any('/MemberVisitor/rejectlist', [MemberVisitorController::class, 'rejectlist'])->name('membervisitor_rejectlist');
         Route::get('/MemberVisitor/create/{id?}', [MemberVisitorController::class, 'createnew'])->name('create');
         Route::post('/MemberVisitor/store', [MemberVisitorController::class, 'create'])->name('store');
         Route::get('/MemberVisitor/edit/{id?}', [MemberVisitorController::class, 'editview'])->name('edit');
@@ -285,6 +290,8 @@ Route::prefix('admin')->name('MemberVisitor.')->middleware(['auth', 'check_appro
         Route::delete('/MemberVisitor/delete', [MemberVisitorController::class, 'delete'])->name('delete');
         Route::post('/MemberVisitor/update-status', [MemberVisitorController::class, 'updateStatus'])->name('updateStatus');
         Route::get('/MemberVisitor/get-status/{id}', [MemberVisitorController::class, 'getStatus'])->name('getStatus');
+        Route::get('/MemberVisitor/export/{status}', [MemberVisitorController::class, 'exportExcel'])
+            ->name('export');
     }
 );
 
@@ -438,16 +445,21 @@ Route::prefix('admin')->name('videogallery.')->middleware('auth')->group(functio
 
 
 //New and Event master
-Route::prefix('admin')->name('Event.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('Event.')->middleware('auth', 'check_approval')->group(function () {
     Route::get('PastEventList', [Eventcontroller::class, 'PastEventList'])->name('PastEventList');
     Route::get('UpcomingEventList', [Eventcontroller::class, 'UpcomingEventList'])->name('UpcomingEventList');
-    Route::get('Event/index', [Eventcontroller::class, 'index'])->name('index');
+    Route::any('Event/index', [Eventcontroller::class, 'index'])->name('index');
     Route::get('Event/storeview', [Eventcontroller::class, 'storeview'])->name('storeview');
     Route::get('Event/edit', [Eventcontroller::class, 'editview'])->name('Event.edit');
     Route::post('Event/create', [Eventcontroller::class, 'create'])->name('create');
     Route::get('Event/{Id}', [Eventcontroller::class, 'editview'])->name('edit');
     Route::post('/Event/update', [Eventcontroller::class, 'update'])->name('update');
     Route::delete('/Event/delete', [Eventcontroller::class, 'delete'])->name('delete');
+    Route::any('/Approve-list', [Eventcontroller::class, 'approvelist'])->name('approvelist');
+    Route::any('/Remove-list', [Eventcontroller::class, 'removelist'])->name('removelist');
+    Route::any('exportevent/{fromdate?}/{todate?}', [Eventcontroller::class, 'exportToexcel_list'])->name('exportevent');
+    Route::any('exporteventapprove/{fromdate?}/{todate?}', [Eventcontroller::class, 'exporteventapprove'])->name('exporteventapprove');
+    Route::any('exporteventreject/{fromdate?}/{todate?}', [Eventcontroller::class, 'exporteventreject'])->name('exporteventreject');
 });
 
 //Business master  

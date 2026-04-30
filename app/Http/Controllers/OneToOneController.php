@@ -23,6 +23,149 @@ use App\Mail\BusinessStatusMail;
 
 class OneToOneController extends Controller
 {
+
+    public function pending(Request $request)
+    {
+        try {
+
+            $businesstype = $request->business_type;
+            $FromDate = $request->fromdate;
+            $ToDate = $request->todate;
+            $session = Auth::user()->id;
+            // $Data = User::where('status', 1)->orderBy('first_name')->get();
+            $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
+                ->where('users.status', 1)
+                ->where('users.role_id', 2)
+                ->where('members.Arrival_flag', 0)
+                ->orderBy('users.first_name')
+                ->select('users.*')
+                ->get();
+            $Datadrop = User::where('status', 1)->orderBy('first_name')->get();
+
+            $OneToOne = OneToOne::where([
+                'iStatus' => 1,
+                'isDelete' => 0
+            ])
+                ->where('isapproved_status', 0)
+
+                ->when($request->fromdate, function ($query, $FromDate) {
+                    return $query->where(
+                        'date',
+                        '>=',
+                        date('Y-m-d 00:00:00', strtotime($FromDate))
+                    );
+                })
+
+                ->when($request->todate, function ($query, $ToDate) {
+                    return $query->where(
+                        'date',
+                        '<=',
+                        date('Y-m-d 23:59:59', strtotime($ToDate))
+                    );
+                })
+
+                ->when($businesstype, function ($query, $businesstype) {
+                    return $query->where('isapproved_status', $businesstype);
+                });
+
+            $Business = $OneToOne->orderBy('one_to_one_detail.id', 'DESC')
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+            // dd($Business);
+            $Count = $Business->count();
+            return view('OneToOne.pending', compact('Business', 'Data', 'Datadrop', 'Count', 'businesstype', 'FromDate', 'ToDate'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
+    public function approved(Request $request)
+    {
+        try {
+
+            $businesstype = $request->business_type;
+            $FromDate = $request->fromdate;
+            $ToDate = $request->todate;
+            $session = Auth::user()->id;
+            // $Data = User::where('status', 1)->orderBy('first_name')->get();
+            $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
+                ->where('users.status', 1)
+                ->where('users.role_id', 2)
+                ->where('members.Arrival_flag', 0)
+                ->orderBy('users.first_name')
+                ->select('users.*')
+                ->get();
+            $Datadrop = User::where('status', 1)->orderBy('first_name')->get();
+
+            // dd($businesstype);
+            $OneToOne = OneToOne::where([
+                'iStatus' => 1,
+                'isDelete' => 0
+            ])
+                ->where('one_to_one_detail.isapproved_status', 1)
+
+                ->when($request->fromdate, function ($query, $FromDate) {
+                    return $query->where(
+                        'one_to_one_detail.date',
+                        '>=',
+                        date('Y-m-d 00:00:00', strtotime($FromDate))
+                    );
+                })
+
+                ->when($request->todate, function ($query, $ToDate) {
+                    return $query->where(
+                        'one_to_one_detail.date',
+                        '<=',
+                        date('Y-m-d 23:59:59', strtotime($ToDate))
+                    );
+                })
+
+                ->when($businesstype, function ($query, $businesstype) {
+                    return $query->where('isapproved_status', $businesstype);
+                });
+            $Business = $OneToOne->orderBy('id', 'DESC')
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+
+            $Count = $Business->count();
+            return view('OneToOne.approve', compact('Business', 'Data', 'Datadrop', 'Count', 'businesstype', 'FromDate', 'ToDate'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
+    public function rejectlist(Request $request)
+    {
+        try {
+
+            $businesstype = $request->business_type;
+            $FromDate = $request->fromdate;
+            $ToDate = $request->todate;
+            $session = Auth::user()->id;
+            // $Data = User::where('status', 1)->orderBy('first_name')->get();
+            $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
+                ->where('users.status', 1)
+                ->where('users.role_id', 2)
+                ->where('members.Arrival_flag', 0)
+                ->orderBy('users.first_name')
+                ->select('users.*')
+                ->get();
+            $Datadrop = User::where('status', 1)->orderBy('first_name')->get();
+
+            $OneToOne = OneToOne::where(['iStatus' => 1, 'isDelete' => 0])
+                ->when($request->fromdate, fn($query, $FromDate) => $query
+                    ->where('date', '>=', date('Y-m-d 00:00:00', strtotime($FromDate))))
+                ->where('isapproved_status', '=', 2)
+                ->when($request->todate, fn($query, $ToDate) => $query
+                    ->where('date', '<=', date('Y-m-d 23:59:59', strtotime($ToDate))));
+
+            $Business = $OneToOne->orderBy('id', 'DESC')
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+
+            $Count = $Business->count();
+            return view('OneToOne.rejectlist', compact('Business', 'Data', 'Datadrop', 'Count', 'businesstype', 'FromDate', 'ToDate'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
     public function index(Request $request)
     {
         try {

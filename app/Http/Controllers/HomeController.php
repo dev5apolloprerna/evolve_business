@@ -47,8 +47,6 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
 
-
-
     public function index(Request $request)
     {
 
@@ -698,16 +696,15 @@ class HomeController extends Controller
                 ->first();
 
             $TopOneToOne = DB::table('one_to_one_detail')
-                ->select('from', 'members.*', DB::raw('count(*) as total_references'))
-                ->leftjoin('members', 'members.user_id', '=', 'one_to_one_detail.created_by')
+                ->select('one_to_one_detail.from', 'members.*', DB::raw('count(*) as total_references'))
+                ->leftJoin('members', 'members.user_id', '=', 'one_to_one_detail.created_by')
                 ->whereYear('receive_date', $BusinesscurrentYear)
                 ->whereMonth('receive_date', $BusinesscurrentMonth)
                 ->where('one_to_one_detail.isapproved_status', 1)
                 ->where('members.citygroup_id', '=', $membersget->citygroup_id)
-                // ->where('Reference.Reference_from', '!=', 137)
                 ->where('one_to_one_detail.iStatus', 1)
                 ->where('one_to_one_detail.isDelete', 0)
-                ->groupBy('from')
+                ->groupBy('one_to_one_detail.from')
                 ->orderByDesc('total_references')
                 ->limit(1)
                 ->first();

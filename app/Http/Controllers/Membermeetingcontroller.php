@@ -7,6 +7,8 @@ use App\Models\City;
 use App\Models\City_group;
 use App\Models\Member_metting;
 use App\Models\members;
+use App\Models\MemberRoleUsage;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -123,13 +125,138 @@ class Membermeetingcontroller extends Controller
             ->toArray();
         return view('Membermeeting.Memberindex', compact('brand_showcase_1', 'brand_showcase_2', 'pptTaken1', 'pptTaken2', 'allmembers', 'members', 'meetingid', 'meetingdata'));
     }
+    // public function memberstore(Request $request)
+    // {
+
+    //     if (!empty($request->ppt_taken_1) && $request->ppt_taken_1 == $request->ppt_taken_2) {
+    //         return back()->withInput()->withErrors([
+    //             'ppt_taken_2' => 'Same member cannot be selected for both PPT Taken 1 and PPT Taken 2.'
+    //         ]);
+    //     }
+
+    //     if (!empty($request->brand_showcase_1) && $request->brand_showcase_1 == $request->brand_showcase_2) {
+    //         return back()->withInput()->withErrors([
+    //             'brand_showcase_2' => 'Same member cannot be selected for both Brand Showcase 1 and Brand Showcase 2.'
+    //         ]);
+    //     }
+    //     $meetingDate = DB::table('Cluster_Meet_Member_meeting')
+    //         ->where('meeting_id', $request->meetingid)
+    //         ->value('created_at');
+    //     $threeMonthsAgo = Carbon::parse($meetingDate)->subMonths(3);
+
+    //     $fieldLabels = [
+    //         'ppt_taken_1' => 'PPT Taken 1',
+    //         'ppt_taken_2' => 'PPT Taken 2',
+    //         'brand_showcase_1' => 'Brand Showcase 1',
+    //         'brand_showcase_2' => 'Brand Showcase 2',
+    //     ];
+    //     foreach ($fieldLabels as $field => $label) {
+
+    //         $memberId = $request->$field;
+
+    //         if (!empty($memberId)) {
+
+    //             $member = DB::table('members')->where('id', $memberId)->first();
+
+    //             $allowedCount = ($member && $member->priority_club_3_year == 1) ? 2 : 1;
+
+    //             // ✅ ONLY FIELD-WISE COUNT
+    //             $usedCount = Member_metting::where($field, $memberId)
+    //                 ->whereBetween('created_at', [$threeMonthsAgo, $meetingDate])
+    //                 ->count();
+
+    //             if ($usedCount >= $allowedCount) {
+    //                 return redirect()
+    //                     ->back()
+    //                     ->withInput()
+    //                     ->withErrors([
+    //                         $field => "Member already used for {$label} {$allowedCount} time(s) within last 3 months."
+    //                     ]);
+    //             }
+    //         }
+    //     }
+    //     DB::table('Cluster_Meet_Member_meeting')
+    //         ->where('meeting_id', $request->meetingid)
+    //         ->delete();
+    //     $meetingId = $request->input('meetingid');
+    //     $memberIds = $request->input('members');
+    //     foreach ($memberIds as $memberId) {
+    //         Member_metting::create([
+    //             'meeting_id' => $meetingId,
+    //             'member_id' => $memberId,
+    //             'ppt_taken_1' => $request->ppt_taken_1,
+    //             'ppt_taken_2' => $request->ppt_taken_2,
+    //             'brand_showcase_1' => $request->brand_showcase_1,
+    //             'brand_showcase_2' => $request->brand_showcase_2,
+    //         ]);
+    //     }
+
+    //     $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
+    //     $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
+    //     $datas = DB::table('Cluster_Meet')->paginate(env('PAR_PAGE_COUNT', 20));
+    //     $Count = $datas->count();
+
+    //     return redirect()->route('Membermeeting.index', compact('Count', 'cityGroups', 'cities', 'datas'))->with('success', 'Meeting Members added successfully!');
+    // }
+
     public function memberstore(Request $request)
     {
+
+        if (!empty($request->ppt_taken_1) && $request->ppt_taken_1 == $request->ppt_taken_2) {
+            return back()->withInput()->withErrors([
+                'ppt_taken_2' => 'Same member cannot be selected for both PPT Taken 1 and PPT Taken 2.'
+            ]);
+        }
+
+        if (!empty($request->brand_showcase_1) && $request->brand_showcase_1 == $request->brand_showcase_2) {
+            return back()->withInput()->withErrors([
+                'brand_showcase_2' => 'Same member cannot be selected for both Brand Showcase 1 and Brand Showcase 2.'
+            ]);
+        }
+
+        $meetingDate = DB::table('Cluster_Meet_Member_meeting')
+            ->where('meeting_id', $request->meetingid)
+            ->value('created_at');
+
+        $threeMonthsAgo = Carbon::parse($meetingDate)->subMonths(3);
+
+        $fieldLabels = [
+            'ppt_taken_1' => 'PPT Taken 1',
+            'ppt_taken_2' => 'PPT Taken 2',
+            'brand_showcase_1' => 'Brand Showcase 1',
+            'brand_showcase_2' => 'Brand Showcase 2',
+        ];
+
+        foreach ($fieldLabels as $field => $label) {
+
+            $memberId = $request->$field;
+
+            if (!empty($memberId)) {
+
+                $member = DB::table('members')->where('id', $memberId)->first();
+
+                $allowedCount = ($member && $member->priority_club_3_year == 1) ? 2 : 1;
+
+                $usedCount = MemberRoleUsage::where('member_id', $memberId)
+                    ->where('role_type', $field)
+                    ->whereBetween('meeting_date', [$threeMonthsAgo, $meetingDate])
+                    ->count();
+
+                if ($usedCount >= $allowedCount) {
+                    return back()->withInput()->withErrors([
+                        $field => "Member already used for {$label} {$allowedCount} time(s) within last 3 months."
+                    ]);
+                }
+            }
+        }
+
         DB::table('Cluster_Meet_Member_meeting')
             ->where('meeting_id', $request->meetingid)
             ->delete();
-        $meetingId = $request->input('meetingid');
-        $memberIds = $request->input('members');
+
+        $meetingId = $request->meetingid;
+        $memberIds = $request->members ?? [];
+
         foreach ($memberIds as $memberId) {
             Member_metting::create([
                 'meeting_id' => $meetingId,
@@ -141,12 +268,23 @@ class Membermeetingcontroller extends Controller
             ]);
         }
 
-        $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
-        $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
-        $datas = DB::table('Cluster_Meet')->paginate(env('PAR_PAGE_COUNT', 20));
-        $Count = $datas->count();
+        foreach ($fieldLabels as $field => $label) {
 
-        return redirect()->route('Membermeeting.index', compact('Count', 'cityGroups', 'cities', 'datas'))->with('success', 'Meeting Members added successfully!');
+            $memberId = $request->$field;
+
+            if (!empty($memberId)) {
+
+                MemberRoleUsage::create([
+                    'member_id' => $memberId,
+                    'role_type' => $field,
+                    'meeting_id' => $meetingId,
+                    'meeting_date' => $meetingDate,
+                ]);
+            }
+        }
+
+        return redirect()->route('Membermeeting.index')
+            ->with('success', 'Meeting Members added successfully!');
     }
     public function Membermeeting_comment(Request $request, $id = null)
     {

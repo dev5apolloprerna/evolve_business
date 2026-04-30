@@ -21,17 +21,17 @@
                         <div class="card-body">
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs nav-justified nav-border-top nav-border-top-success mb-3" role="tablist">
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('MemberVisitor.index') ? 'active' : '' }}"
                                         href="{{ route('MemberVisitor.index') }}">
                                         <i class="fas fa-clock"></i> Pending
                                     </a>
                                 </li>
 
-                                <li class="nav-item" role="presentation">
+                                {{-- Approved --}}
+                                <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('MemberVisitor.membervisitor_approved') ? 'active' : '' }}"
-                                        href="{{ route('MemberVisitor.membervisitor_approved') }}" role="tab"
-                                        aria-selected="false" tabindex="-1">
+                                        href="{{ route('MemberVisitor.membervisitor_approved') }}">
                                         <i class="fas fa-check-circle"></i> Approved
                                     </a>
                                 </li>
@@ -53,7 +53,8 @@
                     <div class="card">
 
                         <div class="card-body">
-                            <form method="post" id="form" action="{{ route('MemberVisitor.index') }}">
+                            <form method="post" id="form"
+                                action="{{ route('MemberVisitor.membervisitor_rejectlist') }}">
                                 @csrf
                                 <div class="row align-items-center">
 
@@ -95,7 +96,7 @@
                                                 <button type="button" id="cancel_search"
                                                     class="btn btn-success">Cancel</button>
                                             </div>
-                                            <button class="btn btn-success" type="button" onclick="exportExcel(0);">
+                                            <button class="btn btn-success" type="button" onclick="exportExcel(2);">
                                                 <i class="fa-solid fa-file-excel fa-xl"></i>
                                             </button>
                                         </div>

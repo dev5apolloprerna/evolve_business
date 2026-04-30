@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en" data-layout="twocolumn" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none"
     data-preloader="disable">
@@ -68,7 +67,8 @@
                                     <h4>You are Logged Out</h4>
                                     <p class="text-muted">Thanks for Visiting
                                     <div class="mt-4">
-                                        <a href="{{ route('login') }}" class="btn btn-success w-100">Sign In</a>
+                                        <a href="{{ route('Frontfront-login') }}" class="btn btn-success w-100">Sign
+                                            In</a>
                                     </div>
                                 </div>
                             </div>

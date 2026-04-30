@@ -13,6 +13,12 @@ class EventMembers extends Model
         'id',
         'event_id',
         'member_id',
+        'isapproved_status',
         'created_at'
     ];
+
+    public function member()
+    {
+        return $this->belongsTo(members::class, 'member_id', 'user_id');
+    }
 }

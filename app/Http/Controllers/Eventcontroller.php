@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use validate;
@@ -45,18 +46,298 @@ class Eventcontroller extends Controller
     }
     public function index(Request $request)
     {
-        $Events = Event::orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
-        return view('Event.index', compact('Events'));
+        // $Events = Event::orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
+        $members = DB::table('members')
+            ->select('id', 'Contact_person', 'phonenumber', 'email', 'user_id')
+            ->where('iStatus', 1)
+            ->where('isDelete', 0)
+            ->orderBy('Contact_person')
+            ->get();
+        $givenby = $request->given_by;
+        $FromDate = $request->fromdate;
+        $ToDate = $request->todate;
+        $Data = User::where('status', 1)->where('role_id', 2)->orderBy('first_name')->get();
+        $Datadrop = User::where('status', 1)->where('role_id', 2)->orderBy('first_name')->get();
+
+        $Events = Event::select(
+            'news_and_events.*',
+            'event_members.isapproved_status as member_status'
+        )
+            ->leftJoin('event_members', 'event_members.event_id', '=', 'news_and_events.event_id')
+
+            ->where([
+                'news_and_events.iStatus' => 1,
+                'news_and_events.isDelete' => 0,
+                'news_and_events.isapproved_status' => 0
+            ])
+
+            ->when($request->fromdate, function ($query, $FromDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '>=',
+                    date('Y-m-d 00:00:00', strtotime($FromDate))
+                );
+            })
+
+            ->when($request->todate, function ($query, $ToDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '<=',
+                    date('Y-m-d 23:59:59', strtotime($ToDate))
+                );
+            })
+
+            ->when($request->given_by, function ($query) use ($request) {
+                return $query->where('event_members.member_id', $request->given_by);
+            })
+
+            ->groupBy('news_and_events.event_id') // ⚠️ duplicate avoid
+            ->orderBy('news_and_events.event_id', 'DESC')
+            ->paginate(env('PAR_PAGE_COUNT', 20));
+        return view('Event.index', compact('Events', 'members', 'givenby', 'FromDate', 'ToDate'));
     }
+
+    public function approvelist(Request $request)
+    {
+        $members = DB::table('members')
+            ->select('id', 'Contact_person', 'phonenumber', 'email', 'user_id')
+            ->where('iStatus', 1)
+            ->where('isDelete', 0)
+            ->orderBy('Contact_person')
+            ->get();
+        $givenby = $request->given_by;
+        $FromDate = $request->fromdate;
+        $ToDate = $request->todate;
+        $Data = User::where('status', 1)->where('role_id', 2)->orderBy('first_name')->get();
+        $Datadrop = User::where('status', 1)->where('role_id', 2)->orderBy('first_name')->get();
+
+        $Events = Event::select('news_and_events.*', 'event_members.isapproved_status as member_status')
+            ->join('event_members', 'event_members.event_id', '=', 'news_and_events.event_id')
+
+            ->where([
+                'news_and_events.iStatus' => 1,
+                'news_and_events.isDelete' => 0,
+            ])
+
+            // ✅ status from event_members table
+            ->where('event_members.isapproved_status', 1)
+
+            ->when($request->fromdate, function ($query, $FromDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '>=',
+                    date('Y-m-d 00:00:00', strtotime($FromDate))
+                );
+            })
+
+            ->when($request->todate, function ($query, $ToDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '<=',
+                    date('Y-m-d 23:59:59', strtotime($ToDate))
+                );
+            })
+
+            ->when($request->given_by, function ($query) use ($request) {
+                return $query->where('event_members.member_id', $request->given_by);
+            })
+
+            ->orderBy('news_and_events.event_id', 'DESC')
+            ->paginate(env('PAR_PAGE_COUNT', 20));
+        //$Count = $Business->count();
+        return view('Event.approvelist', compact('Events', 'members', 'givenby', 'FromDate', 'ToDate'));
+    }
+
+    public function removelist(Request $request)
+    {
+        $members = DB::table('members')
+            ->select('id', 'Contact_person', 'phonenumber', 'email', 'user_id')
+            ->where('iStatus', 1)
+            ->where('isDelete', 0)
+            ->orderBy('Contact_person')
+            ->get();
+        $givenby = $request->given_by;
+        $FromDate = $request->fromdate;
+        $ToDate = $request->todate;
+        $Data = User::where('status', 1)->where('role_id', 2)->orderBy('first_name')->get();
+        $Datadrop = User::where('status', 1)->where('role_id', 2)->orderBy('first_name')->get();
+
+        $Events = Event::select('news_and_events.*', 'event_members.isapproved_status as member_status')
+            ->join('event_members', 'event_members.event_id', '=', 'news_and_events.event_id')
+
+            ->where([
+                'news_and_events.iStatus' => 1,
+                'news_and_events.isDelete' => 0,
+            ])
+
+            // ✅ status from event_members table
+            ->where('event_members.isapproved_status', 2)
+
+            ->when($request->fromdate, function ($query, $FromDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '>=',
+                    date('Y-m-d 00:00:00', strtotime($FromDate))
+                );
+            })
+
+            ->when($request->todate, function ($query, $ToDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '<=',
+                    date('Y-m-d 23:59:59', strtotime($ToDate))
+                );
+            })
+
+            ->when($request->given_by, function ($query) use ($request) {
+                return $query->where('event_members.member_id', $request->given_by);
+            })
+
+            ->orderBy('news_and_events.event_id', 'DESC')
+            ->paginate(env('PAR_PAGE_COUNT', 20));
+        //$Count = $Business->count();
+        return view('Event.removelist', compact('Events', 'members', 'givenby', 'FromDate', 'ToDate'));
+    }
+
     public function EventParticipate(Request $request, $id)
     {
+        $Events = Event::with('EventMembers.member') // 🔥 important
+            ->where('event_id', $id)
+            ->where([
+                'iStatus' => 1,
+                'isDelete' => 0
+            ])
+            ->orderBy('event_id', 'DESC')
+            ->get();
 
-        $Events = Event::with('member')->where('event_id', $id)->orderBy('event_id', 'DESC')->where(['iStatus' => 1, 'isDelete' => 0])->paginate(20);
         return view('Event.Participate', compact('Events'));
+    }
+
+    public function exportToexcel_list(Request $request, $fromdate = null, $todate = null)
+    {
+        $datas = Event::select('news_and_events.*', 'event_members.isapproved_status as member_status')
+            ->join('event_members', 'event_members.event_id', '=', 'news_and_events.event_id')
+
+            ->where([
+                'news_and_events.iStatus' => 1,
+                'news_and_events.isDelete' => 0,
+            ])
+
+            // ✅ status from event_members table
+            ->where('event_members.isapproved_status', 0)
+
+            ->when($request->fromdate, function ($query, $FromDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '>=',
+                    date('Y-m-d 00:00:00', strtotime($FromDate))
+                );
+            })
+
+            ->when($request->todate, function ($query, $ToDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '<=',
+                    date('Y-m-d 23:59:59', strtotime($ToDate))
+                );
+            })
+
+            ->when($request->given_by, function ($query) use ($request) {
+                return $query->where('event_members.member_id', $request->given_by);
+            })
+
+            ->orderBy('news_and_events.event_id', 'DESC')
+            ->get();
+
+        return view('Event.exportlist', compact('datas'));
+    }
+
+    public function exporteventapprove(Request $request, $fromdate = null, $todate = null)
+    {
+        $datas = Event::select('news_and_events.*', 'event_members.isapproved_status as member_status')
+            ->join('event_members', 'event_members.event_id', '=', 'news_and_events.event_id')
+
+            ->where([
+                'news_and_events.iStatus' => 1,
+                'news_and_events.isDelete' => 0,
+            ])
+
+            // ✅ status from event_members table
+            ->where('event_members.isapproved_status', 1)
+
+            ->when($request->fromdate, function ($query, $FromDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '>=',
+                    date('Y-m-d 00:00:00', strtotime($FromDate))
+                );
+            })
+
+            ->when($request->todate, function ($query, $ToDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '<=',
+                    date('Y-m-d 23:59:59', strtotime($ToDate))
+                );
+            })
+
+            ->when($request->given_by, function ($query) use ($request) {
+                return $query->where('event_members.member_id', $request->given_by);
+            })
+
+            ->orderBy('news_and_events.event_id', 'DESC')
+            ->get();
+
+        return view('Event.exportlist', compact('datas'));
+    }
+
+    public function exporteventreject(Request $request, $fromdate = null, $todate = null)
+    {
+        $datas = Event::select('news_and_events.*', 'event_members.isapproved_status as member_status')
+            ->join('event_members', 'event_members.event_id', '=', 'news_and_events.event_id')
+
+            ->where([
+                'news_and_events.iStatus' => 1,
+                'news_and_events.isDelete' => 0,
+            ])
+
+            // ✅ status from event_members table
+            ->where('event_members.isapproved_status', 1)
+
+            ->when($request->fromdate, function ($query, $FromDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '>=',
+                    date('Y-m-d 00:00:00', strtotime($FromDate))
+                );
+            })
+
+            ->when($request->todate, function ($query, $ToDate) {
+                return $query->where(
+                    'news_and_events.eventstart_date',
+                    '<=',
+                    date('Y-m-d 23:59:59', strtotime($ToDate))
+                );
+            })
+
+            ->when($request->given_by, function ($query) use ($request) {
+                return $query->where('event_members.member_id', $request->given_by);
+            })
+
+            ->orderBy('news_and_events.event_id', 'DESC')
+            ->get();
+
+        return view('Event.exportlist', compact('datas'));
     }
     public function storeview()
     {
-        return view('Event.storeview');
+        $members = DB::table('members')
+            ->select('id', 'Contact_person', 'phonenumber', 'email')
+            ->where('iStatus', 1)
+            ->where('isDelete', 0)
+            ->orderBy('Contact_person')
+            ->get();
+        return view('Event.storeview', compact('members'));
     }
     public function create(Request $request)
     {
@@ -86,6 +367,7 @@ class Eventcontroller extends Controller
             'eventstart_time'   => $request->eventstart_time,
             'eventend_time'   => $request->eventend_time,
             'event_type'   => $request->event_type,
+            'assign_member_id'  => json_encode($request->assign_member_id),   // Save as JSON
             'ispaid'          => $request->ispaid,
             'price'           => $request->price,
             'limitedset'      => $request->limitedset,
@@ -147,6 +429,9 @@ class Eventcontroller extends Controller
                 'eventend_time' => $request->eventend_time,
                 'event_type'          => $request->event_type,
                 'description' => $request->description,
+                'assign_member_id' => !empty($request->assign_member_id)
+                    ? json_encode($request->assign_member_id)
+                    : json_encode([]),
                 'event_slug' => $slug,
                 'updated_at' => date('Y-m-d H:i:s'),
                 'updated_by' => auth()->user()->id,
