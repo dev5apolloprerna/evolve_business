@@ -42,54 +42,52 @@
                                                 <tbody class="list">
                                                     <?php $i = 1; ?>
                                                     @foreach ($Events as $Event)
-                                                        <tr>
-                                                            <td class="text-center">
-                                                                {{ $i + $Events->perPage() * ($Events->currentPage() - 1) }}
-                                                            </td>
-                                                            <td class="text-center">{{ $Event->name }}</td>
-                                                            <td class="text-center">
-                                                                <img src="{{ asset('event') . '/' . $Event->photo }}"
-                                                                    style="width: 50px;height: 50px;">
-                                                            </td>
-                                                            <td class="text-center">
-                                                                {{ \Carbon\Carbon::parse($Event->eventstart_date)->format('d-m-Y') }}
-                                                            </td>
-                                                            <td class="text-center">
-                                                                {{ $Event->eventstart_time }}
-                                                            </td>
-                                                            <td class="text-center">
-                                                                {{ $Event->eventend_time }}
-                                                            </td>
-                                                            <td class="text-center">
-                                                                @if ($Event->event_type == 1)
-                                                                    ESP
-                                                                @else
-                                                                    Training
-                                                                @endif
+                                                        @foreach ($Event->EventMembers as $memberData)
+                                                            <tr>
+                                                                <td class="text-center">{{ $loop->iteration }}</td>
 
-                                                            </td>
-                                                            <td class="text-center">
-                                                                {{ $Event->member->Contact_person ?? '' }}
-                                                            </td>
-                                                            <td class="text-center">
-                                                                @if ($Event->isapproved_status == 1)
-                                                                    Join
-                                                                @else
-                                                                    Not Join
-                                                                @endif
+                                                                <td class="text-center">{{ $Event->name }}</td>
 
-                                                            </td>
+                                                                <td class="text-center">
+                                                                    <img src="{{ asset('event') . '/' . $Event->photo }}"
+                                                                        style="width:50px;height:50px;">
+                                                                </td>
 
-                                                        </tr>
-                                                        <?php $i++; ?>
+                                                                <td class="text-center">
+                                                                    {{ \Carbon\Carbon::parse($Event->eventstart_date)->format('d-m-Y') }}
+                                                                </td>
+
+                                                                <td class="text-center">{{ $Event->eventstart_time }}</td>
+                                                                <td class="text-center">{{ $Event->eventend_time }}</td>
+
+                                                                <td class="text-center">
+                                                                    {{ $Event->event_type == 1 ? 'ESP' : 'Training' }}
+                                                                </td>
+
+                                                                {{-- 🔥 MEMBER NAME --}}
+                                                                <td class="text-center">
+                                                                    {{ $memberData->member->Contact_person ?? '' }}
+                                                                </td>
+
+                                                                {{-- 🔥 STATUS --}}
+                                                                <td class="text-center">
+                                                                    @if ($memberData->isapproved_status == 1)
+                                                                        Join
+                                                                    @else
+                                                                        Not Join
+                                                                    @endif
+                                                                </td>
+
+                                                            </tr>
+                                                        @endforeach
                                                     @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="d-flex justify-content-center mt-3">
+                                        {{-- <div class="d-flex justify-content-center mt-3">
 
                                             {{ $Events->links() }}
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>

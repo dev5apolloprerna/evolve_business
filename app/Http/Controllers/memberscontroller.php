@@ -41,6 +41,16 @@ class memberscontroller extends Controller
             'categories.id',
             'users.id',
             'users.first_name',
+            DB::raw("
+    CASE 
+        WHEN members.from = 'referred_by' THEN 'Referred By'
+        WHEN members.from = 'inducted_by' THEN 'Inducted By'
+        WHEN members.from = 'committee_social' THEN 'Committee / Social Media'
+        WHEN members.from = 'website' THEN 'Website'
+        WHEN members.from REGEXP '^[0-9]+$' THEN ref_user.first_name
+        ELSE '-'
+    END as from_display
+"),
             'city_groups.group_name',
             'city.city_name',
             'categories.name as categoriesname',
@@ -49,13 +59,18 @@ class memberscontroller extends Controller
             'members.email',
             'members.address',
             'members.pincode',
-            'members.gstnumber'
+            'members.gstnumber',
+            'ref_user.first_name as referred_by_name'
         )
             ->orderBy('members.id', 'desc')
             ->leftjoin('city', 'city.id', 'members.city_id')
             ->leftjoin('city_groups', 'city_groups.id', 'members.citygroup_id')
             ->leftjoin('categories', 'categories.id', 'members.category_id')
             ->leftjoin('users', 'users.id', 'members.user_id')
+            ->leftJoin('users as ref_user', function ($join) {
+                $join->on('ref_user.id', '=', 'members.from')
+                    ->whereRaw('members.from REGEXP "^[0-9]+$"');
+            })
             ->where(['members.iStatus' => 1, 'members.isDelete' => 0, 'members.Arrival_flag' => 0])
             ->when($firstname, function ($query) use ($firstname) {
                 $query->where('users.first_name', 'LIKE', '%' . $firstname . '%');
@@ -88,16 +103,21 @@ class memberscontroller extends Controller
 
     public function storeview(Request $request)
     {
+        $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
+            ->where('users.status', 1)
+            ->where('users.role_id', 2)
+            ->where('members.Arrival_flag', 0)
+            ->orderBy('users.first_name')
+            ->select('users.*')
+            ->get();
         $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
         $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
         $categories = Categories::select('id', 'name')->orderBy('name')->get();
         $subcategories = subcategories::select('id', 'name')->get();
         $plans = membershipplans::select('id', 'plan_name')->orderBy('plan_name')->get();
 
-
-        return view('members.storeview', compact('cities', 'cityGroups', 'categories', 'subcategories', 'plans'));
+        return view('members.storeview', compact('Data', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans'));
     }
-
 
     public function create(Request $request)
     {
@@ -150,6 +170,8 @@ class memberscontroller extends Controller
             'category_id'    => $request->category_id,
             // 'subcategories_id' => 0,                                               
             'pincode'        => $request->pincode,
+            'from'        => $request->referred_to,
+            'priority_club_3_year' => $request->priority_club_3_year,
             'gstnumber'      => $request->gstnumber,
             'date_of_birth'      => $request->date_of_birth,
             'brand_establish_year'      => $request->brand_establish_year,
@@ -208,8 +230,14 @@ class memberscontroller extends Controller
         $plans = Membershipplans::select('id', 'plan_name')->orderBy('plan_name')->get();
         $renewplan = renewalhistory::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $id])->first();
         $data = Members::select('members.*', db::raw('(select users.first_name from users where    users.id=members.user_id order by users.id desc limit 1 ) as user_id'), db::raw('(select renewal_history.plan_id from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as plan_id'), db::raw('(select renewal_history.renewal_date from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as renewal_date'), db::raw('(select renewal_history.paymentrefNo from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as paymentrefNo'))->where(['members.iStatus' => 1, 'members.isDelete' => 0, 'members.id' => $id])->first();
-
-        return view('members.edit', compact('cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'data', 'renewplan'));
+        $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
+            ->where('users.status', 1)
+            ->where('users.role_id', 2)
+            ->where('members.Arrival_flag', 0)
+            ->orderBy('users.first_name')
+            ->select('users.*')
+            ->get();
+        return view('members.edit', compact('Data', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'data', 'renewplan'));
     }
 
 
@@ -272,6 +300,27 @@ class memberscontroller extends Controller
                     'updated_at'     => date('Y-m-d H:i:s'),
                 ]);
         }
+        if ($request->priority_club_3_year == 1) {
+
+            $name = $request->first_name;
+
+            // check karo already 'p' se start to nahi ho raha
+            if (!str_starts_with($name, 'P-')) {
+                $name = 'P-' . $name;
+            }
+
+            DB::table('members')
+                ->where('id', $request->id)
+                ->update([
+                    'Contact_person' => $name
+                ]);
+
+            DB::table('users')
+                ->where('id', $userid->user_id)
+                ->update([
+                    'first_name' => $name
+                ]);
+        }
         DB::table('members')
             ->where('id', $request->id)
             ->update([
@@ -285,6 +334,8 @@ class memberscontroller extends Controller
                 'category_id'    => $request->category_id,
                 'subcategories_id' => 0,
                 'pincode'        => $request->pincode,
+                'priority_club_3_year' => $request->priority_club_3_year,
+                'from'        => $request->referred_to,
                 'gstnumber'      => $request->gstnumber,
                 // 'Book_Your_Podcast'=>$request->Book_Your_Podcast,
                 // 'Book_Your_Member_of_the_week'=>$request->Book_Your_Member_of_the_week,
@@ -621,6 +672,9 @@ class memberscontroller extends Controller
             ])
             ->orderByDesc('id')
             ->get();
+        $directBusinessTotal = $directBusinesses->sum('Business_amount');
+
+        $referenceBusinessTotal = $referenceBusinesses->sum('Business_amount');
 
         return view('members.activity', compact(
             'member',
@@ -630,7 +684,9 @@ class memberscontroller extends Controller
             'visitors',
             'events',
             'attendedEvents',
-            'oneToOnes'
+            'oneToOnes',
+            'directBusinessTotal',
+            'referenceBusinessTotal'
         ));
     }
 }

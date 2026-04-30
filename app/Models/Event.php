@@ -21,11 +21,16 @@ class Event extends Model
         'eventstart_time',
         'eventend_time',
         'member_id',
-        'isapproved_status'
+        'isapproved_status',
+        'assign_member_id'
     ];
 
     public function member()
     {
         return $this->belongsTo(members::class, 'member_id', 'user_id');
+    }
+    public function EventMembers()
+    {
+        return $this->hasMany(EventMembers::class, 'event_id', 'event_id');
     }
 }

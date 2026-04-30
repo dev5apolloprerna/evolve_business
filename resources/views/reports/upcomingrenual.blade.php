@@ -5,7 +5,7 @@
 @section('content')
     <div class="main-content">
         <div class="page-content">
-            <div class="container-fluid">   
+            <div class="container-fluid">
                 <div class="mt-3">
                     <!-- Page Heading -->
                     <div class="col-lg-12">
@@ -39,7 +39,8 @@
                                             <div>
                                                 <input type="submit" id="search" class="btn btn-success" name="search"
                                                     title="Search" value="Search">
-                                                    <button type="button" id="cancel_search" class="btn btn-success ">Cancel</button>
+                                                <button type="button" id="cancel_search"
+                                                    class="btn btn-success ">Cancel</button>
                                             </div>
                                             @include('common.alert')
                                             {{-- <div class="row">
@@ -65,53 +66,60 @@
                                 <h5 class="card-title mb-0">Upcoming Renewal Report List</h5>
                             </div>
                             <div class="card-body">
-                                @if($Count > 0)
-                                <table id="scroll-horizontal" class="table nowrap align-middle" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Sr No</th>
-                                            <th scope="col">Member Name</th>
-                                            <th scope="col">Plan Name</th>
-                                            <th scope="col">Start date</th>
-                                            <th scope="col">SubscriptionExpiredDate</th>
-                                            {{-- <th scope="col">Amount</th> --}}
-                                            {{-- <th scope="col">City</th>
+                                @if ($Count > 0)
+                                    <table id="scroll-horizontal" class="table nowrap align-middle" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Sr No</th>
+                                                <th scope="col">Member Name</th>
+                                                <th scope="col">Plan Name</th>
+                                                <th scope="col">Start date</th>
+                                                <th scope="col">SubscriptionExpiredDate</th>
+                                                {{-- <th scope="col">Amount</th> --}}
+                                                {{-- <th scope="col">City</th>
                                             <th scope="col">Group Name</th> 
                                             <th scope="col">Category name</th>
                                             <th scope="col">SubCategory name</th> --}}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php $i = 1; ?>
-                                        @foreach ($datas as $data)
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $i + $datas->perPage() * ($datas->currentPage() - 1) }}</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $i = 1; ?>
+                                            @foreach ($datas as $data)
+                                                <tr>
+                                                    <td class="text-center">
+                                                        {{ $i + $datas->perPage() * ($datas->currentPage() - 1) }}</td>
 
-                                                <td class="text-center">{{ $data->user_id }}</td>
-                                                <td class="text-center">{{ $data->plan_name }}</td>
-                                                {{-- <td class="text-center">{{ $data->substartdate }}</td>
+                                                    {{-- <td class="text-center">{{ $data->user_id }}</td> --}}
+                                                    <td class="text-center">{{ $data->Contact_person }}</td>
+                                                    <td class="text-center">{{ $data->plan_name }}</td>
+                                                    {{-- <td class="text-center">{{ $data->substartdate }}</td>
                                                 <td class="text-center">{{ $data->SubscriptionExpiredDate }}</td> --}}
-                                                <td class="text-center">{{ \Carbon\Carbon::parse($data->substartdate)->format('d-m-Y') }}</td>
-                                                <td class="text-center">{{ \Carbon\Carbon::parse($data->SubscriptionExpiredDate)->format('d-m-Y') }}</td>
-                    
-                                                {{-- <td class="text-center">
+                                                    <td class="text-center">
+                                                        {{ \Carbon\Carbon::parse($data->substartdate)->format('d-m-Y') }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ \Carbon\Carbon::parse($data->SubscriptionExpiredDate)->format('d-m-Y') }}
+                                                    </td>
+
+                                                    {{-- <td class="text-center">
                                                     {{ \Carbon\Carbon::parse($data->renewal_date)->format('d-m-Y') }}</td>
                                                 <td class="text-center">{{ $data->amount }}</td> --}}
 
-                                            </tr>
-                                            <?php $i++; ?>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                @else 
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
-                                        <div class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
-                                            <h1 class="font-white text-center"> No Data Found ! </h1>
+                                                </tr>
+                                                <?php $i++; ?>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <div class="row">
+                                        <div
+                                            class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
+                                            <div
+                                                class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
+                                                <h1 class="font-white text-center"> No Data Found ! </h1>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                                 @endif
                                 <div class="d-flex justify-content-center mt-3">
                                     {{ $datas->appends(request()->except('page'))->links() }}
@@ -233,9 +241,9 @@
                 </script>
 
                 <script>
-                    $(document).ready(function(){
+                    $(document).ready(function() {
                         // Add click event listener to the cancel button
-                        $('#cancel_search').click(function(){
+                        $('#cancel_search').click(function() {
                             // Reset the value of the input fields to empty
                             $('#startdatepicker').val('');
                             $('#enddatepicker').val('');

@@ -133,6 +133,7 @@
                                             <th scope="col">City</th>
                                             <th scope="col">Group Name</th>
                                             <th scope="col">Category name</th>
+                                            <th scope="col">Referred By</th>
                                             <!-- <th scope="col">SubCategory name</th> -->
                                             <th scope="col">Status</th>
                                             <th scope="col">Action</th>
@@ -160,6 +161,7 @@
                                                 <td class="text-center">{{ $data->city_name }}</td>
                                                 <td class="text-center">{{ $data->group_name }}</td>
                                                 <td class="text-center">{{ $data->categoriesname }}</td>
+                                                <td class="text-center">{{ $data->from_display }}</td>
                                                 <!-- <td class="text-center">{{ $data->subcategoriesname }}</td> -->
                                                 {{-- <td class="text-center">{{ $data->pincode }}</td> --}}
                                                 {{-- <td class="text-center">{{ $data->gstnumber }}</td> --}}

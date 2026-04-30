@@ -231,7 +231,7 @@
                             <a class="nav-link menu-link @if (request()->routeIs()) {{ 'active' }} @endif"
                                 href="">
                                 <i class="fas fa-chart-line"></i>
-                                <span data-key="t-dashboards">Business Analysis</span>
+                                <span data-key="t-dashboards">Activity</span>
                             </a>
                             <div class="collapse menu-dropdown" id="sidebarApps">
                                 <ul class="nav nav-sm flex-column">
@@ -246,6 +246,12 @@
                                         <a href="{{ route('Admin-Reference.index') }}" class="nav-link"
                                             data-key="t-chat">
                                             <i class="fas fa-book"></i></i>Reference
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('OneToOne_pending') }}" class="nav-link"
+                                            data-key="t-chat">
+                                            <i class="fas fa-book"></i></i>OneToOne
                                         </a>
                                     </li>
                                 </ul>
@@ -387,7 +393,7 @@
                         @endphp
                 <li class="nav-item">
                     <a href="#" class="nav-link" data-key="t-chat">
-                        <b> <i class="fas fa-calendar-alt"></i> SUBSCRIPTION EXPIRIES ON :-
+                        <b> <i class="fas fa-calendar-alt"></i> MEMBERSHIP EXPIRIES ON :-
                             {{ isset($subexpri['SubscriptionExpiredDate'])
                                 ? date('d-m-Y', strtotime($subexpri['SubscriptionExpiredDate']))
                                 : '' }}
@@ -401,15 +407,11 @@
                 <div class="collapse menu-dropdown" id="sidebarApps"
                     style="max-height: 500px; overflow-y: auto; overflow-x: hidden;">
                     <ul class="nav nav-sm flex-column">
-
-
-
-                        @if ($session->role_id == 1 || $session->role_id == 3)
+                        {{-- @if ($session->role_id == 1 || $session->role_id == 3)
                             @if ($session->role_id == 1 || $permission['gallery'] == 1)
                                 <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('gallery.index')) {{ 'active' }} @endif"
                                         href="{{ route('gallery.index') }}">
-                                        <!-- <i class="fa-solid fa-box-open"></i> -->
                                         <i class="fa fa-image"></i>
                                         <span data-key="t-dashboards">Gallery</span>
                                     </a>
@@ -426,7 +428,7 @@
                                     </a>
                                 </li>
                             @endif
-                        @endif
+                        @endif --}}
                         @if ($session->role_id == 1 || $session->role_id == 3)
                             @if ($session->role_id == 1 || $permission['Event'] == 1)
                                 <li class="nav-item">

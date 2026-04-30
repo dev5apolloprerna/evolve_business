@@ -20,13 +20,13 @@
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="card-title mb-0">update Members</h5>
-                            </div> 
+                            </div>
 
                             <div class="card-body">
                                 <div class="live-preview">
-                                    <form action="{{ route('members.update', $data->id)}}" method="post"
+                                    <form action="{{ route('members.update', $data->id) }}" method="post"
                                         enctype="multipart/form-data">
-                                        <input type="hidden" name="id" id="getid" value="{{$data['id']}}">
+                                        <input type="hidden" name="id" id="getid" value="{{ $data['id'] }}">
                                         @csrf
                                         <div class="row gy-2" style="align-items: end;">
                                             <div class="col-lg-4 col-md-6">
@@ -35,11 +35,14 @@
                                                     id="companyname" placeholder="Enter Brand Name" maxlength="100"
                                                     autocomplete="off" value ="{{ $data->companyname }}">
                                             </div>
-                                             <div class="col-lg-4 col-md-6">
-                                                <span style="color: red;">*</span>Branch Establish Year                        
-                                                <span style="color:red;" class="error-message">{{ $errors->first('brand_establish_year') }}</span> 
-                                                <input type="text" class="form-control" name="brand_establish_year" id="brand_establish_year"
-                                                    placeholder="Enter Brand Establish Year" value="{{old('brand_establish_year')}}"  onKeyPress="if(this.value.length==6) return false;" required>
+                                            <div class="col-lg-4 col-md-6">
+                                                <span style="color: red;">*</span>Branch Establish Year
+                                                <span style="color:red;"
+                                                    class="error-message">{{ $errors->first('brand_establish_year') }}</span>
+                                                <input type="text" class="form-control" name="brand_establish_year"
+                                                    id="brand_establish_year" placeholder="Enter Brand Establish Year"
+                                                    value="{{ old('brand_establish_year') }}"
+                                                    onKeyPress="if(this.value.length==6) return false;" required>
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
@@ -51,16 +54,18 @@
 
                                             <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;">*</span> Member Name
-                                                <input type="text" class="form-control" name="first_name"
-                                                    id="first_name" placeholder="Enter Member Name" maxlength="100"
-                                                    autocomplete="off" value ="{{$data['user_id']}}">
+                                                <input type="text" class="form-control" name="first_name" id="first_name"
+                                                    placeholder="Enter Member Name" maxlength="100" autocomplete="off"
+                                                    value ="{{ $data['user_id'] }}">
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;">*</span> Phone Number
                                                 <input type="text" class="form-control" name="phonenumber"
                                                     id="phonenumber" placeholder="Enter Phone Number"
-                                                    value ="{{ $data['phonenumber'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');" onKeyPress="if(this.value.length==10) return false;" required>
+                                                    value ="{{ $data['phonenumber'] }}"
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                                                    onKeyPress="if(this.value.length==10) return false;" required>
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
@@ -70,10 +75,12 @@
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
-                                                 <span style="color: red;">*</span>Date of Birth
-                                                <span style="color:red;" class="error-message">{{ $errors->first('date_of_birth') }}</span> 
+                                                <span style="color: red;">*</span>Date of Birth
+                                                <span style="color:red;"
+                                                    class="error-message">{{ $errors->first('date_of_birth') }}</span>
                                                 <input type="date" class="form-control" name="date_of_birth"
-                                                    id="date_of_birth" placeholder="Enter Date Of Birth"  value="{{old('date_of_birth')}}" required>
+                                                    id="date_of_birth" placeholder="Enter Date Of Birth"
+                                                    value="{{ old('date_of_birth') }}" required>
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
@@ -97,13 +104,73 @@
                                             <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;">*</span> Pincode
                                                 <input type="text" class="form-control" name="pincode" id="pincode"
-                                                    placeholder="Enter Pincode" value ="{{ $data['pincode'] }}" onKeyPress="if(this.value.length==6) return false;" required>
+                                                    placeholder="Enter Pincode" value ="{{ $data['pincode'] }}"
+                                                    onKeyPress="if(this.value.length==6) return false;" required>
+                                            </div>
+
+                                            @php
+                                                $selectedFrom = $data['from'] ?? '';
+                                            @endphp
+
+                                            <div class="col-lg-4 col-md-6">
+                                                <label for="referred_to"><span style="color:red;">*</span>From</label>
+
+                                                <select class="form-control" data-choices name="referred_to"
+                                                    id="choices-single-default">
+
+                                                    <option value="" disabled
+                                                        {{ empty($selectedFrom) ? 'selected' : '' }}>
+                                                        Select From
+                                                    </option>
+
+                                                    <option value="referred_by"
+                                                        {{ $selectedFrom == 'referred_by' ? 'selected' : '' }}>
+                                                        Referred By
+                                                    </option>
+
+                                                    <option value="inducted_by"
+                                                        {{ $selectedFrom == 'inducted_by' ? 'selected' : '' }}>
+                                                        Inducted By
+                                                    </option>
+
+                                                    <option value="committee_social"
+                                                        {{ $selectedFrom == 'committee_social' ? 'selected' : '' }}>
+                                                        Committee Member / Social Media
+                                                    </option>
+
+                                                    <option value="website"
+                                                        {{ $selectedFrom == 'website' ? 'selected' : '' }}>
+                                                        Website
+                                                    </option>
+
+                                                    @foreach ($Data as $member)
+                                                        <option value="{{ $member->id }}"
+                                                            {{ $selectedFrom == $member->id ? 'selected' : '' }}>
+                                                            {{ $member->first_name }} - ({{ $member->mobile_number }})
+                                                        </option>
+                                                    @endforeach
+
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-4 col-md-6 mt-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input"
+                                                        name="priority_club_3_year" id="priority_club_3_year"
+                                                        value="1"
+                                                        {{ old('priority_club_3_year', $data->priority_club_3_year ?? 0) == 1 ? 'checked' : '' }}>
+
+                                                    <label class="form-check-label" for="priority_club_3_year">
+                                                        3 Year Priority Club
+                                                    </label>
+                                                </div>
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
                                                 <label for="citygroup_id"><span style="color:red;">*</span> City Group
                                                     Name</label>
-                                                <select class="form-control" name="citygroup_id" id="citygroup_id" required>
+                                                <select class="form-control" name="citygroup_id" id="citygroup_id"
+                                                    required>
                                                     @foreach ($cityGroups as $cityGroup)
                                                         <option
                                                             value="{{ $cityGroup->id }}"{{ $data->citygroup_id == $cityGroup->id ? 'selected' : '' }}>
@@ -126,7 +193,7 @@
                                                 </select>
                                             </div>
 
-                                            
+
                                             <div class="col-lg-4 col-md-6">
                                                 <label for="plan_id"><span style="color:red;">*</span> Plan Name</label>
                                                 <select class="form-control" name="plan_id" id="plan_id">
@@ -144,20 +211,24 @@
                                                     id="renewal_date" placeholder="Enter Membership date"
                                                     value ="{{ $data['renewal_date'] }}" required>
                                             </div>
-                                          
+
                                             <!-- this field old end  -->
                                             <!-- this field new start  -->
                                             <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;"></span> PaymentRefNo
-                                                <input type="text" class="form-control" name="PaymentRefNo" id="PaymentRefNo" placeholder="Enter PaymentRefNo" value="{{ $data['paymentrefNo'] }}" oninput="this.value = this.value.replace(/[^0-9_()-]/g, '');">
+                                                <input type="text" class="form-control" name="PaymentRefNo"
+                                                    id="PaymentRefNo" placeholder="Enter PaymentRefNo"
+                                                    value="{{ $data['paymentrefNo'] }}"
+                                                    oninput="this.value = this.value.replace(/[^0-9_()-]/g, '');">
                                             </div>
                                             <!-- this field new start  -->
-                                           
-                                           
+
+
                                             <div class="text-center">
                                                 <button type="submit" class="btn btn-success btn-user style="width:
                                                     100px; height: 40px;"">Submit</button>
-                                                    <button type="button" class="btn btn-danger btn-user float-right" onclick="cancelForm()">Cancel</button>
+                                                <button type="button" class="btn btn-danger btn-user float-right"
+                                                    onclick="cancelForm()">Cancel</button>
                                             </div>
 
                                         </div>
@@ -303,21 +374,20 @@
         }
     </script>
 
-<script>
+    <script>
         function cancelForm() {
-            window.location.reload(); 
+            window.location.reload();
         }
     </script>
-    
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script>
-    $(function() {
-        $("#renewal_date").datepicker({
-            dateFormat: "yy-mm-dd",
-            //minDate: 0
-        });      
-    });
-</script>
-@endsection
 
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $("#renewal_date").datepicker({
+                dateFormat: "yy-mm-dd",
+                //minDate: 0
+            });
+        });
+    </script>
+@endsection

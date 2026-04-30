@@ -364,6 +364,7 @@ class MemberBusinesscontroller extends Controller
     {
 
         DB::table('event_members')->insert([
+            'isapproved_status' => $request->newStatus,
             'event_id' => $request->id,
             'member_id' => Auth::user()->id,
             'created_at' => now()

@@ -31,6 +31,9 @@ class members extends Model
         'youtube_link',
         'google_link',
         'Arrival_flag',
+        'priority_club_3_year',
+        'training_free',
+        'brand_showcase'
 
     ];
 

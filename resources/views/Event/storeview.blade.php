@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Events')
 @section('content')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 
     <div class="main-content">
         <div class="page-content">
@@ -72,6 +73,24 @@
                                                     <option value="2">Training</option>
                                                 </select>
                                             </div>
+                                            <div class="col-lg-12">
+                                                <label for="assign_members">
+                                                    <span style="color:red;">*</span> Assign Members
+                                                </label>
+                                                <select class="form-control" name="assign_member_id[]" id="assign_members"
+                                                    multiple required>
+                                                    <option value="" disabled>Select Member
+                                                    </option>
+                                                    @foreach ($members as $member)
+                                                        <option value="{{ $member->id }}">
+                                                            {{ $member->Contact_person }}
+                                                            ({{ $member->phonenumber }})
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select
+                                                    multiple members</small>
+                                            </div>
                                             <div class="col-lg-4 col-md-6" id="priceField" style="display:none;">
                                                 <span style="color:red;">*</span> Price
                                                 <input type="number" class="form-control" name="price" id="price"
@@ -110,6 +129,24 @@
 @endsection
 
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const element = document.getElementById('assign_members');
+
+            if (element) {
+                new Choices(element, {
+                    removeItemButton: true,
+                    itemSelectText: '',
+                    placeholderValue: 'Select Members',
+                    searchPlaceholderValue: 'Search members...',
+                    noResultsText: 'No matching members found',
+                    shouldSort: false
+                });
+            }
+        });
+    </script>
+
     <script>
         function getEditData(id) {
             //alert(id);

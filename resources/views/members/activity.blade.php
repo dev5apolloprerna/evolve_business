@@ -40,8 +40,9 @@
                     <div class="col-md-4">
                         <div class="card activity-card active" data-target="direct-business-section">
                             <div class="card-body text-center">
-                                <h6 class="mb-1">Direct Business</h6>
-                                <h4 class="mb-0">{{ $directBusinesses->count() }}</h4>
+                                <h6 class="mb-1">Direct Business Amount</h6>
+                                <h4 class="mb-0">{{ number_format($directBusinessTotal, 0) }}</h4>
+                                {{-- <small>Total: ₹{{ number_format($directBusinessTotal, 0) }}</small> --}}
                             </div>
                         </div>
                     </div>
@@ -49,7 +50,7 @@
                         <div class="card activity-card" data-target="reference-business-section">
                             <div class="card-body text-center">
                                 <h6 class="mb-1">Reference Business</h6>
-                                <h4 class="mb-0">{{ $referenceBusinesses->count() }}</h4>
+                                <h4 class="mb-0">{{ number_format($referenceBusinessTotal, 0) }}</h4>
                             </div>
                         </div>
                     </div>
