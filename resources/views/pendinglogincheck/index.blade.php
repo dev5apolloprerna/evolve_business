@@ -8,241 +8,315 @@
 
                 {{-- Alert Messages --}}
                 @include('common.alert')
-
-                <div class="col-md-12 mt-3">
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Pending Business List
-                                    </h5>
+                @if ($Business->count() > 0)
+                    <div class="col-md-12 mt-3">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title mb-0" data-anchor="data-anchor">Pending Business List
+                                        </h5>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="tab-content">
-                                <div class="tab-pane preview-tab-pane active" role="tabpanel"
-                                    aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
-                                    id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
-                                    <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane preview-tab-pane active" role="tabpanel"
+                                        aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
+                                        id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
+                                        <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
 
-                                        <table class="table table-bordered table-striped fs--1 mb-0">
-                                            <thead class="bg-200 text-900">
-                                                <tr>
-                                                    <th scope="col">No</th>
-                                                    <th scop="col">Business Type</th>
-                                                    <th scop="col">Given By</th>
-                                                    <!-- <th width="5%" class="sort" data-sort="Date">Given To</th> -->
-                                                    <th scop="col">Amount</th>
-                                                    <th scop="col">Business date
-                                                    </th>
-                                                    <th scop="col">Status</th>
-                                                    <!-- <th width="5%" class="sort" data-sort="Date">Available seats
-                                                                                                                                                                                                                                                                                                                                                                                                                                            </th> -->
-                                                    <th w scop="col">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="list">
-                                                <?php $i = 1; ?>
-                                                @foreach ($Business as $Business1)
+                                            <table class="table table-bordered table-striped fs--1 mb-0">
+                                                <thead class="bg-200 text-900">
                                                     <tr>
-                                                        <td class="text-center">
-                                                            {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{ $Business1->business_type == 1 ? 'Direct' : 'Reference' }}
-                                                        </td>
-                                                        <td class="text-center">{{ $Business1->business_from }}</td>
-                                                        <!-- <td class="text-center">{{ $Business1->business_to }}</td> -->
-                                                        <td class="text-center">{{ $Business1->Business_amount }}</td>
-                                                        <td class="text-center">
-                                                            {{ \Carbon\Carbon::parse($Business1->business_Date)->format('d-m-Y') }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{ $Business1->isapproved_status == 0 ? 'Pending' : '' }}
-                                                        </td>
-
-                                                        <td>
-                                                            <!-- <a href="#" data-bs-toggle="modal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-bs-target="#EditModal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    onclick="getEditData(<?= $Business1->business_id ?>)"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    class="btn btn-link p-0" title="Edit">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    <span class="text-500 fas fa-edit"></span>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                </a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="btn btn-link p-0" href="#"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-bs-toggle="modal" title="Delete"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-bs-target="#deleteRecordModal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    onclick="deleteData(<?= $Business1->business_id ?>);">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                </a> -->
-                                                            <a class="" href="#" data-bs-toggle="modal"
-                                                                title="Status Changed" data-bs-target="#statusModal"
-                                                                onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
-                                                                <i class="fas fa-plus-square" aria-hidden="true"></i>
-                                                            </a>
-
-                                                        </td>
+                                                        <th scope="col">No</th>
+                                                        <th scop="col">Business Type</th>
+                                                        <th scop="col">Given By</th>
+                                                        <!-- <th width="5%" class="sort" data-sort="Date">Given To</th> -->
+                                                        <th scop="col">Amount</th>
+                                                        <th scop="col">Business date
+                                                        </th>
+                                                        <th scop="col">Status</th>
+                                                        <!-- <th width="5%" class="sort" data-sort="Date">Available seats
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </th> -->
+                                                        <th w scop="col">Action</th>
                                                     </tr>
-                                                    <?php $i++; ?>
-                                                @endforeach
-                                            </tbody>
+                                                </thead>
+                                                <tbody class="list">
+                                                    <?php $i = 1; ?>
+                                                    @foreach ($Business as $Business1)
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ $Business1->business_type == 1 ? 'Direct' : 'Reference' }}
+                                                            </td>
+                                                            <td class="text-center">{{ $Business1->business_from }}</td>
+                                                            <!-- <td class="text-center">{{ $Business1->business_to }}</td> -->
+                                                            <td class="text-center">{{ $Business1->Business_amount }}</td>
+                                                            <td class="text-center">
+                                                                {{ \Carbon\Carbon::parse($Business1->business_Date)->format('d-m-Y') }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ $Business1->isapproved_status == 0 ? 'Pending' : '' }}
+                                                            </td>
 
-                                        </table>
+                                                            <td>
+                                                                <!-- <a href="#" data-bs-toggle="modal"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-bs-target="#EditModal"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    onclick="getEditData(<?= $Business1->business_id ?>)"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    class="btn btn-link p-0" title="Edit">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <span class="text-500 fas fa-edit"></span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="btn btn-link p-0" href="#"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-bs-toggle="modal" title="Delete"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-bs-target="#deleteRecordModal"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    onclick="deleteData(<?= $Business1->business_id ?>);">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </a> -->
+                                                                <a class="" href="#" data-bs-toggle="modal"
+                                                                    title="Status Changed" data-bs-target="#statusModal"
+                                                                    onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
+                                                                    <i class="fas fa-plus-square" aria-hidden="true"></i>
+                                                                </a>
 
-                                        <div class="d-flex justify-content-center mt-3">
-                                            {{ $Business->links() }}
+                                                            </td>
+                                                        </tr>
+                                                        <?php $i++; ?>
+                                                    @endforeach
+                                                </tbody>
+
+                                            </table>
+
+                                            <div class="d-flex justify-content-center mt-3">
+                                                {{ $Business->links() }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
                 {{-- one to one  --}}
-
-                <div class="col-md-12 mt-3">
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Pending One To One List
-                                    </h5>
+                @if ($OneToOne->count() > 0)
+                    <div class="col-md-12 mt-3">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title mb-0" data-anchor="data-anchor">Pending One To One List
+                                        </h5>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="tab-content">
-                                <div class="tab-pane preview-tab-pane active" role="tabpanel"
-                                    aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
-                                    id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
-                                    <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane preview-tab-pane active" role="tabpanel"
+                                        aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
+                                        id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
+                                        <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
 
-                                        <table class="table table-bordered table-striped fs--1 mb-0">
-                                            <thead class="bg-200 text-900">
-                                                <tr>
-                                                    <th scope="col">No</th>
-                                                    <th scop="col">Given By</th>
-                                                    <th scop="col">date</th>
-                                                    <th scop="col">Status</th>
-                                                    <th w scop="col">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="list">
-                                                <?php $i = 1; ?>
-                                                @foreach ($OneToOne as $One)
+                                            <table class="table table-bordered table-striped fs--1 mb-0">
+                                                <thead class="bg-200 text-900">
                                                     <tr>
-                                                        <td class="text-center">
-                                                            {{ $i + $OneToOne->perPage() * ($OneToOne->currentPage() - 1) }}
-                                                        </td>
-                                                        <td class="text-center">{{ $One->from }}</td>
-
-
-                                                        <td class="text-center">
-                                                            {{ \Carbon\Carbon::parse($One->date)->format('d-m-Y') }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{ $One->isapproved_status == 0 ? 'Pending' : '' }}
-                                                        </td>
-
-                                                        <td>
-                                                            <a class="" href="#" data-bs-toggle="modal"
-                                                                title="Status Changed" data-bs-target="#OneToOnestatusModal"
-                                                                onclick="getEditOneDatastatus(<?= $One->id ?>);">
-                                                                <i class="fas fa-plus-square" aria-hidden="true"></i>
-                                                            </a>
-
-                                                        </td>
+                                                        <th scope="col">No</th>
+                                                        <th scop="col">Given By</th>
+                                                        <th scop="col">date</th>
+                                                        <th scop="col">Status</th>
+                                                        <th w scop="col">Action</th>
                                                     </tr>
-                                                    <?php $i++; ?>
-                                                @endforeach
-                                            </tbody>
+                                                </thead>
+                                                <tbody class="list">
+                                                    <?php $i = 1; ?>
+                                                    @foreach ($OneToOne as $One)
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                {{ $i + $OneToOne->perPage() * ($OneToOne->currentPage() - 1) }}
+                                                            </td>
+                                                            <td class="text-center">{{ $One->from }}</td>
 
-                                        </table>
 
-                                        <div class="d-flex justify-content-center mt-3">
-                                            {{ $OneToOne->links() }}
+                                                            <td class="text-center">
+                                                                {{ \Carbon\Carbon::parse($One->date)->format('d-m-Y') }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ $One->isapproved_status == 0 ? 'Pending' : '' }}
+                                                            </td>
+
+                                                            <td>
+                                                                <a class="" href="#" data-bs-toggle="modal"
+                                                                    title="Status Changed"
+                                                                    data-bs-target="#OneToOnestatusModal"
+                                                                    onclick="getEditOneDatastatus(<?= $One->id ?>);">
+                                                                    <i class="fas fa-plus-square" aria-hidden="true"></i>
+                                                                </a>
+
+                                                            </td>
+                                                        </tr>
+                                                        <?php $i++; ?>
+                                                    @endforeach
+                                                </tbody>
+
+                                            </table>
+
+                                            <div class="d-flex justify-content-center mt-3">
+                                                {{ $OneToOne->links() }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
                 {{-- Event list --}}
-
-                <div class="col-md-12 mt-3">
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Event List
-                                    </h5>
+                @if ($Events->count() > 0)
+                    <div class="col-md-12 mt-3">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title mb-0" data-anchor="data-anchor">Event List
+                                        </h5>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="tab-content">
-                                <div class="tab-pane preview-tab-pane active" role="tabpanel"
-                                    aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
-                                    id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
-                                    <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane preview-tab-pane active" role="tabpanel"
+                                        aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
+                                        id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
+                                        <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
 
-                                        <table class="table table-bordered table-striped fs--1 mb-0">
-                                            <thead class="bg-200 text-900">
-                                                <tr>
-                                                    <th scope="col">No</th>
-                                                    <th scop="col">Events Name</th>
-                                                    <th scop="col">Events Date</th>
-                                                    <th scop="col">Events Start Time</th>
-                                                    <th scop="col">Events End Time</th>
-                                                    <th scop="col">Events Type</th>
-                                                    <th w scop="col">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="list">
-                                                <?php $i = 1; ?>
-                                                @foreach ($Events as $Event)
+                                            <table class="table table-bordered table-striped fs--1 mb-0">
+                                                <thead class="bg-200 text-900">
                                                     <tr>
-                                                        <td class="text-center">
-                                                            {{ $i + $Events->perPage() * ($Events->currentPage() - 1) }}
-                                                        </td>
-                                                        <td class="text-center">{{ $Event->name }}</td>
-                                                        <td class="text-center">
-                                                            {{ \Carbon\Carbon::parse($Event->eventstart_date)->format('d-m-Y') }}
-                                                        </td>
-                                                        <td class="text-center">{{ $Event->eventstart_time }}</td>
-                                                        <td class="text-center">{{ $Event->eventend_time }}</td>
-                                                        <td class="text-center">
-                                                            {{ $Event->event_type == 1 ? 'ESP' : 'Training' }}
-                                                        </td>
-
-                                                        <td>
-                                                            <a class="" href="#" data-bs-toggle="modal"
-                                                                title="Status Changed" data-bs-target="#EventstatusModal"
-                                                                onclick="getEventstatus(<?= $Event->event_id ?>);">
-                                                                <i class="fas fa-plus-square" aria-hidden="true"></i>
-                                                            </a>
-
-                                                        </td>
+                                                        <th scope="col">No</th>
+                                                        <th scop="col">Events Name</th>
+                                                        <th scop="col">Events Date</th>
+                                                        <th scop="col">Events Start Time</th>
+                                                        <th scop="col">Events End Time</th>
+                                                        <th scop="col">Events Type</th>
+                                                        <th w scop="col">Action</th>
                                                     </tr>
-                                                    <?php $i++; ?>
-                                                @endforeach
-                                            </tbody>
+                                                </thead>
+                                                <tbody class="list">
+                                                    <?php $i = 1; ?>
+                                                    @foreach ($Events as $Event)
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                {{ $i + $Events->perPage() * ($Events->currentPage() - 1) }}
+                                                            </td>
+                                                            <td class="text-center">{{ $Event->name }}</td>
+                                                            <td class="text-center">
+                                                                {{ \Carbon\Carbon::parse($Event->eventstart_date)->format('d-m-Y') }}
+                                                            </td>
+                                                            <td class="text-center">{{ $Event->eventstart_time }}</td>
+                                                            <td class="text-center">{{ $Event->eventend_time }}</td>
+                                                            <td class="text-center">
+                                                                {{ $Event->event_type == 1 ? 'ESP' : 'Training' }}
+                                                            </td>
 
-                                        </table>
+                                                            <td>
+                                                                <a class="" href="#" data-bs-toggle="modal"
+                                                                    title="Status Changed"
+                                                                    data-bs-target="#EventstatusModal"
+                                                                    onclick="getEventstatus(<?= $Event->event_id ?>);">
+                                                                    <i class="fas fa-plus-square" aria-hidden="true"></i>
+                                                                </a>
 
-                                        <div class="d-flex justify-content-center mt-3">
-                                            {{ $Events->links() }}
+                                                            </td>
+                                                        </tr>
+                                                        <?php $i++; ?>
+                                                    @endforeach
+                                                </tbody>
+
+                                            </table>
+
+                                            <div class="d-flex justify-content-center mt-3">
+                                                {{ $Events->links() }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
+                @if ($Member_metting->count() > 0)
+                    <div class="col-md-12 mt-3">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title mb-0" data-anchor="data-anchor">Member Brand Show Case List
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane preview-tab-pane active" role="tabpanel"
+                                        aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
+                                        id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
+                                        <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
+
+                                            <table class="table table-bordered table-striped fs--1 mb-0">
+                                                <thead class="bg-200 text-900">
+                                                    <tr>
+                                                        <th scope="col">No</th>
+                                                        <th scop="col">Member Name</th>
+                                                        <th scop="col">BrandShowCase Amount 1</th>
+                                                        <th scop="col">BrandShowCase Amount 2</th>
+                                                        <th w scop="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="list">
+                                                    <?php $i = 1; ?>
+                                                    @foreach ($Member_metting as $Member_met)
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                {{ $i + $Member_metting->perPage() * ($Member_metting->currentPage() - 1) }}
+                                                            </td>
+                                                            <td class="text-center">{{ $Member_met->name }}</td>
+
+                                                            <td class="text-center">
+                                                                {{ $Member_met->brand_showcase_1_amount }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ $Member_met->brand_showcase_2_amount }}</td>
+
+                                                            <td>
+                                                                <a class="" href="#" data-bs-toggle="modal"
+                                                                    title="Status Changed"
+                                                                    data-bs-target="#BrandShowcasestatusModal"
+                                                                    onclick="getBrandShowcasestatus(<?= $Member_met->id ?>);">
+                                                                    <i class="fas fa-plus-square" aria-hidden="true"></i>
+                                                                </a>
+
+                                                            </td>
+                                                        </tr>
+                                                        <?php $i++; ?>
+                                                    @endforeach
+                                                </tbody>
+
+                                            </table>
+
+                                            <div class="d-flex justify-content-center mt-3">
+                                                {{ $Events->links() }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
             </div>
 
@@ -384,10 +458,10 @@
                             {{-- {{dd($data)}} --}}
                             @if (isset($Business1->isapproved_status))
                                 <!-- <select class="form-control" name="newStatus">
-                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
-                                                                                                                                                                                                                                                                                                                                                                                                                        </option>
-                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                    </select> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </select> -->
 
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
@@ -502,6 +576,43 @@
     </div>
 
     {{-- mode end rejectedcomments --}}
+
+    <!-- BrandShowcase join -->
+    <div class="modal fade" id="BrandShowcasestatusModal" tabindex="-1" role="dialog"
+        aria-labelledby="statusModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel">Change Brand Show Case Status
+                    </h5>
+                    <button type="button" class="btn btn-light" onclick="$('#BrandShowcasestatusModal').modal('hide')">
+                        Close
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add a form for changing status and adding rejected comments -->
+                    <form action="{{ route('pendinglogincheck.Brandshowcaselogincheck') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="id" id="BrandShowcaseid" value="">
+                        <div class="form-group">
+                            <label for="newStatus">Update Status:</label>
+                            @if (isset($Member_met->is_approve))
+                                <select class="form-control" name="newStatus" id="BrandShowcasenewStatus">
+                                    <option value="1" {{ $Member_met->is_approve == 1 ? 'selected' : '' }}>
+                                        Approve</option>
+                                    <option value="2" {{ $Member_met->is_approve == 2 ? 'selected' : '' }}>
+                                        Reject</option>
+                                </select>
+                            @endif
+                        </div>
+
+                        <button type="submit" class="btn btn-success" style="margin-top: 20px;">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
@@ -627,6 +738,32 @@
                 });
             }
             var name = $('#Eventid').val(id);
+
+        }
+    </script>
+
+    <script>
+        function getBrandShowcasestatus(id) {
+            // alert(id);
+            var url = "{{ route('Business.statusBrandshowcase', ':id') }}";
+            url = url.replace(":id", id);
+            if (id) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        id,
+                        id
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        var obj = JSON.parse(data);
+                        $('#BrandShowcaseid').val(id);
+                        $("#BrandShowcasenewStatus").val(obj.is_approve);
+                    }
+                });
+            }
+            var name = $('#BrandShowcaseid').val(id);
 
         }
     </script>

@@ -87,7 +87,6 @@ class Membermeetingcontroller extends Controller
         return back()->with('success', 'Cluster Meet Deleted Successfully!.');
     }
 
-
     public function Memberindex(Request $request, $id)
     {
         $allmembers = members::select('id', 'Contact_person')->orderBy('Contact_person')->get();
@@ -125,79 +124,40 @@ class Membermeetingcontroller extends Controller
             ->toArray();
         return view('Membermeeting.Memberindex', compact('brand_showcase_1', 'brand_showcase_2', 'pptTaken1', 'pptTaken2', 'allmembers', 'members', 'meetingid', 'meetingdata'));
     }
-    // public function memberstore(Request $request)
-    // {
 
-    //     if (!empty($request->ppt_taken_1) && $request->ppt_taken_1 == $request->ppt_taken_2) {
-    //         return back()->withInput()->withErrors([
-    //             'ppt_taken_2' => 'Same member cannot be selected for both PPT Taken 1 and PPT Taken 2.'
-    //         ]);
-    //     }
 
-    //     if (!empty($request->brand_showcase_1) && $request->brand_showcase_1 == $request->brand_showcase_2) {
-    //         return back()->withInput()->withErrors([
-    //             'brand_showcase_2' => 'Same member cannot be selected for both Brand Showcase 1 and Brand Showcase 2.'
-    //         ]);
-    //     }
-    //     $meetingDate = DB::table('Cluster_Meet_Member_meeting')
-    //         ->where('meeting_id', $request->meetingid)
-    //         ->value('created_at');
-    //     $threeMonthsAgo = Carbon::parse($meetingDate)->subMonths(3);
+    public function saveBrandAmount(Request $request)
+    {
+        $meetingId = $request->meeting_id;
 
-    //     $fieldLabels = [
-    //         'ppt_taken_1' => 'PPT Taken 1',
-    //         'ppt_taken_2' => 'PPT Taken 2',
-    //         'brand_showcase_1' => 'Brand Showcase 1',
-    //         'brand_showcase_2' => 'Brand Showcase 2',
-    //     ];
-    //     foreach ($fieldLabels as $field => $label) {
+        // Brand Showcase 1 Amount
+        if (!empty($request->brand_showcase_1_amount)) {
+            foreach ($request->brand_showcase_1_amount as $memberId => $amount) {
 
-    //         $memberId = $request->$field;
+                DB::table('Cluster_Meet_Member_meeting')
+                    ->where('meeting_id', $meetingId)
+                    ->where('member_id', $memberId)
+                    ->update([
+                        'brand_showcase_1_amount' => $amount ?? 0,
+                    ]);
+            }
+        }
 
-    //         if (!empty($memberId)) {
+        // Brand Showcase 2 Amount
+        if (!empty($request->brand_showcase_2_amount)) {
+            foreach ($request->brand_showcase_2_amount as $memberId => $amount) {
 
-    //             $member = DB::table('members')->where('id', $memberId)->first();
+                DB::table('Cluster_Meet_Member_meeting')
+                    ->where('meeting_id', $meetingId)
+                    ->where('member_id', $memberId)
+                    ->update([
+                        'brand_showcase_2_amount' => $amount ?? 0,
+                    ]);
+            }
+        }
 
-    //             $allowedCount = ($member && $member->priority_club_3_year == 1) ? 2 : 1;
-
-    //             // ✅ ONLY FIELD-WISE COUNT
-    //             $usedCount = Member_metting::where($field, $memberId)
-    //                 ->whereBetween('created_at', [$threeMonthsAgo, $meetingDate])
-    //                 ->count();
-
-    //             if ($usedCount >= $allowedCount) {
-    //                 return redirect()
-    //                     ->back()
-    //                     ->withInput()
-    //                     ->withErrors([
-    //                         $field => "Member already used for {$label} {$allowedCount} time(s) within last 3 months."
-    //                     ]);
-    //             }
-    //         }
-    //     }
-    //     DB::table('Cluster_Meet_Member_meeting')
-    //         ->where('meeting_id', $request->meetingid)
-    //         ->delete();
-    //     $meetingId = $request->input('meetingid');
-    //     $memberIds = $request->input('members');
-    //     foreach ($memberIds as $memberId) {
-    //         Member_metting::create([
-    //             'meeting_id' => $meetingId,
-    //             'member_id' => $memberId,
-    //             'ppt_taken_1' => $request->ppt_taken_1,
-    //             'ppt_taken_2' => $request->ppt_taken_2,
-    //             'brand_showcase_1' => $request->brand_showcase_1,
-    //             'brand_showcase_2' => $request->brand_showcase_2,
-    //         ]);
-    //     }
-
-    //     $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
-    //     $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
-    //     $datas = DB::table('Cluster_Meet')->paginate(env('PAR_PAGE_COUNT', 20));
-    //     $Count = $datas->count();
-
-    //     return redirect()->route('Membermeeting.index', compact('Count', 'cityGroups', 'cities', 'datas'))->with('success', 'Meeting Members added successfully!');
-    // }
+        return back()->with('success', 'Brand Showcase Amount Updated!');
+    }
 
     public function memberstore(Request $request)
     {
@@ -286,6 +246,7 @@ class Membermeetingcontroller extends Controller
         return redirect()->route('Membermeeting.index')
             ->with('success', 'Meeting Members added successfully!');
     }
+
     public function Membermeeting_comment(Request $request, $id = null)
     {
         try {
@@ -298,7 +259,34 @@ class Membermeetingcontroller extends Controller
                 ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $count = $datas->count();
-            return view('Membermeeting.Membercomment', compact('datas', 'count', 'metting_id'));
+            $brandshowcasedata = DB::table('Cluster_Meet_Member_meeting as c')
+                ->leftJoin('members as m1', 'c.brand_showcase_1', '=', 'm1.id')
+                ->leftJoin('members as m2', 'c.brand_showcase_2', '=', 'm2.id')
+                ->leftJoin('Cluster_Meet as CM', 'c.meeting_id', '=', 'CM.id')
+                ->select(
+                    'CM.id as meeting_id',
+                    'CM.Meeting_title',
+                    'c.id as Cluster_Meet_Member_meeting_id',
+                    'c.member_id',
+
+                    'c.brand_showcase_1',
+                    'c.brand_showcase_2',
+
+                    'c.brand_showcase_1_amount',
+                    'c.brand_showcase_2_amount',
+
+                    'm1.Contact_person as brand1_name',
+                    'm2.Contact_person as brand2_name',
+
+                    'c.is_approve'
+                )
+                ->where('c.meeting_id', $id)
+                ->orderByDesc('c.brand_showcase_1_amount')
+                ->orderByDesc('c.brand_showcase_2_amount')
+                ->paginate(20);
+            //dd($brandshowcasedata->toArray());
+
+            return view('Membermeeting.Membercomment', compact('datas', 'count', 'metting_id', 'brandshowcasedata'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }

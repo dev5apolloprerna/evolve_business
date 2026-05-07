@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
+use App\Models\Member_metting;
 
 
 class CheckApprovalStatus
@@ -53,9 +54,17 @@ class CheckApprovalStatus
                 })
                 ->orderBy('event_id', 'DESC')
                 ->get();
+            $member = members::where('user_id', $user->id)->first();
+
+            $Member_metting = Member_metting::join('members', 'members.id', '=', 'Cluster_Meet_Member_meeting.member_id')
+                ->where('members.id', $member->id)
+                ->select('Cluster_Meet_Member_meeting.*', 'members.Contact_person As name')
+                ->where(['Cluster_Meet_Member_meeting.iStatus' => 1, 'Cluster_Meet_Member_meeting.isDelete' => 0, 'Cluster_Meet_Member_meeting.is_approve' => 0])
+                ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
+                ->get();
 
 
-            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty()) {
+            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty() || !$Member_metting->isEmpty()) {
                 // foreach ($loginPendingCheck as $pendingCheck)
                 // {
                 //     if ($pendingCheck->isapproved_status == 0)

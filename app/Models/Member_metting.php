@@ -16,5 +16,9 @@ class Member_metting extends Model
         'ppt_taken_2',
         'brand_showcase_1',
         'brand_showcase_2',
+        'brand_showcase_1_amount',
+        'brand_showcase_2_amount',
+        'is_approve',
+        'is_approve_by'
     ];
 }

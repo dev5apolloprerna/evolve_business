@@ -190,10 +190,10 @@
                                                                 <i class="fa fa-unlock" aria-hidden="true"></i>
                                                             </a>
                                                         @endif
-                                                        <a href="{{ route('members.Arrival', ['user_id' => $data->id]) }}"
-                                                            title="Archive" class="mx-1">
-                                                            <i class="fa fa-check" aria-hidden="true"></i>
-                                                        </a>
+                                                        <!--<a href="{{ route('members.Arrival', ['user_id' => $data->id]) }}"-->
+                                                        <!--    title="Archive" class="mx-1">-->
+                                                        <!--    <i class="fa fa-check" aria-hidden="true"></i>-->
+                                                        <!--</a>-->
 
                                                         <a href="{{ route('members.edit', $data->memberid) }}">
                                                             <i class="far fa-edit"></i>

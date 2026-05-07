@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\City;
+use App\Models\Member_metting;
 use App\Models\City_group;
 use App\Models\Categories;
 use App\Models\subcategories;
@@ -357,8 +358,16 @@ class HomeController extends Controller
                 })
                 ->orderBy('event_id', 'DESC')
                 ->get();
+            $member = members::where('user_id', $user->id)->first();
 
-            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty()) {
+            $Member_metting = Member_metting::join('members', 'members.id', '=', 'Cluster_Meet_Member_meeting.member_id')
+                ->where('members.id', $member->id)
+                ->select('Cluster_Meet_Member_meeting.*', 'members.Contact_person As name')
+                ->where(['Cluster_Meet_Member_meeting.iStatus' => 1, 'Cluster_Meet_Member_meeting.isDelete' => 0, 'Cluster_Meet_Member_meeting.is_approve' => 0])
+                ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
+                ->get();
+
+            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty() || !$Member_metting->isEmpty()) {
                 return redirect()->route('pendinglogincheck.index');
             }
             $session = Auth::user();
@@ -710,8 +719,10 @@ class HomeController extends Controller
                 ->first();
 
             //$TopOneToOne = $topOneToOne->count();
-            $topDirectcount = $topDirect->count();
-            $topReferencecount = $topReference->count();
+            //$topDirectcount = $topDirect->count();
+            // $topReferencecount = $topReference->count();
+            $topDirectcount = optional($topDirect)->count() ?? 0;
+            $topReferencecount = optional($topReference)->count() ?? 0;
             //search option code in member user 
             $search = DB::table('categories')
                 ->select('categories.id', 'categories.name')

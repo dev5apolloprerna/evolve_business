@@ -12,6 +12,7 @@ use App\Models\subcategories;
 use App\Models\membershipplans;
 use App\Models\renewalhistory;
 use App\Models\Business;
+use App\Models\Member_metting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use validate;
@@ -334,6 +335,13 @@ class Businesscontroller extends Controller
     public function statusEventget(Request $request)
     {
         $data = Event::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $request->id])->first();
+        // dd($Business);  
+        echo json_encode($data);
+    }
+
+    public function statusBrandshowcase(Request $request)
+    {
+        $data = Member_metting::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $request->id])->first();
         // dd($Business);  
         echo json_encode($data);
     }

@@ -33,12 +33,21 @@ class members extends Model
         'Arrival_flag',
         'priority_club_3_year',
         'training_free',
-        'brand_showcase'
-
+        'brand_showcase',
+        'from'
     ];
 
     public function renewalhistory()
     {
         return $this->hasOne(renewalhistory::class, 'member_id');
+    }
+    public function referrer()
+    {
+        return $this->belongsTo(members::class, 'from', 'user_id');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(members::class, 'from', 'user_id');
     }
 }

@@ -42,15 +42,14 @@ class memberscontroller extends Controller
             'users.id',
             'users.first_name',
             DB::raw("
-    CASE 
-        WHEN members.from = 'referred_by' THEN 'Referred By'
-        WHEN members.from = 'inducted_by' THEN 'Inducted By'
-        WHEN members.from = 'committee_social' THEN 'Committee / Social Media'
-        WHEN members.from = 'website' THEN 'Website'
-        WHEN members.from REGEXP '^[0-9]+$' THEN ref_user.first_name
-        ELSE '-'
-    END as from_display
-"),
+            CASE 
+                WHEN members.from = 1 THEN 'Social Media'
+                WHEN members.from = 2 THEN 'Committee Member'
+                WHEN members.from = 3 THEN 'Website'
+                WHEN members.from REGEXP '^[0-9]+$' THEN ref_user.first_name
+                ELSE '-'
+            END as from_display
+            "),
             'city_groups.group_name',
             'city.city_name',
             'categories.name as categoriesname',
@@ -105,7 +104,7 @@ class memberscontroller extends Controller
     {
         $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
             ->where('users.status', 1)
-            ->where('users.role_id', 2)
+            //->where('users.role_id', 2)
             ->where('members.Arrival_flag', 0)
             ->orderBy('users.first_name')
             ->select('users.*')
@@ -232,12 +231,12 @@ class memberscontroller extends Controller
         $data = Members::select('members.*', db::raw('(select users.first_name from users where    users.id=members.user_id order by users.id desc limit 1 ) as user_id'), db::raw('(select renewal_history.plan_id from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as plan_id'), db::raw('(select renewal_history.renewal_date from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as renewal_date'), db::raw('(select renewal_history.paymentrefNo from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as paymentrefNo'))->where(['members.iStatus' => 1, 'members.isDelete' => 0, 'members.id' => $id])->first();
         $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
             ->where('users.status', 1)
-            ->where('users.role_id', 2)
+            //->where('users.role_id', 2)
             ->where('members.Arrival_flag', 0)
             ->orderBy('users.first_name')
             ->select('users.*')
             ->get();
-        return view('members.edit', compact('Data', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'data', 'renewplan'));
+        return view('members.edit', compact('Data', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'data', 'renewplan', 'Data'));
     }
 
 

@@ -292,7 +292,16 @@ class ReportController extends Controller
 
 
     // 30-7-25
+    public function inducted(Request $request, $id = null)
+    {
+        $members = members::with('referrals')
+            ->withCount('referrals')
+            ->having('referrals_count', '>', 0)
+            ->orderBy('id', 'asc') // ya desc
+            ->paginate(env('PAR_PAGE_COUNT', 20));
 
+        return view('reports.InductedReport', compact('members'));
+    }
 
 
     public function Member_reports_detail(Request $request, $id = null)
