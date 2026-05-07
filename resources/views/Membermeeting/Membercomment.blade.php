@@ -22,12 +22,12 @@
                                 <div>
                                     <h5 class="card-title mb-0" data-anchor="data-anchor">Meeting Member List</h5>
                                 </div>
-                                <div>
+                                {{-- <div>
                                     <a href="javascript:void(0);" class="btn btn-sm btn-success open-add-member-modal"
                                         data-meeting_id="{{ $metting_id ?? '' }}">
                                         Add Member
                                     </a>
-                                </div>
+                                </div> --}}
                             </div>
 
                         </div>
@@ -90,6 +90,136 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Brand Showcase Amount</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('Membermeeting.saveBrandAmount') }}">
+                            @csrf
+                            <input type="hidden" name="meeting_id" value="{{ $metting_id }}">
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Meeting</th>
+                                        <th>Member Name</th>
+                                        <th>Brand Showcase</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    @php
+                                        $shown = [];
+                                    @endphp
+
+                                    @forelse($brandshowcasedata as $data)
+
+                                        {{-- Brand Showcase 1 --}}
+                                        @if ($data->brand_showcase_1 == $data->member_id && !in_array('brand1_' . $data->brand_showcase_1, $shown))
+                                            @php $shown[] = 'brand1_'.$data->brand_showcase_1; @endphp
+
+                                            <tr>
+                                                <td>{{ $data->Meeting_title }}</td>
+
+                                                <td>{{ $data->brand1_name ?? 'N/A' }}</td>
+
+                                                <td>
+                                                    <span class="badge bg-success">
+                                                        Brand Showcase 1
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <input type="number"
+                                                        name="brand_showcase_1_amount[{{ $data->brand_showcase_1 }}]"
+                                                        class="form-control" value="{{ $data->brand_showcase_1_amount }}"
+                                                        placeholder="Enter Amount">
+                                                </td>
+                                                <td>
+                                                    @if ($data->is_approve == 1)
+                                                        <span class="badge bg-success">
+                                                            Approved
+                                                        </span>
+                                                    @elseif($data->is_approve == 2)
+                                                        <span class="badge bg-danger">
+                                                            Rejected
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-warning text-dark">
+                                                            Pending
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endif
+
+
+                                        {{-- Brand Showcase 2 --}}
+                                        @if ($data->brand_showcase_2 == $data->member_id && !in_array('brand2_' . $data->brand_showcase_2, $shown))
+                                            @php $shown[] = 'brand2_'.$data->brand_showcase_2; @endphp
+
+                                            <tr>
+                                                <td>{{ $data->Meeting_title }}</td>
+
+                                                <td>{{ $data->brand2_name ?? 'N/A' }}</td>
+
+                                                <td>
+                                                    <span class="badge bg-primary">
+                                                        Brand Showcase 2
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <input type="number"
+                                                        name="brand_showcase_2_amount[{{ $data->brand_showcase_2 }}]"
+                                                        class="form-control" value="{{ $data->brand_showcase_2_amount }}"
+                                                        placeholder="Enter Amount">
+                                                </td>
+                                                <td>
+                                                    @if ($data->is_approve == 1)
+                                                        <span class="badge bg-success">
+                                                            Approved
+                                                        </span>
+                                                    @elseif($data->is_approve == 2)
+                                                        <span class="badge bg-danger">
+                                                            Rejected
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-warning text-dark">
+                                                            Pending
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endif
+
+
+                                    @empty
+
+                                        <tr>
+                                            <td colspan="4" class="text-center">
+                                                No Data Found
+                                            </td>
+                                        </tr>
+
+                                    @endforelse
+
+                                </tbody>
+                            </table>
+
+                            <button type="submit" class="btn btn-success">Update Amount</button>
+                        </form>
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </div>
@@ -121,7 +251,8 @@
     </div>
     {{-- end model comment --}}
     {{-- start add member model --}}
-    <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <form method="POST" action="{{ route('Membermeeting.Meeting_add_member') }}">
                 @csrf

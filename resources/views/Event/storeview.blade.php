@@ -2,7 +2,29 @@
 @section('title', 'Events')
 @section('content')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <style>
+        /* Fix text cutting issue in dropdown */
+        .choices__list--dropdown .choices__item {
+            padding-left: 25px !important;
+            white-space: normal !important;
+            overflow: visible !important;
+        }
 
+        /* Fix selected items display */
+        .choices__inner {
+            padding-left: 10px !important;
+        }
+
+        /* Prevent clipping */
+        .choices__list--dropdown {
+            overflow: visible !important;
+        }
+
+        /* Optional: better alignment */
+        .choices__item--selectable {
+            text-indent: 0 !important;
+        }
+    </style>
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
@@ -71,13 +93,14 @@
                                                     value="{{ old('event_type') }}" required>
                                                     <option value="1">ESP</option>
                                                     <option value="2">Training</option>
+                                                    <option value="3">Event</option>
                                                 </select>
                                             </div>
-                                            <div class="col-lg-12">
+                                            <div class="col-lg-4">
                                                 <label for="assign_members">
                                                     <span style="color:red;">*</span> Assign Members
                                                 </label>
-                                                <select class="form-control" name="assign_member_id[]" id="assign_members"
+                                                <select class="form-select" name="assign_member_id[]" id="assign_members"
                                                     multiple required>
                                                     <option value="" disabled>Select Member
                                                     </option>
@@ -88,8 +111,6 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select
-                                                    multiple members</small>
                                             </div>
                                             <div class="col-lg-4 col-md-6" id="priceField" style="display:none;">
                                                 <span style="color:red;">*</span> Price
@@ -132,10 +153,10 @@
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const element = document.getElementById('assign_members');
 
-            if (element) {
-                new Choices(element, {
+            const memberSelect = document.getElementById('assign_members');
+            if (memberSelect) {
+                new Choices(memberSelect, {
                     removeItemButton: true,
                     itemSelectText: '',
                     placeholderValue: 'Select Members',
@@ -144,31 +165,16 @@
                     shouldSort: false
                 });
             }
-        });
-    </script>
 
-    <script>
-        function getEditData(id) {
-            //alert(id);
-            var url = "{{ route('gallery.edit', ':id') }}";
-            url = url.replace(":id", id);
-            if (id) {
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    data: {
-                        id,
-                        id
-                    },
-                    success: function(data) {
-                        //console.log(data);
-                        var obj = JSON.parse(data);
-                        $("#Editname").val(obj.name);
-                        $('#event_id').val(id);
-                    }
+            const eventType = document.getElementById('event_type');
+            if (eventType) {
+                new Choices(eventType, {
+                    searchEnabled: false,
+                    itemSelectText: ''
                 });
             }
-        }
+
+        });
     </script>
 
     <script>

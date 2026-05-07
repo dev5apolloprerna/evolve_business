@@ -7,10 +7,10 @@
             <div class="container-fluid">
 
                 <!-- @if ($errors->any())
-                                                                @foreach ($errors->all() as $error)
+                                                                    @foreach ($errors->all() as $error)
     <li class="mb-5" style="color:red">{{ $error }}</li>
     @endforeach
-                                                            @endif -->
+                                                                @endif -->
 
                 {{-- Alert Messages --}}
                 @include('common.alert')
@@ -132,19 +132,13 @@
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
-                                                <label for="referred_to"><span style="color:red;">*</span>From</label>
+                                                <label for="referred_to"><span style="color:red;">*</span>Inducted
+                                                    By</label>
 
-                                                <select class="form-control" data-choices name="referred_to"
+                                                <select class="form-select" name="referred_to"
                                                     id="choices-single-default">
 
-                                                    <option value="" disabled selected>Select From</option>
-
-                                                    {{-- ✅ Static Options --}}
-                                                    <option value="referred_by">Referred By</option>
-                                                    <option value="inducted_by">Inducted By</option>
-                                                    <option value="committee_social">Committee Member / Social Media
-                                                    </option>
-                                                    <option value="website">Website</option>
+                                                    <option value="" disabled selected>Select Inducted</option>
 
                                                     {{-- ✅ Dynamic Members --}}
                                                     @foreach ($Data as $data)
@@ -154,10 +148,16 @@
                                                             </option>
                                                         @endif
                                                     @endforeach
+                                                    {{-- ✅ Static Options --}}
+                                                    <option value="1">Social Media</option>
+                                                    <option value="2">Committee Member
+                                                    </option>
+                                                    <option value="3">Website</option>
+
 
                                                 </select>
                                             </div>
-                                            {{-- <div class="col-lg-4 col-md-6 mt-3">
+                                            <div class="col-lg-4 col-md-6 mt-3">
                                                 <div class="form-check">
                                                     <input type="checkbox" class="form-check-input"
                                                         name="priority_club_3_year" id="priority_club_3_year"
@@ -167,7 +167,7 @@
                                                         3 Year Priority Club
                                                     </label>
                                                 </div>
-                                            </div> --}}
+                                            </div>
 
                                             <div class="row gy-2 mb-3">
 
@@ -282,6 +282,12 @@
 @section('scripts')
 
     <script>
+        new Choices('#choices-single-default', {
+            searchEnabled: true,
+            itemSelectText: '',
+            shouldSort: false // ✅ VERY IMPORTANT
+        });
+
         function getEditData(id) {
             var url = "{{ route('members.edit', ':id') }}";
             url = url.replace(":id", id);

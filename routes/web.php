@@ -396,6 +396,7 @@ Route::prefix('admin')->name('reports.')->middleware('auth')->group(function () 
     Route::any('/reports/upcomingrenual', [ReportController::class, 'upcomingrenual'])->name('upcomingrenual');
     Route::any('/reports/BusinessAnalysis', [ReportController::class, 'Analysisindex'])->name('BusinessAnalysis');
     Route::view('/reports/businessexportdata', '/reports/businessexportdata')->name('businessexportdata');
+    Route::any('/reports/inducted', [ReportController::class, 'inducted'])->name('inducted');
 
     //30-7-25
     Route::any('/Member-reports-detail/{id?}', [ReportController::class, 'Member_reports_detail'])->name('Member_reports_detail');
@@ -492,7 +493,7 @@ Route::prefix('admin')->name('Business.')->middleware(['auth', 'check_approval']
     Route::get('/Business/statusget/{id?}', [Businesscontroller::class, 'statusget'])->name('statusget');
     Route::get('/Business/statusonetooneget/{id?}', [Businesscontroller::class, 'statusonetooneget'])->name('statusonetooneget');
     Route::get('/Business/statusEventget/{id?}', [Businesscontroller::class, 'statusEventget'])->name('statusEventget');
-
+    Route::get('/Business/Brandshowcase/{id?}', [Businesscontroller::class, 'statusBrandshowcase'])->name('statusBrandshowcase');
     Route::any('Business-resendReminder', [Businesscontroller::class, 'Business_resend_Reminder'])->name('resendReminder');
 });
 
@@ -603,6 +604,7 @@ Route::prefix('admin')->name('pendinglogincheck.')->middleware('auth')->group(fu
     Route::post('/pendinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'statuspendinglogin'])->name('statuspendinglogin');
     Route::post('/onependinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'onestatuspendinglogin'])->name('onestatuspendinglogin');
     Route::post('/Eventpendinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'Eventpendinglogin'])->name('Eventpendinglogin');
+    Route::post('/Brandshowcaselogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'Brandshowcaselogincheck'])->name('Brandshowcaselogincheck');
 });
 Route::prefix('admin')->name('Youngleaders.')->middleware('auth')->group(function () {
     Route::get('/Young-leaders', [FrontController::class, 'Young_leaders_index'])->name('index');
@@ -773,6 +775,8 @@ Route::prefix('admin')->name('Membermeeting.')->middleware('auth')->group(functi
     Route::post('/comments-store', [Membermeetingcontroller::class, 'comments_store'])->name('commentsstore');
     Route::get('/get-available-members/{meeting_id?}', [Membermeetingcontroller::class, 'getAvailableMembers'])->name('get_available_members');
     Route::post('/Meeting-member-store', [Membermeetingcontroller::class, 'Meeting_add_member'])->name('Meeting_add_member');
+    Route::post('save-brand-amount', [MembermeetingController::class, 'saveBrandAmount'])
+        ->name('saveBrandAmount');
 });
 Route::prefix('admin')->name('induction.')->middleware('auth')->group(function () {
     Route::get('induction/index', [FrontController::class, 'Admin_induction_index'])->name('index');

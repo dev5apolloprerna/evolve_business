@@ -9,33 +9,32 @@
                 {{-- Alert Messages --}}
                 @include('common.alert')
                 {{-- Tab start  --}}
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <!-- Nav tabs -->
-                            <ul class="nav nav-tabs nav-justified nav-border-top nav-border-top-success mb-3" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link active" href="{{ route('Event.index') }}">
-                                        <i class="fas fa-clock"></i> Pending
-                                    </a>
-                                </li>
+                <!--<div class="col-lg-12">-->
+                <!--    <div class="card">-->
+                <!--        <div class="card-body">-->
+                <!--            <ul class="nav nav-tabs nav-justified nav-border-top nav-border-top-success mb-3" role="tablist">-->
+                <!--                <li class="nav-item" role="presentation">-->
+                <!--                    <a class="nav-link active" href="{{ route('Event.index') }}">-->
+                <!--                        <i class="fas fa-clock"></i> Pending-->
+                <!--                    </a>-->
+                <!--                </li>-->
 
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link" href="{{ route('Event.approvelist') }}" role="tab"
-                                        aria-selected="false" tabindex="-1">
-                                        <i class="fas fa-check-circle"></i> Approved
-                                    </a>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link" href="{{ route('Event.removelist') }}" role="tab"
-                                        aria-selected="false" tabindex="-1">
-                                        <i class="fas fa-times-circle"></i>Rejected
-                                    </a>
-                                </li>
-                            </ul>
-                        </div><!-- end card-body -->
-                    </div>
-                </div>
+                <!--                <li class="nav-item" role="presentation">-->
+                <!--                    <a class="nav-link" href="{{ route('Event.approvelist') }}" role="tab"-->
+                <!--                        aria-selected="false" tabindex="-1">-->
+                <!--                        <i class="fas fa-check-circle"></i> Approved-->
+                <!--                    </a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item" role="presentation">-->
+                <!--                    <a class="nav-link" href="{{ route('Event.removelist') }}" role="tab"-->
+                <!--                        aria-selected="false" tabindex="-1">-->
+                <!--                        <i class="fas fa-times-circle"></i>Rejected-->
+                <!--                    </a>-->
+                <!--                </li>-->
+                <!--            </ul>-->
+                <!--        </div>-->
+                <!--    </div>-->
+                <!--</div>-->
                 {{-- Tab End  --}}
 
                 {{-- start search  --}}
@@ -141,7 +140,7 @@
                                                             </td>
                                                             <td class="text-center">{{ $Event->name }}</td>
                                                             <td class="text-center">
-                                                                <img src="{{ asset('event') . '/' . $Event->photo }}"
+                                                                <img src="{{ asset('/event') . '/' . $Event->photo }}"
                                                                     style="width: 50px;height: 50px;">
                                                             </td>
                                                             <td class="text-center">
@@ -156,8 +155,10 @@
                                                             <td class="text-center">
                                                                 @if ($Event->event_type == 1)
                                                                     ESP
-                                                                @else
+                                                                @elseif($Event->event_type == 2)
                                                                     Training
+                                                                @else
+                                                                    Event
                                                                 @endif
 
                                                             </td>
@@ -296,6 +297,8 @@
                                             </option>
                                             <option value="2" {{ old('event_type') == 2 ? 'selected' : '' }}>Training
                                             </option>
+                                            <option value="3" {{ old('event_type') == 3 ? 'selected' : '' }}>Event
+                                            </option>
                                         </select>
                                     </div>
 
@@ -406,7 +409,7 @@
 
                     // ===== PHOTO =====
                     let photoHtml = obj.photo ?
-                        `<img src="/event/${obj.photo}" width="80" height="80" style="object-fit:cover;">` :
+                        `<img src="https://evolv.co.in/evolv_business/event/${obj.photo}" width="80" height="80" style="object-fit:cover;">` :
                         '';
                     $('#PHOTOID').html(photoHtml);
 
@@ -421,7 +424,7 @@
                         }
                     }
 
-                    // 🔥 Wait until Choices is ready then set values
+                    // ðŸ”¥ Wait until Choices is ready then set values
                     let interval = setInterval(() => {
 
                         if (editChoicesInstance) {
@@ -439,7 +442,7 @@
 
 
         // =========================
-        // MODAL OPEN → INIT CHOICES
+        // MODAL OPEN â†’ INIT CHOICES
         // =========================
         $('#EditModal').on('shown.bs.modal', function() {
 

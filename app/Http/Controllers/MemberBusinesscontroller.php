@@ -302,7 +302,14 @@ class MemberBusinesscontroller extends Controller
             ->orderBy('one_to_one_detail.id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
 
-
+        $member = members::where('user_id', $session->id)->first();
+        $Member_metting = Member_metting::join('members', 'members.id', '=', 'Cluster_Meet_Member_meeting.member_id')
+            ->where('members.id', $member->id)
+            ->select('Cluster_Meet_Member_meeting.*', 'members.Contact_person As name')
+            ->where(['Cluster_Meet_Member_meeting.iStatus' => 1, 'Cluster_Meet_Member_meeting.isDelete' => 0, 'Cluster_Meet_Member_meeting.is_approve' => 0])
+            ->groupby('Cluster_Meet_Member_meeting.member_id')
+            ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
+            ->paginate(env('PAR_PAGE_COUNT', 20));
         $Events = Event::where([
             'iStatus' => 1,
             'isDelete' => 0,
@@ -314,7 +321,7 @@ class MemberBusinesscontroller extends Controller
             })
             ->orderBy('event_id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
-        return view('pendinglogincheck.index', compact('Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
+        return view('pendinglogincheck.index', compact('Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
     public function statuspendinglogin(Request $request)
@@ -372,6 +379,16 @@ class MemberBusinesscontroller extends Controller
         DB::table('news_and_events')->where('event_id', $request->id)->update([
             'isapproved_status' => $request->newStatus,
             'member_id' => Auth::user()->id,
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
+        return redirect()->back();
+    }
+
+    public function Brandshowcaselogincheck(Request $request)
+    {
+        DB::table('Cluster_Meet_Member_meeting')->where('id', $request->id)->update([
+            'is_approve' => $request->newStatus,
+            'is_approve_by' => Auth::user()->id,
             'created_at' => date('Y-m-d H:i:s'),
         ]);
         return redirect()->back();

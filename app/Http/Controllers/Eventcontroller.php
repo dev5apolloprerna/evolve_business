@@ -352,7 +352,7 @@ class Eventcontroller extends Controller
             $root = $_SERVER['DOCUMENT_ROOT'];
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/event/';
+            $destinationpath = $root . '/evolv_business/event/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }
@@ -395,7 +395,7 @@ class Eventcontroller extends Controller
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
             //dd($img);
-            $destinationpath = $root . '/event/';
+            $destinationpath = $root . '/evolv_business/event/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }
@@ -417,6 +417,7 @@ class Eventcontroller extends Controller
             //   $img = null;
         }
         // dd($img);
+        //dd($request);
         $slug = Str::slug($request->name);
         $Event = DB::table('news_and_events')
             ->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $request->event_id])
@@ -444,7 +445,7 @@ class Eventcontroller extends Controller
 
         $delete = DB::table('news_and_events')->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $request->id])->first();
         $root = $_SERVER['DOCUMENT_ROOT'];
-        $destinationpath = $root . '/event/';
+        $destinationpath = $root . '/evolv_business/event/';
         unlink($destinationpath . $delete->photo);
 
         DB::table('news_and_events')->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $request->id])->delete();

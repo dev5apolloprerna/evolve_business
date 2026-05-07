@@ -115,33 +115,8 @@
                                             <div class="col-lg-4 col-md-6">
                                                 <label for="referred_to"><span style="color:red;">*</span>From</label>
 
-                                                <select class="form-control" data-choices name="referred_to"
+                                                <select class="form-select" name="referred_to"
                                                     id="choices-single-default">
-
-                                                    <option value="" disabled
-                                                        {{ empty($selectedFrom) ? 'selected' : '' }}>
-                                                        Select From
-                                                    </option>
-
-                                                    <option value="referred_by"
-                                                        {{ $selectedFrom == 'referred_by' ? 'selected' : '' }}>
-                                                        Referred By
-                                                    </option>
-
-                                                    <option value="inducted_by"
-                                                        {{ $selectedFrom == 'inducted_by' ? 'selected' : '' }}>
-                                                        Inducted By
-                                                    </option>
-
-                                                    <option value="committee_social"
-                                                        {{ $selectedFrom == 'committee_social' ? 'selected' : '' }}>
-                                                        Committee Member / Social Media
-                                                    </option>
-
-                                                    <option value="website"
-                                                        {{ $selectedFrom == 'website' ? 'selected' : '' }}>
-                                                        Website
-                                                    </option>
 
                                                     @foreach ($Data as $member)
                                                         <option value="{{ $member->id }}"
@@ -150,6 +125,22 @@
                                                         </option>
                                                     @endforeach
 
+                                                    <option value="" disabled
+                                                        {{ empty($selectedFrom) ? 'selected' : '' }}>
+                                                        Select From
+                                                    </option>
+
+                                                    <option value="1" {{ $selectedFrom == '1' ? 'selected' : '' }}>
+                                                        Social Media
+                                                    </option>
+
+                                                    <option value="2" {{ $selectedFrom == '2' ? 'selected' : '' }}>
+                                                        Committee Member
+                                                    </option>
+
+                                                    <option value="3" {{ $selectedFrom == '3' ? 'selected' : '' }}>
+                                                        Website
+                                                    </option>
                                                 </select>
                                             </div>
 
@@ -246,6 +237,12 @@
 @section('scripts')
 
     <script>
+        new Choices('#choices-single-default', {
+            searchEnabled: true,
+            itemSelectText: '',
+            shouldSort: false // ✅ VERY IMPORTANT
+        });
+
         function getEditData(id) {
             var url = "{{ route('members.edit', ':id') }}";
             url = url.replace(":id", id);
