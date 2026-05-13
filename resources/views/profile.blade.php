@@ -90,9 +90,18 @@
                                                         <table class="table table-borderless mb-0">
                                                             <tbody>
                                                                 @if (isset($member) && $member->priority_club_3_year == 1)
-                                                                    <div class="mt-1">
-                                                                        <span class="badge bg-warning text-dark">
-                                                                            ⭐ Priority Member
+                                                                    <div class="text-center mt-3 mb-3">
+                                                                        <span class="badge px-4 py-2"
+                                                                            style="
+                                                                                    background: linear-gradient(45deg, #ffcc00, #ff9900);
+                                                                                    color: #000;
+                                                                                    font-size: 15px;
+                                                                                    font-weight: 700;
+                                                                                    border-radius: 25px;
+                                                                                    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.4);
+                                                                                    letter-spacing: 0.5px;
+                                                                                ">
+                                                                            ⭐ PRIORITY MEMBER
                                                                         </span>
                                                                     </div>
                                                                 @endif

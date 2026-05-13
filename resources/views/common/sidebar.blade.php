@@ -166,14 +166,14 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('Reference.index') }}" class="nav-link" data-key="t-chat">
-                                        <i class="fas fa-handshake"></i>Reference Given
+                                        <i class="fas fa-handshake"></i>Referral Given
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
                                     <a href="{{ route('Reference.ReceivedReference') }}" class="nav-link"
                                         data-key="t-chat">
-                                        <i class="fas fa-check-circle"></i> Reference Received
+                                        <i class="fas fa-check-circle"></i> Referral Received
                                     </a>
                                 </li>
 
@@ -294,6 +294,19 @@
                             <span data-key="t-dashboards">Event</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link @if (request()->routeIs('MemberAnnouncement.MemberAnnouncement')) {{ 'active' }} @endif"
+                            href="{{ route('MemberAnnouncement.MemberAnnouncement') }}" title="Announcement">
+                            <i class="fas fa-bullhorn"></i>
+
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link menu-link" href="{{ route('MemberAnnouncement.index') }}">
+                            <i class="fa fa-bullhorn"></i>
+                            <span data-key="t-dashboards">Announcement</span>
+                        </a>
+                    </li> --}}
                 @endif
                 <!-- new code 08-04-2024 -->
                 @if ($session->role_id == 2)

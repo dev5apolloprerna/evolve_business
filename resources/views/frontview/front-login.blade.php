@@ -88,43 +88,51 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-5">
                         <div class="wrapper-login">
-                      @include('common.alert')
-                        <!-- @if (session('error'))
-                            <span class="text-danger"> {{ session('error') }}</span>
-                        @endif -->
+                            @include('common.alert')
+                            <!-- @if (session('error'))
+    <span class="text-danger"> {{ session('error') }}</span>
+    @endif -->
                             <form action="{{ route('login') }}" method="POST">
                                 @csrf
                                 <h2 class="text-center">Login</h2>
                                 <div class="input-box ">
-                                    <input type="email" placeholder="Username" name="email"  class="form-control  @error('email') is-invalid @enderror" @if(isset($_COOKIE['email'])) value="{{ $_COOKIE['email'] }}" @endif
+                                    <input type="text" placeholder="Mobile" name="mobile"
+                                        class="form-control
+                                         @error('mobile') is-invalid @enderror"
+                                        maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                        @if (isset($_COOKIE['mobile'])) value="{{ $_COOKIE['mobile'] }}" @endif
                                         required />
                                     <i class='bx bxs-user'></i>
-                                                 @error('email')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
+                                    @error('mobile')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                                 <div class="input-box">
                                     <input type="password" placeholder="Password"
                                         class="form-control pe-5 password-input @error('password') is-invalid @enderror"
-                                        name="password" @if(isset($_COOKIE['password'])) value="{{ $_COOKIE['password'] }}" @endif autocomplete="current-password" required />
+                                        name="password"
+                                        @if (isset($_COOKIE['password'])) value="{{ $_COOKIE['password'] }}" @endif
+                                        autocomplete="current-password" required />
                                     <i class='bx bxs-lock-alt'></i>
                                 </div>
                                 <!-- <div class="remember-forgot">
-                                    <label>
-                                        <input type="checkbox">
-                                        Remember me
-                                    </label>
-                                    <a type="button" class="text-white" onclick="openForgetPasswordModal()">Forget
-                                        Password</a>
-                                </div> -->
+                                                                <label>
+                                                                    <input type="checkbox">
+                                                                    Remember me
+                                                                </label>
+                                                                <a type="button" class="text-white" onclick="openForgetPasswordModal()">Forget
+                                                                    Password</a>
+                                                            </div> -->
                                 <div class="remember-forgot">
                                     <label>
-                                        <input type="checkbox" name="remember" id="remember" @if(isset($_COOKIE['email'])) checked="" @endif>
+                                        <input type="checkbox" name="remember" id="remember"
+                                            @if (isset($_COOKIE['email'])) checked="" @endif>
                                         Remember me
                                     </label>
-                                    <a type="button" class="text-white" onclick="openForgetPasswordModal()">Forgot Password</a>
+                                    <a type="button" class="text-white" onclick="openForgetPasswordModal()">Forgot
+                                        Password</a>
                                 </div>
                                 <button type="submit" class="btn">Login</button>
                             </form>
@@ -147,7 +155,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('forgetpasswordpost')}}" method="Post">
+                    <form action="{{ route('forgetpasswordpost') }}" method="Post">
                         @csrf
                         <div class="text-center ">
                             <p>If you have forgotten your password you can reset it here.</p>

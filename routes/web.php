@@ -274,6 +274,7 @@ Route::prefix('admin')->name('MemberAnnouncement.')->middleware(['auth', 'check_
         Route::get('/MemberAnnouncement/edit/{id?}', [MemberAnnouncementController::class, 'editview'])->name('edit');
         Route::post('/MemberAnnouncement/update', [MemberAnnouncementController::class, 'update'])->name('update');
         Route::delete('/MemberAnnouncement/delete', [MemberAnnouncementController::class, 'delete'])->name('delete');
+        Route::get('/MemberAnnouncement', [MemberAnnouncementController::class, 'otherMemberAnnouncements'])->name('MemberAnnouncement');
     }
 );
 
