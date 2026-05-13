@@ -122,7 +122,7 @@ class memberscontroller extends Controller
     {
         $request->validate([
             'first_name'    => 'required',
-            'phonenumber' => 'required|regex:/^\d{10}$/',
+            'phonenumber' => 'required|regex:/^\d{10}$/|unique:members',
             'email'       => 'required|unique:users',
             'password'       => 'required',
             'address'     => 'required',

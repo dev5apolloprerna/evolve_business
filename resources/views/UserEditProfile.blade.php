@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 @section('title', 'Edit Profile')
 @section('content')
@@ -15,7 +14,8 @@
 
                 <div class="position-relative mx-n4 mt-n4">
                     <div class="profile-wid-bg profile-setting-img">
-                        <img src="https://groath.in/assets/images/auth-one-bg.jpg" class="profile-wid-img" alt="">
+                        <img src="https://evolv.co.in/evolv_business/assets/images/group_photo.jpeg" class="profile-wid-img"
+                            alt="">
                     </div>
                 </div>
 
@@ -24,25 +24,24 @@
                         <div class="card mt-n5">
                             <div class="card-body p-4">
                                 <div class="text-center">
-                                    @if(isset($member->profile_photo ))  
-                                    <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
-                                        <img src="{{ asset('profile_photo') . '/' . $member->profile_photo }}"
-                                            class="rounded-circle avatar-xl img-thumbnail user-profile-image"
-                                            alt="user-profile-image">
-                                    </div>
-                                      @else 
-                                      <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
-                                        <img src="https://groath.in/assets/images/users/undraw_profile.webp" class="rounded-circle avatar-xl img-thumbnail user-profile-image" alt="user-profile-image">
-                                     </div>
-                                      @endif      
-                                    
+                                    @if (isset($member->profile_photo))
+                                        <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
+                                            <img src="{{ asset('profile_photo') . '/' . $member->profile_photo }}"
+                                                class="rounded-circle avatar-xl img-thumbnail user-profile-image"
+                                                alt="user-profile-image">
+                                        </div>
+                                    @else
+                                        <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
+                                            <img src="https://groath.in/assets/images/users/undraw_profile.webp"
+                                                class="rounded-circle avatar-xl img-thumbnail user-profile-image"
+                                                alt="user-profile-image">
+                                        </div>
+                                    @endif
+
                                     <h5 class="mb-1">{{ auth()->user()->full_name }}</h5>
                                     <?php
                                     $session = auth()->user()->id;
-                                    $role = App\Models\User::select('users.id', 'roles.name')
-                                        ->where('users.id', $session)
-                                        ->join('roles', 'users.role_id', '=', 'roles.id')
-                                        ->first();
+                                    $role = App\Models\User::select('users.id', 'roles.name')->where('users.id', $session)->join('roles', 'users.role_id', '=', 'roles.id')->first();
                                     ?>
                                     <p class="text-muted mb-0">
                                         {{ $role->name }}
@@ -72,7 +71,8 @@
                             <div class="card-body p-4">
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="personalDetails" role="tabpanel">
-                                        <form action="{{ route('profile.Userupdate') }}" method="POST" enctype="multipart/form-data">
+                                        <form action="{{ route('profile.Userupdate') }}" method="POST"
+                                            enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">
 
@@ -144,7 +144,8 @@
                                                         <span style="color:red;">*</span>Address
                                                         <input type="text" name="address"
                                                             class="form-control  @error('address') is-invalid @enderror"
-                                                            maxlength="100" id="address" placeholder="Enter Your Address"
+                                                            maxlength="100" id="address"
+                                                            placeholder="Enter Your Address"
                                                             value="{{ old('address') ? old('address') : $member->address }}"
                                                             autocomplete="off" required>
 
@@ -154,11 +155,12 @@
                                                     </div>
                                                 </div>
                                                 <!-- new add -->
-                                                 <!-- Date of Birth -->
+                                                <!-- Date of Birth -->
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <span style="color:red;">*</span>Date of Birth
-                                                        <input type="date" name="date_of_birth" class="form-control @error('date_of_birth') is-invalid @enderror"
+                                                        <input type="date" name="date_of_birth"
+                                                            class="form-control @error('date_of_birth') is-invalid @enderror"
                                                             id="dateOfBirthInput" placeholder="Select Your Date of Birth"
                                                             value="{{ old('date_of_birth') ? old('date_of_birth') : $member->date_of_birth }}"
                                                             autocomplete="off" required>
@@ -173,8 +175,10 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <span style="color:red;">*</span>Work Anniversary Date
-                                                        <input type="date" name="work_anniversary_date" class="form-control @error('work_anniversary_date') is-invalid @enderror"
-                                                            id="workAnniversaryDateInput" placeholder="Select Your Work Anniversary Date"
+                                                        <input type="date" name="work_anniversary_date"
+                                                            class="form-control @error('work_anniversary_date') is-invalid @enderror"
+                                                            id="workAnniversaryDateInput"
+                                                            placeholder="Select Your Work Anniversary Date"
                                                             value="{{ old('work_anniversary_date') ? old('work_anniversary_date') : $member->work_anniversary_date }}"
                                                             autocomplete="off" required>
 
@@ -184,32 +188,35 @@
                                                     </div>
                                                 </div>
                                                 <!-- new add -->
-                                                                                            
+
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                    <span style="color:red;">*</span>Profile pic</label>
-                                                    <input class="form-control" type="file" name="profile_photo" id="photovalidate"
-                                                    value="{{ old('profile_photo')}}">
-                                                    <input type="hidden" name="hiddenPhoto_profile_photo" class="form-control"
-                                                            value="{{ old('profile_photo') ? old('profile_photo') : $member->profile_photo }}" id="hiddenPhoto_profile_photo">
+                                                        <span style="color:red;">*</span>Profile pic</label>
+                                                        <input class="form-control" type="file" name="profile_photo"
+                                                            id="photovalidate" value="{{ old('profile_photo') }}">
+                                                        <input type="hidden" name="hiddenPhoto_profile_photo"
+                                                            class="form-control"
+                                                            value="{{ old('profile_photo') ? old('profile_photo') : $member->profile_photo }}"
+                                                            id="hiddenPhoto_profile_photo">
                                                         <div id="viewimg">
-                                                            <img src="{{ asset('profile_photo') . '/' . $member->profile_photo }}" alt=""
-                                                                height="70" width="70">
+                                                            <img src="{{ asset('profile_photo') . '/' . $member->profile_photo }}"
+                                                                alt="" height="70" width="70">
                                                         </div>
                                                         @error('profile_photo')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <span style="color:red;">*</span>Brand Name
                                                         <input type="text" name="Brand_name"
                                                             class="form-control  @error('Brand_name') is-invalid @enderror"
-                                                            maxlength="150" id="Brand_name" placeholder="Enter Your Brand Name"
+                                                            maxlength="150" id="Brand_name"
+                                                            placeholder="Enter Your Brand Name"
                                                             value="{{ old('Brand_name') ? old('Brand_name') : $member->companyname }}"
-                                                            autocomplete="off" required >
+                                                            autocomplete="off" required>
                                                         @error('Brand_name')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
@@ -220,9 +227,10 @@
                                                         <span style="color:red;"></span>Company Name
                                                         <input type="text" name="companyname"
                                                             class="form-control  @error('companyname') is-invalid @enderror"
-                                                            maxlength="150" id="companyname" placeholder="Enter Your Company Name"
+                                                            maxlength="150" id="companyname"
+                                                            placeholder="Enter Your Company Name"
                                                             value="{{ old('companyname') ? old('companyname') : $member->Brand_name }}"
-                                                            autocomplete="off" >
+                                                            autocomplete="off">
                                                         @error('companyname')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
@@ -230,14 +238,16 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                    <span style="color:red;"></span>Company logo</label>
-                                                    <input class="form-control" type="file" name="Company_logo" id="Company_logo"
-                                                        value="{{ old('Company_logo') }}" >
-                                                        <input type="hidden" name="hiddenPhoto_Company_logo" class="form-control"
-                                                            value="{{ old('Company_logo') ? old('Company_logo') : $member->Company_logo }}" id="hiddenPhoto_Company_logo">
+                                                        <span style="color:red;"></span>Company logo</label>
+                                                        <input class="form-control" type="file" name="Company_logo"
+                                                            id="Company_logo" value="{{ old('Company_logo') }}">
+                                                        <input type="hidden" name="hiddenPhoto_Company_logo"
+                                                            class="form-control"
+                                                            value="{{ old('Company_logo') ? old('Company_logo') : $member->Company_logo }}"
+                                                            id="hiddenPhoto_Company_logo">
                                                         <div id="viewimg">
-                                                            <img src="{{ asset('Company_logo') . '/' . $member->Company_logo }}" alt=""
-                                                                height="70" width="70">
+                                                            <img src="{{ asset('Company_logo') . '/' . $member->Company_logo }}"
+                                                                alt="" height="70" width="70">
                                                         </div>
                                                         @error('Company_logo')
                                                             <span class="text-danger">{{ $message }}</span>
@@ -250,7 +260,8 @@
                                                         <span style="color:red;"></span>Facebook link
                                                         <input type="text" name="facebook_link"
                                                             class="form-control  @error('facebook_link') is-invalid @enderror"
-                                                            maxlength="150" id="facebook_link" placeholder="Enter Your facebook link"
+                                                            maxlength="150" id="facebook_link"
+                                                            placeholder="Enter Your facebook link"
                                                             value="{{ old('facebook_link') ? old('facebook_link') : $member->facebook_link }}"
                                                             autocomplete="off">
                                                         @error('facebook_link')
@@ -259,14 +270,15 @@
                                                     </div>
                                                 </div>
                                                 <!-- Facebook end -->
-                                                
+
                                                 <!-- youtube link start-->
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <span style="color:red;"></span>YouTube link
                                                         <input type="text" name="youtube_link"
                                                             class="form-control  @error('youtube_link') is-invalid @enderror"
-                                                            maxlength="150" id="youtube_link" placeholder="Enter Your YouTube link"
+                                                            maxlength="150" id="youtube_link"
+                                                            placeholder="Enter Your YouTube link"
                                                             value="{{ old('youtube_link') ? old('youtube_link') : $member->youtube_link }}"
                                                             autocomplete="off">
                                                         @error('youtube_link')
@@ -276,19 +288,20 @@
                                                 </div>
                                                 <!-- youtube link end-->
                                                 <!-- Instagram link -->
-                                                    <div class="col-lg-6">
-                                                        <div class="mb-3">
-                                                            <span style="color:red;"></span>Instagram link
-                                                            <input type="text" name="instagram_link"
-                                                                class="form-control  @error('instagram_link') is-invalid @enderror"
-                                                                maxlength="150" id="instagram_link" placeholder="Enter Your Instagram link"
-                                                                value="{{ old('instagram_link') ? old('instagram_link') : $member->instagram_link }}"
-                                                                autocomplete="off">
-                                                            @error('instagram_link')
-                                                                <span class="text-danger">{{ $message }}</span>
-                                                            @enderror
-                                                        </div>
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <span style="color:red;"></span>Instagram link
+                                                        <input type="text" name="instagram_link"
+                                                            class="form-control  @error('instagram_link') is-invalid @enderror"
+                                                            maxlength="150" id="instagram_link"
+                                                            placeholder="Enter Your Instagram link"
+                                                            value="{{ old('instagram_link') ? old('instagram_link') : $member->instagram_link }}"
+                                                            autocomplete="off">
+                                                        @error('instagram_link')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
                                                     </div>
+                                                </div>
                                                 <!-- Instagram link end-->
                                                 <!-- LinkedIn link -->
                                                 <div class="col-lg-6">
@@ -296,7 +309,8 @@
                                                         <span style="color:red;"></span>LinkedIn link
                                                         <input type="text" name="linkedin_link"
                                                             class="form-control  @error('linkedin_link') is-invalid @enderror"
-                                                            maxlength="150" id="linkedin_link" placeholder="Enter Your LinkedIn link"
+                                                            maxlength="150" id="linkedin_link"
+                                                            placeholder="Enter Your LinkedIn link"
                                                             value="{{ old('linkedin_link') ? old('linkedin_link') : $member->linkedin_link }}"
                                                             autocomplete="off">
                                                         @error('linkedin_link')
@@ -311,7 +325,8 @@
                                                         <span style="color:red;"></span>Google link/Website
                                                         <input type="text" name="google_link"
                                                             class="form-control  @error('google_link') is-invalid @enderror"
-                                                            maxlength="150" id="google_link" placeholder="Enter Your Google link"
+                                                            maxlength="150" id="google_link"
+                                                            placeholder="Enter Your Google link"
                                                             value="{{ old('google_link') ? old('google_link') : $member->google_link }}"
                                                             autocomplete="off">
                                                         @error('google_link')

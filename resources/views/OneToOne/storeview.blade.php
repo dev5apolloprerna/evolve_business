@@ -24,7 +24,7 @@
                             <div class="card-body">
                                 <div class="live-preview">
                                     <!-- <form action="{{ route('OneToOne.create') }}" method="post"
-                                                                                                                                                                                                                            enctype="multipart/form-data"> -->
+                                                                                                                                                                                                                                    enctype="multipart/form-data"> -->
                                     <form id="oneTooneForm" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row gy-3 mb-3">
@@ -168,7 +168,7 @@
 
     <script>
         function submitForm() {
-            if (confirm("Are you sure you want to submit the business?")) {
+            if (confirm("Are you sure you want to submit the OneToOne?")) {
                 var formData = new FormData(document.getElementById('oneTooneForm'));
                 $.ajax({
                     url: "{{ route('OneToOne.create') }}",
@@ -178,7 +178,7 @@
                     contentType: false,
                     success: function(response) {
                         console.log(response);
-                        alert('Business Created Successfully.');
+                        alert('OneToOne Created Successfully.');
                         window.location.href = "{{ route('OneToOne.index') }}";
                     },
                     error: function(xhr) {

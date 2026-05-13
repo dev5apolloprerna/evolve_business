@@ -297,6 +297,16 @@ class OneToOneController extends Controller
                 'updated_at' => now(),
             ]);
 
+            // Meeting User Points
+            DB::table('member_points')->insert([
+                'member_id'   => $request->oneToone_to,
+                'business_id' => $businessId,
+                'points_id'   => 6,
+                'points'      => 5,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+
             return response()->json(['success' => true, 'message' => 'One To One Created Successfully.']);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());

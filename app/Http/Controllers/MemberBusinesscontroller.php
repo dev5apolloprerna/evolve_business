@@ -27,7 +27,6 @@ class MemberBusinesscontroller extends Controller
 {
     public function index(Request $request)
     {
-
         try {
             $businesstype = $request->business_type;
             $FromDate = $request->fromdate;
@@ -321,7 +320,7 @@ class MemberBusinesscontroller extends Controller
             })
             ->orderBy('event_id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
-        return view('pendinglogincheck.index', compact('Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
+        return view('pendinglogincheck.index', compact('member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
     public function statuspendinglogin(Request $request)
