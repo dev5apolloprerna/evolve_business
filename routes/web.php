@@ -753,7 +753,6 @@ Route::prefix('admin')->name('Membersearch.')->middleware('auth')->group(functio
     Route::get('Membersearch/Detail/{id?}', [Membersearchcontroller::class, 'Detail'])->name('Detail');
 });
 
-
 Route::get('/product', function () {
     return redirect('/');
 });
