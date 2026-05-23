@@ -22,13 +22,13 @@ class Membersearchcontroller extends Controller
 {
     public function index(Request $request)
     {
-       
+
         $first_name1 = $request->first_name;
         $categoryid = $request->category_id;
         $request->session()->put('first_name1', $first_name1 ?? null);
-        $request->session()->put('categoryid', $categoryid ?? null);     
+        $request->session()->put('categoryid', $categoryid ?? null);
         $membersQuery = members::query();
-        $membersQuery->where('Member_status', 1); 
+        $membersQuery->where('Member_status', 1);
         $membersQuery->whereDate('SubscriptionExpiredDate', '>', now());
 
         $membersQuery->when($request->first_name, function ($query) use ($request) {
@@ -38,8 +38,8 @@ class Membersearchcontroller extends Controller
                     ->orWhere('Brand_name', 'LIKE', '%' . $request->first_name . '%');
             });
         });
-       
-        $membersQuery->when($request->first_name, fn ($query, $first_name) => $query->orWhereIn(
+
+        $membersQuery->when($request->first_name, fn($query, $first_name) => $query->orWhereIn(
             'members.id',
             function ($query) use ($first_name) {
                 $query->select('member_services.member_id')
@@ -52,21 +52,34 @@ class Membersearchcontroller extends Controller
             $membersQuery->where('category_id', $request->category_id);
         }
         $membersQuery->leftJoin('city_groups', 'members.citygroup_id', '=', 'city_groups.id')
-        ->leftjoin('categories','members.category_id','=','categories.id')
-        ->select('members.*', 'city_groups.group_name','categories.name as categories_name');
+            ->leftjoin('categories', 'members.category_id', '=', 'categories.id')
+            ->select('members.*', 'city_groups.group_name', 'categories.name as categories_name');
 
         $members = $membersQuery->paginate(15);
-        $Count=$members->count(); 
-        return view('Membersearch.index',compact('members','Count'));
+        $Count = $members->count();
+        return view('Membersearch.index', compact('members', 'Count'));
     }
-    public function Detail(Request $request,$id)
+    public function Detail(Request $request, $id)
     {
-      
+        // $Member = DB::table('members')
+        // ->where('id',$id)->first();
         $Member = DB::table('members')
-        ->where('id',$id)->first();
+            ->leftJoin('city', 'city.id', '=', 'members.city_id')
+            ->where('members.id', $id)
+            ->select(
+                'members.*',
+                'city.city_name'
+            )
+            ->first();
         // dd($Member);
         $memberproduct = DB::table('member_services')
-        ->where('member_id',$id)->paginate(5);
-        return view('Membersearch.Detail',compact('memberproduct','Member'));
+            ->where('member_id', $id)->paginate(5);
+
+        $Memberaward = DB::table('Award')
+            ->where('member_id', $id)->get();
+
+        $Memberannouncement = DB::table('MemberAnnouncement')
+            ->where('member_id', $id)->get();
+        return view('Membersearch.Detail', compact('memberproduct', 'Member', 'Memberaward', 'Memberannouncement'));
     }
 }

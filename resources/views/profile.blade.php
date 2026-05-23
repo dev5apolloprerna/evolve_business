@@ -5,7 +5,17 @@
     <!-- Start right Content here -->
     <!-- ============================================================== -->
     <?php $sessionrole = Auth::user(); ?>
+    <style>
+        .table-responsive table {
+            table-layout: fixed;
+            width: 100%;
+        }
 
+        .table-responsive td {
+            word-wrap: break-word;
+            white-space: normal;
+        }
+    </style>
     <div class="main-content">
 
         {{-- Alert Messages --}}
