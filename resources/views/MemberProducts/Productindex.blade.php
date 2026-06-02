@@ -17,7 +17,7 @@
                 @include('common.alert')
                 <div class="d-flex justify-content-end mb-3">
                     <!-- <a href="{{ route('MemberProducts.ProductStoreview', $id) }}" class="btn btn-success">Add Products
-                                        Service</a> -->
+                                                            Service</a> -->
                     {{-- <a href="{{ route('Renewalhistory.index', $id) }}" class="btn btn-success mx-3">Renewal History</a> --}}
                 </div>
 
@@ -26,14 +26,23 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Products Service List
+                                    @php
+                                        if ($MemberData->product_service == 1) {
+                                            $labelName = 'Product';
+                                        } elseif ($MemberData->product_service == 2) {
+                                            $labelName = 'Service';
+                                        } else {
+                                            $labelName = 'Product';
+                                        }
+                                    @endphp
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">{{ $labelName }}
                                     </h5>
                                 </div>
                                 <div>
                                     @if ($productCount < 5)
                                         <a href="{{ route('MemberProducts.ProductStoreview', $id) }}"
-                                            class="btn btn-success">Add Products
-                                            Service</a>
+                                            class="btn btn-success">Add {{ $labelName }}
+                                        </a>
                                     @endif
                                 </div>
                             </div>
@@ -48,7 +57,7 @@
                                         <tr>
                                             <th scope="col">No</th>
                                             {{-- <th scope="col">Member Name</th> --}}
-                                            <th scope="col">Product Name</th>
+                                            <th scope="col">{{ $labelName }} Name</th>
                                             <th scope="col">Price / Price Ranged</th>
                                             <th scope="col">Photo</th>
                                             <th scope="col">Action</th>
@@ -77,9 +86,9 @@
                                                     @endif
                                                 </td>
                                                 <!-- <td class="text-center">
-                                                                <img src="{{ asset('productimage') . '/' . $data->photo }}"
-                                                                    style="width: 50px;height: 50px;">
-                                                            </td>  -->
+                                                                                    <img src="{{ asset('productimage') . '/' . $data->photo }}"
+                                                                                        style="width: 50px;height: 50px;">
+                                                                                </td>  -->
                                                 <td class="text-center">
                                                     @if ($data->photo == null)
                                                         <img src="https://groath.in/assets/images/noimage.png"

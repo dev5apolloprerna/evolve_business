@@ -176,6 +176,7 @@ class memberscontroller extends Controller
             'brand_establish_year'      => $request->brand_establish_year,
             // 'Book_Your_Podcast'=>$request->Book_Your_Podcast,
             // 'Book_Your_Member_of_the_week'=>$request->Book_Your_Member_of_the_week,
+            'product_service'      => $request->product_service,
             'created_at'     => date('Y-m-d H:i:s'),
             'strIP'          => $request->ip(),
             'created_by'     => auth()->id(),
@@ -339,6 +340,7 @@ class memberscontroller extends Controller
                 // 'Book_Your_Podcast'=>$request->Book_Your_Podcast,
                 // 'Book_Your_Member_of_the_week'=>$request->Book_Your_Member_of_the_week,
                 'updated_at'     => now(),
+                'product_service'      => $request->product_service,
                 'strIP'          => $request->ip(),
                 'updated_by'     => auth()->id(),
             ]);

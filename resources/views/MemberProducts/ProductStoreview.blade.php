@@ -5,7 +5,7 @@
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
-            <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
+                <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
                 @if ($errors->any())
                     @foreach ($errors->all() as $error)
                         <li class="mb-5" style="color:red">{{ $error }}</li>
@@ -16,31 +16,39 @@
                 @include('common.alert')
 
                 <!-- <div class="row">
-                        <div class="col-10">
-                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0">Add Members</h4>
-                            </div>
-                        </div>
-                    </div> -->
+                                                                <div class="col-10">
+                                                                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                                                        <h4 class="mb-sm-0">Add Members</h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div> -->
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Add Product-Service</h5>
+                                @php
+                                    if ($MemberData->product_service == 1) {
+                                        $labelName = 'Product';
+                                    } elseif ($MemberData->product_service == 2) {
+                                        $labelName = 'Service';
+                                    } else {
+                                        $labelName = 'Product';
+                                    }
+                                @endphp
+                                <h5 class="card-title mb-0">Add {{ $labelName }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="live-preview">
                                     <form action="{{ route('MemberProducts.Store') }}" method="post"
                                         enctype="multipart/form-data">
-
                                         @csrf
                                         <input type="hidden" name ="memberid" value="{{ $id }}">
                                         <div class="row gy-3 mb-3">
                                             <div class="col-lg-4 col-md-6">
-                                                <span style="color:red;">*</span>Product Name
+                                                <span style="color:red;">*</span>{{ $labelName }} Name
                                                 <input type="text" class="form-control" name="product_name"
-                                                    id="productname" placeholder="Enter Product Name" maxlength="100"
-                                                    autocomplete="off" required>
+                                                    id="productname" placeholder="Enter {{ $labelName }} Name"
+                                                    maxlength="100" autocomplete="off" required>
                                             </div>
                                             <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;"></span> Photo
@@ -54,7 +62,7 @@
                                             <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;"></span> Price Type
                                                 <select class="form-control" name="price_type" id="price_type">
-                                                <option value="">Select Price Type</option>
+                                                    <option value="">Select Price Type</option>
                                                     <option value="fixed">Fixed</option>
                                                     <option value="ranged">Ranged</option>
                                                 </select>
@@ -78,14 +86,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                             <!-- new code 14-05-2024 -->
-                                             <div>
-                                                    <label for="multiline_description">
-                                                        <span style="color:red;"></span>Hash Tag
-                                                    </label>
-                                                    <textarea class="form-control" name="multiline_description" id="" placeholder="Enter Multiline Description" rows="4" maxlength="500" autocomplete="off"></textarea>
-                                                </div>
-                                                 <!-- new code 14-05-2024 -->
+                                            <!-- new code 14-05-2024 -->
+                                            <div>
+                                                <label for="multiline_description">
+                                                    <span style="color:red;"></span>Hash Tag
+                                                </label>
+                                                <textarea class="form-control" name="multiline_description" id="" placeholder="Enter Multiline Description"
+                                                    rows="4" maxlength="500" autocomplete="off"></textarea>
+                                            </div>
+                                            <!-- new code 14-05-2024 -->
                                             <div>
                                                 <div>
                                                     <label for="description">
@@ -96,11 +105,13 @@
                                                 </div>
                                             </div>
                                             <div class="text-center">
-                                            <button type="submit" class="btn btn-success btn-user"
+                                                <button type="submit" class="btn btn-success btn-user"
                                                     style="width:
                                                     81px; height: 36px;">Submit</button>
-                                                <button type="button" class="btn btn-danger btn-user" style="width:
-                                                    81px; height: 34px;" onclick="cancelForm()">Cancel</button>
+                                                <button type="button" class="btn btn-danger btn-user"
+                                                    style="width:
+                                                    81px; height: 34px;"
+                                                    onclick="cancelForm()">Cancel</button>
                                             </div>
 
                                         </div>
@@ -290,23 +301,25 @@
             });
         });
     </script>
-<script>
+    <script>
         $(window).on('load', function() {
             $('#description').ckeditor();
         });
     </script>
 
 
-<script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
+    <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
     <script type="text/javascript">
         // Initialize NicEdit for specific textareas by their IDs
         bkLib.onDomLoaded(function() {
-            new nicEditor({fullPanel: true}).panelInstance('description'); // For description textarea
+            new nicEditor({
+                fullPanel: true
+            }).panelInstance('description'); // For description textarea
         });
     </script>
-<script>
-     function cancelForm() {
-         window.location.reload(); 
-     }
- </script>
+    <script>
+        function cancelForm() {
+            window.location.reload();
+        }
+    </script>
 @endsection

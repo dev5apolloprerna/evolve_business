@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Reference List')
+@section('title', 'Referral List')
 @section('content')
     <?php $session = auth()->user(); ?>
     <div class="main-content">
@@ -13,13 +13,13 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Reference Given
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Referral Given
                                     </h5>
                                 </div>
                                 <div>
                                     <a href="#" data-bs-toggle="modal" data-bs-target="#EditModal1"
                                         onclick="referencegetData()" class="btn btn-success" title="">Give New
-                                        Reference
+                                        Referral
                                     </a>
                                 </div>
                             </div>
@@ -39,12 +39,12 @@
                                                             <th width="2%" data-sort="Title">Sr No</th>
                                                             <th width="5%" data-sort="Date">Given To</th>
                                                             <th width="5%" data-sort="Date">Company Name</th>
-                                                            <th width="5%" data-sort="Date">Reference Name</th>
+                                                            <th width="5%" data-sort="Date">Referral Name</th>
                                                             <th width="5%" data-sort="Date">Email</th>
                                                             <th width="5%" data-sort="Date">Phone Number
                                                             </th>
-                                                            <th width="5%" data-sort="Date">Reference Date</th>
-                                                            <th width="5%" data-sort="Date">Reference For Message</th>
+                                                            <th width="5%" data-sort="Date">Referral Date</th>
+                                                            <th width="5%" data-sort="Date">Referral For Message</th>
                                                             <th width="5%" data-sort="Date">Rejected Comment</th>
                                                             <th width="5%" data-sort="Date">Status</th>
 
@@ -86,11 +86,11 @@
                                                                     @if ($Business1->isapproved_status == 0)
                                                                         <!-- Check if status is pending -->
                                                                         <!-- <a href="#" data-bs-toggle="modal"
-                                                                                                data-bs-target="#EditModal"
-                                                                                                onclick="getEditData(<?= $Business1->Reference_id ?>)"
-                                                                                                class="" title="Edit">
-                                                                                                    <span class="text-500 fas fa-edit"></span>
-                                                                                                </a> -->
+                                                                                                    data-bs-target="#EditModal"
+                                                                                                    onclick="getEditData(<?= $Business1->Reference_id ?>)"
+                                                                                                    class="" title="Edit">
+                                                                                                        <span class="text-500 fas fa-edit"></span>
+                                                                                                    </a> -->
                                                                         <a class="" href="#"
                                                                             data-bs-toggle="modal" title="Delete"
                                                                             data-bs-target="#deleteRecordModal"
@@ -135,7 +135,7 @@
                 <div class="modal-dialog " style="background-color: white;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Edit Reference</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Referral</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </button>
                         </div>
@@ -157,16 +157,16 @@
                                         </select>
                                     </div>
                                     <!-- <div class="md-3">
-                                                                    <label for="business_from_id"><span style="color:red;">*</span>Given By</label>
-                                                                    <select class="form-control" name="business_from" id="Editbusiness_from"
-                                                                        required>
-                                                                        <option value="" selected>Select Given By</option>
-                                                                        @foreach ($Data as $data)
+                                                                        <label for="business_from_id"><span style="color:red;">*</span>Given By</label>
+                                                                        <select class="form-control" name="business_from" id="Editbusiness_from"
+                                                                            required>
+                                                                            <option value="" selected>Select Given By</option>
+                                                                            @foreach ($Data as $data)
     <option value="{{ $data->first_name }}">{{ $data->first_name }}
-                                                                            </option>
+                                                                                </option>
     @endforeach
-                                                                    </select>
-                                                                </div> -->
+                                                                        </select>
+                                                                    </div> -->
 
                                     {{-- <div class="md-3">
                                         <label for="business_from_id"><span style="color:red;">*</span>Given By</label>
@@ -284,10 +284,10 @@
                             {{-- {{dd($data)}} --}}
                             @if (isset($Business1->isapproved_status))
                                 <!-- <select class="form-control" name="newStatus">
-                                                                    <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
-                                                                    </option>
-                                                                    <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
-                                                                </select> -->
+                                                                        <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
+                                                                        </option>
+                                                                        <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
+                                                                    </select> -->
 
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
@@ -312,9 +312,9 @@
                         @endforeach
 
                         <!-- <div class="form-group">
-                                                            <label for="rejectedComments">Rejected Comments:</label>
-                                                            <textarea class="form-control" name="rejectedComments"></textarea>
-                                                        </div> -->
+                                                                <label for="rejectedComments">Rejected Comments:</label>
+                                                                <textarea class="form-control" name="rejectedComments"></textarea>
+                                                            </div> -->
                         <button type="submit" class="btn btn-success">Save Changes</button>
                     </form>
                 </div>
@@ -330,7 +330,7 @@
         <div class="modal-dialog " style="background-color: white;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Reference</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add Referral</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </button>
                 </div>
@@ -355,7 +355,7 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <span style="color:red;">*</span>Reference Name</label>
+                                <span style="color:red;">*</span>Referral Name</label>
                                 <input class="form-control" id="Editname" name="Reference_Name" type="text"
                                     placeholder="Enter Reference Name" value="{{ old('Reference_Name') }}" required>
                             </div><br>
@@ -385,10 +385,10 @@
                                 placeholder="Enter Refer for message"maxlength="50">
                         </div>
                         <!-- <div class="mb-3" >
-                                                                    <span style="color:red;">*</span> Reference date
-                                                                    <input type="date" class="form-control" name="Reference_Date"
-                                                                        id="Reference_Date" placeholder="Enter Reference Date" required>
-                                                                </div> -->
+                                                                        <span style="color:red;">*</span> Reference date
+                                                                        <input type="date" class="form-control" name="Reference_Date"
+                                                                            id="Reference_Date" placeholder="Enter Reference Date" required>
+                                                                    </div> -->
                         <div class="modal-footer">
                             <input type="submit" class="btn btn-success">
 

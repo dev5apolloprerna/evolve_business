@@ -131,10 +131,6 @@
                                             </a>
                                         </li>
                                     @endif
-
-
-
-
                                 </ul>
                             </div>
                         </li>
@@ -271,6 +267,13 @@
                         <div class="collapse menu-dropdown" id="sidebarBusiness">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
+                                    <a class="nav-link menu-link @if (request()->routeIs('profile.detail')) {{ 'active' }} @endif"
+                                        href="{{ route('profile.detail') }}">
+                                        <i class="fas fa-user"></i>
+                                        <span data-key="t-dashboards">Profile</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('MemberProducts.Productindex')) {{ 'active' }} @endif"
                                         href="{{ route('MemberProducts.Productindex') }}">
                                         <i class="fas fa-user-plus"></i>
@@ -301,12 +304,6 @@
 
                         </a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link menu-link" href="{{ route('MemberAnnouncement.index') }}">
-                            <i class="fa fa-bullhorn"></i>
-                            <span data-key="t-dashboards">Announcement</span>
-                        </a>
-                    </li> --}}
                 @endif
                 <!-- new code 08-04-2024 -->
                 @if ($session->role_id == 2)

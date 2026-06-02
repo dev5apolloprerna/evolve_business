@@ -40,20 +40,29 @@ class MemberProductscontroller extends Controller
             ->orderBy('member_services.id', 'desc')
             ->paginate(env('PAR_PAGE_COUNT', 20));
         $count = $datas->count();
+
+        $user = Auth::user();
+        $MemberData = members::where('user_id', $user->id)->first();
         // dd($datas);
-        return view('MemberProducts.Productindex', compact('datas', 'user', 'id', 'count', 'productCount'));
+        return view('MemberProducts.Productindex', compact('MemberData', 'datas', 'user', 'id', 'count', 'productCount'));
     }
 
 
     public function ProductStoreview(Request $request, $id)
     {
-
-        $membersData = members::select('members.id', 'members.user_id', 'users.first_name')
+        $membersData = members::select(
+            'members.id',
+            'members.user_id',
+            'members.product_service',
+            'users.first_name'
+        )
             // ->select('members.id', 'users.fullname')
             ->join('users', 'members.user_id', '=', 'users.id')
             ->get();
         // dd($membersData);
-        return view('MemberProducts.ProductStoreview', compact('membersData', 'id'));
+        $user = Auth::user();
+        $MemberData = members::where('user_id', $user->id)->first();
+        return view('MemberProducts.ProductStoreview', compact('membersData', 'id', 'MemberData'));
     }
 
 
@@ -113,6 +122,8 @@ class MemberProductscontroller extends Controller
     public function editview(Request $request)
     {
         // dd($request);
+        $user = Auth::user();
+        $MemberData = members::where('user_id', $user->id)->first();
         $data = Products_service::select('member_services.*', 'member_services.id as memberservices_id', 'members.id', 'members.user_id', 'users.id', 'users.first_name')->orderBy('member_services.id')
             ->join('members', 'members.id', '=', 'member_services.member_id')
             ->join('users', 'users.id', 'members.user_id')
@@ -121,7 +132,7 @@ class MemberProductscontroller extends Controller
         // dd($data);
         // echo json_encode($data);
 
-        return view('MemberProducts.productedit', compact('data'));
+        return view('MemberProducts.productedit', compact('data', 'MemberData'));
     }
 
 

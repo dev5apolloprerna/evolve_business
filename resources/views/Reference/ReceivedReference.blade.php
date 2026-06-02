@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Reference Received List')
+@section('title', 'Referral Received List')
 @section('content')
     <div class="main-content">
         <div class="page-content">
@@ -13,7 +13,7 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Reference Received
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Referral Received
                                     </h5>
                                 </div>
                             </div>
@@ -32,12 +32,12 @@
                                                             <th scope="col">Sr No</th>
                                                             <th scop="col">Given By</th>
                                                             <th scop="col">Company Name</th>
-                                                            <th scop="col">Reference Name</th>
+                                                            <th scop="col">Referral Name</th>
                                                             <th scop="col">Email</th>
                                                             <th scop="col">Phone Number
                                                             </th>
-                                                            <th scop="col">Reference For Message</th>
-                                                            <th scop="col">Reference Date</th>
+                                                            <th scop="col">Referral For Message</th>
+                                                            <th scop="col">Referral Date</th>
                                                             <th scop="col">Status</th>
                                                             {{-- <th w scop="col">Action</th> --}}
                                                         </tr>
@@ -72,26 +72,26 @@
                                                                 </td>
 
                                                                 <!-- <td>
-                                                                        <a href="#" data-bs-toggle="modal"
-                                                                            data-bs-target="#EditModal"
-                                                                            onclick="getEditData(<?= $Business1->business_id ?>)"
-                                                                            class="btn btn-link p-0" title="Edit">
-                                                                            <span class="text-500 fas fa-edit"></span>
-                                                                        </a>
-                                                                        <a class="btn btn-link p-0" href="#"
-                                                                            data-bs-toggle="modal" title="Delete"
-                                                                            data-bs-target="#deleteRecordModal"
-                                                                            onclick="deleteData(<?= $Business1->business_id ?>);">
-                                                                            <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                        </a>
-                                                                        <a class="" href="#"
-                                                                            data-bs-toggle="modal" title="Status Changed"
-                                                                            data-bs-target="#statusModal"
-                                                                            onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
-                                                                            <i class="fas fa-plus-square" aria-hidden="true"></i>
-                                                                        </a>
+                                                                            <a href="#" data-bs-toggle="modal"
+                                                                                data-bs-target="#EditModal"
+                                                                                onclick="getEditData(<?= $Business1->business_id ?>)"
+                                                                                class="btn btn-link p-0" title="Edit">
+                                                                                <span class="text-500 fas fa-edit"></span>
+                                                                            </a>
+                                                                            <a class="btn btn-link p-0" href="#"
+                                                                                data-bs-toggle="modal" title="Delete"
+                                                                                data-bs-target="#deleteRecordModal"
+                                                                                onclick="deleteData(<?= $Business1->business_id ?>);">
+                                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                            </a>
+                                                                            <a class="" href="#"
+                                                                                data-bs-toggle="modal" title="Status Changed"
+                                                                                data-bs-target="#statusModal"
+                                                                                onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
+                                                                                <i class="fas fa-plus-square" aria-hidden="true"></i>
+                                                                            </a>
 
-                                                                    </td> -->
+                                                                        </td> -->
 
                                                             </tr>
                                                             <?php $i++; ?>
@@ -109,7 +109,7 @@
                                                     class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
                                                     <div
                                                         class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
-                                                        <h1 class="font-white text-center"> Reference Yet To Received </h1>
+                                                        <h1 class="font-white text-center"> Referral Yet To Received </h1>
                                                     </div>
                                                 </div>
                                             </div>
@@ -144,7 +144,7 @@
                                         <select class="form-control" name="business_type" id="Editbusiness_type"
                                             value="{{ old('business_type') }}" required>
                                             <option value="1">Direct</option>
-                                            <option value="2">Reference</option>
+                                            <option value="2">Referral</option>
                                         </select>
                                     </div>
                                     <div class="md-3">
@@ -269,10 +269,10 @@
                             {{-- {{dd($data)}} --}}
                             @if (isset($Business1->isapproved_status))
                                 <!-- <select class="form-control" name="newStatus">
-                                                <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
-                                                </option>
-                                                <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
-                                            </select> -->
+                                                    <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
+                                                    </option>
+                                                    <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
+                                                </select> -->
 
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
@@ -294,9 +294,9 @@
                         </div>
 
                         <!-- <div class="form-group">
-                                        <label for="rejectedComments">Rejected Comments:</label>
-                                        <textarea class="form-control" name="rejectedComments"></textarea>
-                                    </div> -->
+                                            <label for="rejectedComments">Rejected Comments:</label>
+                                            <textarea class="form-control" name="rejectedComments"></textarea>
+                                        </div> -->
                         <button type="submit" class="btn btn-success" style="margin-top: 20px;">Save Changes</button>
                     </form>
                 </div>
