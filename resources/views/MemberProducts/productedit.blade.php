@@ -5,7 +5,7 @@
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
-            <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
+                <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
 
                 @if ($errors->any())
                     @foreach ($errors->all() as $error)
@@ -17,17 +17,26 @@
                 @include('common.alert')
 
                 <!-- <div class="row">
-                        <div class="col-10">
-                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0">Add Members</h4>
-                            </div>
-                        </div>
-                    </div> -->
+                                <div class="col-10">
+                                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                        <h4 class="mb-sm-0">Add Members</h4>
+                                    </div>
+                                </div>
+                            </div> -->
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Edit Product-Service</h5>
+                                @php
+                                    if ($MemberData->product_service == 1) {
+                                        $labelName = 'Product';
+                                    } elseif ($MemberData->product_service == 2) {
+                                        $labelName = 'Service';
+                                    } else {
+                                        $labelName = 'Product';
+                                    }
+                                @endphp
+                                <h5 class="card-title mb-0">Edit {{ $labelName }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="live-preview">
@@ -45,7 +54,7 @@
 
                                             <div class="row gy-3 mb-3">
                                                 <div class="col-lg-4 col-md-6">
-                                                    <span style="color:red;">*</span>Product Name
+                                                    <span style="color:red;">*</span>{{ $labelName }} Name
                                                     <input type="text" class="form-control" name="product_name"
                                                         value="{{ $data->product_name }}" id="editproductname"
                                                         placeholder="Enter Product Name" maxlength="100" autocomplete="off"
@@ -62,102 +71,110 @@
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <div id="viewimg">
-                                                    @if($data->photo)
-                                                        <img src="{{ asset('productimage') . '/' . $data->photo }}" alt="" height="70" width="70">
-                                                    @else
-                                                        <img src="https://groath.in/assets/images/noimage.png" alt="No Image" height="70" width="70">
-                                                    @endif
-                                                            <!-- <img src="{{ asset('productimage') . '/' . $data->photo }}" alt=""
-                                                             height="70" width="70"> -->
+                                                        @if ($data->photo)
+                                                            <img src="{{ asset('productimage') . '/' . $data->photo }}"
+                                                                alt="" height="70" width="70">
+                                                        @else
+                                                            <img src="https://groath.in/assets/images/noimage.png"
+                                                                alt="No Image" height="70" width="70">
+                                                        @endif
+                                                        <!-- <img src="{{ asset('productimage') . '/' . $data->photo }}" alt=""
+                                                                     height="70" width="70"> -->
                                                     </div>
-                                                </div>  
-                                            </div>
-                                            @if($data->price_type == null)
-                                            <div class="row gy-3">
-                                                <div class="col-lg-4 col-md-6">
-                                                    <span style="color:red;"></span> Price Type
-                                                    <select class="form-control" name="edit_price_type" id="edit_price_type">
-                                                    <option value="">Select Price Type</option>
-                                                        <option value="fixed"
-                                                            {{ $data->price_type === 'fixed' ? 'selected' : '' }}>Fixed
-                                                        </option>
-                                                        <option value="ranged"
-                                                            {{ $data->price_type === 'ranged' ? 'selected' : '' }}>Ranged
-                                                        </option>
-                                                    </select>
                                                 </div>
-                                                @else 
+                                            </div>
+                                            @if ($data->price_type == null)
                                                 <div class="row gy-3">
-                                                <div class="col-lg-4 col-md-6">
-                                                    <span style="color:red;"></span> Price Type
-                                                    <select class="form-control" name="edit_price_type" id="edit_price_type"
-                                                        >
-                                                        <option value="fixed"
-                                                            {{ $data->price_type === 'fixed' ? 'selected' : '' }}>Fixed
-                                                        </option>
-                                                        <option value="ranged"
-                                                            {{ $data->price_type === 'ranged' ? 'selected' : '' }}>Ranged
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                @endif
-                                            
-                                                    <div class="col-lg-4 col-md-6" id="edit_fixed_price_input"
-                                                        style="display: none;">
-                                                        <span style="color:red;"></span> Price
-                                                        <input type="number" class="form-control" name="edit_fixed_price"
-                                                            id="edit_fixed_price" placeholder="Enter price"
-                                                            value="{{ $data->price }}">
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <span style="color:red;"></span> Price Type
+                                                        <select class="form-control" name="edit_price_type"
+                                                            id="edit_price_type">
+                                                            <option value="">Select Price Type</option>
+                                                            <option value="fixed"
+                                                                {{ $data->price_type === 'fixed' ? 'selected' : '' }}>Fixed
+                                                            </option>
+                                                            <option value="ranged"
+                                                                {{ $data->price_type === 'ranged' ? 'selected' : '' }}>
+                                                                Ranged
+                                                            </option>
+                                                        </select>
                                                     </div>
-
-                                                    <div class="col-lg-4 col-md-6" id="edit_ranged_price_input"
-                                                        style="display: none;">
-                                                        <span style="color:red;"></span> Price Range
-                                                        <div class="row gy-3">
-                                                            <div class="col-lg-4 col-md-6">
-                                                                <input type="number" class="form-control"
-                                                                    name="edit_min_price" id="edit_min_price"
-                                                                    placeholder="Min price" value="{{ $data->min_price }}">
-                                                            </div>
-                                                            <div class="col-lg-4 col-md-6">
-                                                                <input type="number" class="form-control"
-                                                                    name="edit_max_price" id="edit_max_price"
-                                                                    placeholder="Max price"
-                                                                    value="{{ $data->max_price }}">
-                                                            </div>
+                                                @else
+                                                    <div class="row gy-3">
+                                                        <div class="col-lg-4 col-md-6">
+                                                            <span style="color:red;"></span> Price Type
+                                                            <select class="form-control" name="edit_price_type"
+                                                                id="edit_price_type">
+                                                                <option value="fixed"
+                                                                    {{ $data->price_type === 'fixed' ? 'selected' : '' }}>
+                                                                    Fixed
+                                                                </option>
+                                                                <option value="ranged"
+                                                                    {{ $data->price_type === 'ranged' ? 'selected' : '' }}>
+                                                                    Ranged
+                                                                </option>
+                                                            </select>
                                                         </div>
+                                            @endif
+
+                                            <div class="col-lg-4 col-md-6" id="edit_fixed_price_input"
+                                                style="display: none;">
+                                                <span style="color:red;"></span> Price
+                                                <input type="number" class="form-control" name="edit_fixed_price"
+                                                    id="edit_fixed_price" placeholder="Enter price"
+                                                    value="{{ $data->price }}">
+                                            </div>
+
+                                            <div class="col-lg-4 col-md-6" id="edit_ranged_price_input"
+                                                style="display: none;">
+                                                <span style="color:red;"></span> Price Range
+                                                <div class="row gy-3">
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <input type="number" class="form-control" name="edit_min_price"
+                                                            id="edit_min_price" placeholder="Min price"
+                                                            value="{{ $data->min_price }}">
                                                     </div>
-                                                
-
-                                                <!-- new -->
-
-                                               
-                                            </div>
-
-                                            <div class="row">
-                                                <!-- new code 14-05-2024 -->
-                                                <div>
-                                                    <label for="multiline_description">
-                                                        <span style="color:red;"></span>Search Keyword
-                                                    </label>
-                                                    <textarea class="form-control" name="multiline_description" id="" placeholder="Enter Search Keyword with coma sepreted" rows="4" maxlength="500" autocomplete="off">{{ $data->Hash_Tag }}</textarea>
-                                                </div>
-                                                 <!-- new code 14-05-2024 -->
-                                                <div>
-                                                    <label for="description">
-                                                        <span style="color:red;">*</span>Description
-                                                    </label>
-                                                    <textarea class="form-control" name="description" id="editdescription" placeholder="Enter Description" rows="4" maxlength="500" autocomplete="off" required>{{ $data->description }}</textarea>
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <input type="number" class="form-control" name="edit_max_price"
+                                                            id="edit_max_price" placeholder="Max price"
+                                                            value="{{ $data->max_price }}">
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <div class="hstack gap-2 justify-content-end">
-                                                    <button type="submit" class="btn btn-success m-1"
-                                                        id="add-btn">Update</button>
-                                                        <button type="button" class="btn btn-danger btn-user" onclick="cancelForm()">Cancel</button>
-                                                   
-                                                </div>
+
+
+                                            <!-- new -->
+
+
+                                        </div>
+
+                                        <div class="row">
+                                            <!-- new code 14-05-2024 -->
+                                            <div>
+                                                <label for="multiline_description">
+                                                    <span style="color:red;"></span>Search Keyword
+                                                </label>
+                                                <textarea class="form-control" name="multiline_description" id=""
+                                                    placeholder="Enter Search Keyword with coma sepreted" rows="4" maxlength="500" autocomplete="off">{{ $data->Hash_Tag }}</textarea>
                                             </div>
+                                            <!-- new code 14-05-2024 -->
+                                            <div>
+                                                <label for="description">
+                                                    <span style="color:red;">*</span>Description
+                                                </label>
+                                                <textarea class="form-control" name="description" id="editdescription" placeholder="Enter Description"
+                                                    rows="4" maxlength="500" autocomplete="off" required>{{ $data->description }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <div class="hstack gap-2 justify-content-end">
+                                                <button type="submit" class="btn btn-success m-1"
+                                                    id="add-btn">Update</button>
+                                                <button type="button" class="btn btn-danger btn-user"
+                                                    onclick="cancelForm()">Cancel</button>
+
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -342,22 +359,24 @@
                 });
             });
         </script>
-<script>
-        $(window).on('load', function() {
-            $('#editdescription').ckeditor();
-        });
-    </script>
-<script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
-    <script type="text/javascript">
-        // Initialize NicEdit for specific textareas by their IDs
-        bkLib.onDomLoaded(function() {
-            new nicEditor({fullPanel: true}).panelInstance('description'); // For description textarea
-        });
-    </script>
-<script>
-     function cancelForm() {
-         window.location.reload(); 
-     }
- </script>
+        <script>
+            $(window).on('load', function() {
+                $('#editdescription').ckeditor();
+            });
+        </script>
+        <script type="text/javascript" src="//js.nicedit.com/nicEdit-latest.js"></script>
+        <script type="text/javascript">
+            // Initialize NicEdit for specific textareas by their IDs
+            bkLib.onDomLoaded(function() {
+                new nicEditor({
+                    fullPanel: true
+                }).panelInstance('description'); // For description textarea
+            });
+        </script>
+        <script>
+            function cancelForm() {
+                window.location.reload();
+            }
+        </script>
 
     @endsection

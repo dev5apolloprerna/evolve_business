@@ -7,10 +7,10 @@
             <div class="container-fluid">
 
                 <!-- @if ($errors->any())
-                                                                    @foreach ($errors->all() as $error)
+                                                                                    @foreach ($errors->all() as $error)
     <li class="mb-5" style="color:red">{{ $error }}</li>
     @endforeach
-                                                                @endif -->
+                                                                                @endif -->
 
                 {{-- Alert Messages --}}
                 @include('common.alert')
@@ -205,7 +205,18 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
+                                                <div class="col-lg-4 col-md-6">
+                                                    <label for="plan_id"><span
+                                                            style="color:red;">*</span>Product/Service</label>
+                                                    <select class="form-control" name="product_service"
+                                                        id="product_service" required>
+                                                        <option value="" selected>--Please Select--</option>
+                                                        <option value="1">Product</option>
+                                                        <option value="2">Service</option>
+                                                    </select>
+                                                </div>
                                             </div>
+
                                             <div class="col-lg-4 col-md-6">
                                                 <label for="plan_id"><span style="color:red;">*</span> Plan Name</label>
                                                 <select class="form-control" name="plan_id" id="plan_id">

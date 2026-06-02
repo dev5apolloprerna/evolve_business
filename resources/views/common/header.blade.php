@@ -187,15 +187,17 @@
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
                                 <h6 class="dropdown-header">Welcome {{ auth()->user()->full_name }}</h6>
-                                <a class="dropdown-item" href="{{ route('profile.detail') }}"><i
-                                        class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span
-                                        class="align-middle">Profile</span></a>
+                                <!--<a class="dropdown-item" href="{{ route('profile.detail') }}"><i-->
+                                <!--        class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span-->
+                                <!--        class="align-middle">Profile</span></a>-->
                                 <!-- NEW ADD -->
-                                @if ($role->role_id == 2)
-                                    <a class="dropdown-item" href="{{ route('Membersub.index') }}"><i
-                                            class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span
-                                            class="align-middle">My Subscription</span></a>
-                                @endif
+                                <!--@if ($role->role_id == 2)
+-->
+                                <!--    <a class="dropdown-item" href="{{ route('Membersub.index') }}"><i-->
+                                <!--            class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span-->
+                                <!--            class="align-middle">My Subscription</span></a>-->
+                                <!--
+@endif-->
                                 <!-- NEW ADD -->
                                 @if ($role->role_id == 1 || $role->role_id == 3)
                                     <a class="dropdown-item" href="{{ route('logout') }}"><i

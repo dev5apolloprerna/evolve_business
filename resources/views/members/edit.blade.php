@@ -184,6 +184,21 @@
                                                 </select>
                                             </div>
 
+                                            <div class="col-lg-4 col-md-6">
+                                                <label for="plan_id"><span
+                                                        style="color:red;">*</span>Product/Service</label>
+                                                <select class="form-control" name="product_service" id="product_service"
+                                                    required>
+                                                    <option value="" selected>--Please Select--</option>
+                                                    <option value="1"
+                                                        {{ $data->product_service == 1 ? 'selected' : '' }}>Product
+                                                    </option>
+                                                    <option value="2"
+                                                        {{ $data->product_service == 2 ? 'selected' : '' }}>Service
+                                                    </option>
+                                                </select>
+                                            </div>
+
 
                                             <div class="col-lg-4 col-md-6">
                                                 <label for="plan_id"><span style="color:red;">*</span> Plan Name</label>

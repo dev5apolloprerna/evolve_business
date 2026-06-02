@@ -34,7 +34,8 @@ class members extends Model
         'priority_club_3_year',
         'training_free',
         'brand_showcase',
-        'from'
+        'from',
+        'product_service'
     ];
 
     public function renewalhistory()
