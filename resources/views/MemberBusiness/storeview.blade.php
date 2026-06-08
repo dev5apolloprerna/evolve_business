@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Business List')
 @section('content')
-<?php $session = auth()->user(); ?>
+    <?php $session = auth()->user(); ?>
 
     <div class="main-content ">
         <div class="page-content">
@@ -24,8 +24,8 @@
                             <div class="card-body">
                                 <div class="live-preview">
                                     <!-- <form action="{{ route('MemberBusiness.create') }}" method="post"
-                                        enctype="multipart/form-data"> -->
-                                        <form id="businessForm" enctype="multipart/form-data">
+                                            enctype="multipart/form-data"> -->
+                                    <form id="businessForm" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row gy-3 mb-3">
                                             <div class="col-lg-4 col-md-6">
@@ -47,8 +47,8 @@
                                                         <option value="{{ $data->id }}">{{ $data->first_name }}</option>
                                                     @endforeach
                                                 </select>
-                                            </div>         --}}                                          
-                                           
+                                            </div>         --}}
+
                                             {{-- <div class="col-lg-4 col-md-6">
                                                 <label for="business_to_id"><span style="color:red;">*</span>Given To</label>
                                                 <select class="form-control" name="business_to" required>
@@ -61,41 +61,43 @@
                                             <!-- this same user name not select code start -->
                                             <div class="col-lg-4 col-md-6">
                                                 <label for="business_to"><span style="color:red;">*</span>Given To</label>
-                                                <select class="form-control" data-choices name="business_to" id="choices-single-default">
+                                                <select class="form-control" data-choices name="business_to"
+                                                    id="choices-single-default">
                                                     <option value="" disabled selected>Select Given To</option>
                                                     @foreach ($Data as $data)
-                                                        @if ($data->id !== $session->id) 
-                                                            <option value="{{ $data->id }}">{{ $data->first_name }} - ({{$data->mobile_number}})</option>
+                                                        @if ($data->id !== $session->id)
+                                                            <option value="{{ $data->id }}">{{ $data->first_name }} -
+                                                                ({{ $data->mobile_number }})</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
                                             </div>
-
-                                          
-                                              <!-- this same user name not select code end -->
+                                            <!-- this same user name not select code end -->
                                             <div class="col-lg-4 col-md-6">
-                                            <label for="Business_amount"><span style="color:red;">*</span>Amount</label>                              
+                                                <label for="Business_amount"><span style="color:red;">*</span>Amount</label>
                                                 <input type="number" class="form-control" name="Business_amount"
                                                     id="Business_amount" placeholder="Enter Amount"
                                                     value="{{ old('Business_amount') }}" required>
                                             </div>
 
                                             <!-- <div class="col-lg-4 col-md-6">
-                                                <span style="color:red;">*</span> Business date
-                                                <input type="date" class="form-control" name="business_Date"
-                                                    id="business_Date" placeholder="Enter business Date" required>
-                                            </div> -->
+                                                    <span style="color:red;">*</span> Business date
+                                                    <input type="date" class="form-control" name="business_Date"
+                                                        id="business_Date" placeholder="Enter business Date" required>
+                                                </div> -->
                                             <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;">*</span> Business date
-                                                <input type="text" class="form-control" name="business_Date"  id="startdatepicker" placeholder="Enter business Date" required>
+                                                <input type="text" class="form-control" name="business_Date"
+                                                    id="startdatepicker" placeholder="Enter business Date" required>
                                             </div>
 
 
                                             <div class="text-center">
                                                 <button type="button" class="btn btn-success btn-user"
-                                                    style="width: 85px; height: 40px;" onclick="submitForm()">Submit</button>
-                                                <button type="button" class="btn btn-danger btn-user"
-                                                    style="width: 85px;" onclick="cancelForm()">Cancel</button>
+                                                    style="width: 85px; height: 40px;"
+                                                    onclick="submitForm()">Submit</button>
+                                                <button type="button" class="btn btn-danger btn-user" style="width: 85px;"
+                                                    onclick="cancelForm()">Cancel</button>
                                             </div>
                                         </div>
                                 </div>
@@ -245,51 +247,48 @@
         });
     </script>
     <script>
-     function cancelForm() {
-         window.location.reload(); 
-     }
- </script>
+        function cancelForm() {
+            window.location.reload();
+        }
+    </script>
 
- <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script>
-    $(function() {
-        $("#startdatepicker").datepicker({
-            dateFormat: "yy-mm-dd",
-            //minDate: 0
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $("#startdatepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                //minDate: 0
+            });
+
+            $("#enddatepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                //minDate: 0
+            });
         });
+    </script>
 
-        $("#enddatepicker").datepicker({
-            dateFormat: "yy-mm-dd",
-            //minDate: 0
-        });
-    });
-</script>
-
-<script>
-
-function submitForm() {
-    if (confirm("Are you sure you want to submit the business?")) {
-        var formData = new FormData(document.getElementById('businessForm'));
-        $.ajax({
-            url: "{{ route('MemberBusiness.create') }}",  
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                alert('Business Created Successfully.');
-                window.location.href = "{{ route('MemberBusiness.index') }}"; 
-            },
-            error: function(xhr) {
-                alert('An error occurred while submitting the form.');
-                console.log(xhr.responseText); 
+    <script>
+        function submitForm() {
+            if (confirm("Are you sure you want to submit the business?")) {
+                var formData = new FormData(document.getElementById('businessForm'));
+                $.ajax({
+                    url: "{{ route('MemberBusiness.create') }}",
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        alert('Business Created Successfully.');
+                        window.location.href = "{{ route('MemberBusiness.index') }}";
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred while submitting the form.');
+                        console.log(xhr.responseText);
+                    }
+                });
             }
-        });
-    }
-}
-
-
-</script>
+        }
+    </script>
 
 @endsection
