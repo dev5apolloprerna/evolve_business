@@ -164,11 +164,11 @@ class MemberBusinesscontroller extends Controller
 
             $toUserEmail = $ToUser ? $ToUser->email : null;
             $sendemaildetails = DB::table('sendemaildetails')->where('id', 2)->first();
-
             $msg = [
                 'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
                 'Title' => $sendemaildetails->strTitle ??  'business send',
-                'ToEmail' => isset($ToUser) ? ($ToUser->email ?? '') : '',
+                //'ToEmail' => isset($ToUser) ? ($ToUser->email ?? '') : '',
+                'ToEmail' => 'ai.dev.laravel10@gmail.com',
                 'CCEmail' => 'k.krupa0101@gmail.com',
                 'Subject' => $sendemaildetails->strSubject ?? 'Business send' ?? '',
             ];
@@ -189,8 +189,6 @@ class MemberBusinesscontroller extends Controller
                     $message->cc($msg['CCEmail']);
                 }
             });
-
-
             return response()->json(['success' => true, 'message' => 'Business Created Successfully.']);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());

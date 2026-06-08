@@ -79,7 +79,6 @@ Route::middleware(['check_approval'])->group(function () {
         Route::post('/podcast/store', [FrontController::class, 'podcaststore'])->name('store');
         Route::get('/podcast/memberweek', [FrontController::class, 'memberweek'])->name('memberweek');
         Route::post('/podcast/weekstore', [FrontController::class, 'weekstore'])->name('weekstore');
-
         Route::post('/checkdate', [FrontController::class, 'checkDate'])->name('checkdate');
     });
     //User memeber route 
@@ -116,7 +115,6 @@ Route::middleware(['check_approval'])->group(function () {
         Route::delete('/MemberBusiness/delete', [MemberBusinesscontroller::class, 'delete'])->name('delete');
         Route::get('Received', [MemberBusinesscontroller::class, 'Received1'])->name('Received');
         Route::post('/MemberBusiness/status/{id?}', [MemberBusinesscontroller::class, 'status'])->name('status');
-
         Route::get('/Memberlist/{id?}', [MemberBusinesscontroller::class, 'member_listing'])->name('Memberlist');
     });
 
