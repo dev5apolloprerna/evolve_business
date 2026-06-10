@@ -11,7 +11,6 @@
                 {{-- start search  --}}
                 <div class="col-lg-12">
                     <div class="card">
-
                         <div class="card-body">
                             <form method="post" id="form" action="{{ route('OneToOne.index') }}">
                                 @csrf
@@ -55,8 +54,8 @@
                                                     class="btn btn-success">Cancel</button>
                                             </div>
                                             <!-- <button class="btn btn-success" type="button" onclick="exportExcel();">
-                                                                                                                                                                                                                                                                                <i class="fa-solid fa-file-excel fa-xl"></i>
-                                                                                                                                                                                                                                                                            </button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="fa-solid fa-file-excel fa-xl"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        </button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -94,12 +93,7 @@
                                                         <tr>
                                                             <th width="2%" data-sort="Title">No</th>
                                                             <th width="5%" data-sort="Date">Meet To</th>
-                                                            <th width="5%" data-sort="Date">Place</th>
                                                             <th width="5%" data-sort="Date">Meeting date
-                                                            </th>
-                                                            <th width="5%" data-sort="Date">Comment
-                                                            </th>
-                                                            <th width="5%" data-sort="Date">Photo
                                                             </th>
                                                             <th width="5%" data-sort="Date">Rejected Comment</th>
                                                             <th width="5%" data-sort="Date">Status</th>
@@ -108,7 +102,6 @@
                                                     </thead>
                                                     <tbody class="list">
                                                         <?php $i = 1;
-                                                        
                                                         ?>
                                                         @foreach ($Business as $Business1)
                                                             <tr>
@@ -116,17 +109,12 @@
                                                                     {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
                                                                 </td>
 
-                                                                <td class="text-center">{{ $Business1->to }}</td>
-                                                                <td class="text-center">{{ $Business1->place }}
+                                                                <td class="text-center">{{ $Business1->meeting_with ?? '' }}
                                                                 </td>
                                                                 <td class="text-center">
                                                                     {{ \Carbon\Carbon::parse($Business1->date)->format('d-m-Y') }}
                                                                 </td>
-
-                                                                <td class="text-center">
-                                                                    {{ $Business1->comment !== null ? $Business1->comment : 'N/A' }}
-                                                                </td>
-                                                                <td class="text-center">
+                                                                {{-- <td class="text-center">
                                                                     @if (empty($Business1->photo))
                                                                         <img src="{{ asset('assets/images/noimage.png') }}"
                                                                             style="width:50px;height:50px;">
@@ -134,7 +122,7 @@
                                                                         <img src="{{ asset('OneToOne/' . $Business1->photo) }}"
                                                                             style="width:50px;height:50px;">
                                                                     @endif
-                                                                </td>
+                                                                </td> --}}
                                                                 <td class="text-center">
                                                                     {{ $Business1->reject_comment !== null ? $Business1->reject_comment : 'N/A' }}
                                                                 </td>
@@ -208,41 +196,113 @@
                             <div class="modal-body">
 
                                 <input type="hidden" name="id" id="edit_id">
-
-                                <div class="mb-2">
-                                    <label>Given To</label>
-                                    <select class="form-control" name="oneToone_to" id="edit_to">
-                                        @foreach ($Data as $data)
-                                            @if ($data->id !== $session->id)
-                                                <option value="{{ $data->id }}">
-                                                    {{ $data->first_name }} - ({{ $data->mobile_number }})
-                                                </option>
-                                            @endif
-                                        @endforeach
-                                    </select>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>Date</label>
+                                            <input type="date" class="form-control" name="Date" id="edit_date">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>One To One With</label>
+                                            <select class="form-control" name="oneToone_to" id="edit_to">
+                                                @foreach ($Data as $data)
+                                                    @if ($data->id !== $session->id)
+                                                        <option value="{{ $data->id }}">
+                                                            {{ $data->first_name }} - ({{ $data->mobile_number }})
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="mb-2">
-                                    <label>Place</label>
-                                    <input type="text" class="form-control" name="place" id="edit_place"
-                                        value="">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>Glimpscs about Personal and Business Background</label>
+                                            <textarea class="form-control" name="question_1" id="edit_question_1"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>Best Products and/or Service</label>
+                                            <textarea class="form-control" name="question_2" id="edit_question_2"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="mb-2">
-                                    <label>Comment</label>
-                                    <textarea class="form-control" name="comment" id="edit_comment"></textarea>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>Top 5 Clients</label>
+                                            <textarea class="form-control" name="question_3" id="edit_question_3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>Looking to Connect with</label>
+                                            <textarea class="form-control" name="question_4" id="edit_question_4"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="mb-2">
-                                    <label>Date</label>
-                                    <input type="date" class="form-control" name="Date" id="edit_date">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>Best Testimonial Received till date</label>
+                                            <textarea class="form-control" name="question_5" id="edit_question_5"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>My Dream Client</label>
+                                            <textarea class="form-control" name="question_6" id="edit_question_6"></textarea>
+                                        </div>
+
+                                    </div>
                                 </div>
 
-                                <div class="mb-2">
-                                    <label>Photo</label>
-                                    <input type="file" id="photovalidate" class="form-control" name="photo">
-                                    <div id="edit_img" style="margin-top:10px;"></div>
-                                    <input type="hidden" id="hiddenPhoto" name="hiddenPhoto">
+                                <div class="row">
+                                    <p>My commitment to help you and your business</p>
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>Future Plans</label>
+                                            <textarea class="form-control" name="question_7" id="edit_question_7"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>I can help you with</label>
+                                            <textarea class="form-control" name="question_8" id="edit_question_8"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label>I will connect you with</label>
+                                            <textarea class="form-control" name="question_9" id="edit_question_9"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label class="form-label d-block">
+                                                I will give business to you, worth
+                                                <input type="text" name="business_worth" id="edit_business_worth"
+                                                    class="border-0 border-bottom mx-2" style="width:120px;">
+
+                                                till
+
+                                                <input type="text" name="business_till" id="edit_business_till"
+                                                    name="edit_business_till" class="border-0 border-bottom mx-2"
+                                                    style="width:180px;">
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
@@ -314,19 +374,19 @@
                 success: function(res) {
 
                     $('#edit_id').val(res.id);
-                    $('#edit_place').val(res.place);
-                    $('#edit_comment').val(res.comment);
+                    $('#edit_question_1').val(res.question_1);
+                    $('#edit_question_2').val(res.question_2);
+                    $('#edit_question_3').val(res.question_3);
+                    $('#edit_question_4').val(res.question_4);
+                    $('#edit_question_5').val(res.question_5);
+                    $('#edit_question_6').val(res.question_6);
+                    $('#edit_question_7').val(res.question_7);
+                    $('#edit_question_8').val(res.question_8);
+                    $('#edit_question_9').val(res.question_9);
+                    $('#edit_business_worth').val(res.business_worth);
+                    $('#edit_business_till').val(res.business_till);
                     $('#edit_date').val(res.date);
                     $('#edit_to').val(res.to_id);
-                    $('#hiddenPhoto').val(res.photo);
-
-                    // image show
-                    if (res.photo) {
-                        $('#edit_img').html(
-                            '<img src="/OneToOne/' + res.photo + '" width="80">'
-                        );
-                    }
-
                     $('#EditModal').modal('show');
                 }
             });

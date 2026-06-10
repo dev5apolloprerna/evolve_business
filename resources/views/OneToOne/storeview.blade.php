@@ -24,27 +24,15 @@
                             <div class="card-body">
                                 <div class="live-preview">
                                     <!-- <form action="{{ route('OneToOne.create') }}" method="post"
-                                                                                                                                                                                                                                                                                                                                                                            enctype="multipart/form-data"> -->
+                                                                                                                                                                                                                                                                                                                                                                                                enctype="multipart/form-data"> -->
                                     <form id="oneTooneForm" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row gy-3 mb-3">
-
                                             <div class="col-lg-4 col-md-6">
-                                                <label for="Place"><span style="color:red;">*</span>Name of the
-                                                    Member</label>
-                                                <input type="text" class="form-control" name="name_of_the_member"
-                                                    id="name_of_the_member" placeholder="Enter Name of the Member"
-                                                    value="{{ $session->first_name }}" readonly>
+                                                <span style="color:red;">*</span>Date
+                                                <input type="text" class="form-control" name="Date"
+                                                    id="startdatepicker" placeholder="Enter Date" required>
                                             </div>
-
-                                            <div class="col-lg-4 col-md-6">
-                                                <label for="Place">Name of the
-                                                    Brand</label>
-                                                <input type="text" class="form-control" name="name_of_the_brand"
-                                                    id="name_of_the_brand" placeholder="Enter Name of the Brand"
-                                                    value="">
-                                            </div>
-
                                             <!-- this same user name not select code start -->
                                             <div class="col-lg-4 col-md-6">
                                                 <label for="oneToone_to"><span style="color:red;">*</span>One To One
@@ -117,12 +105,6 @@
                                                 <input type="file" class="form-control" name="photo" id="photovalidate"
                                                     placeholder="Enter photo" value="{{ old('photo') }}" required>
                                                 <div id="viewimg" style="margin-top:10px;"></div>
-                                            </div> --}}
-
-                                            {{-- <div class="col-lg-4 col-md-6">
-                                                <span style="color:red;">*</span>date
-                                                <input type="text" class="form-control" name="Date"
-                                                    id="startdatepicker" placeholder="Enter Date" required>
                                             </div> --}}
 
                                             <div class="text-center">

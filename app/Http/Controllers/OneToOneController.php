@@ -32,7 +32,7 @@ class OneToOneController extends Controller
             $FromDate = $request->fromdate;
             $ToDate = $request->todate;
             $session = Auth::user()->id;
-            // $Data = User::where('status', 1)->orderBy('first_name')->get();
+
             $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
                 ->where('users.status', 1)
                 ->where('users.role_id', 2)
@@ -40,17 +40,19 @@ class OneToOneController extends Controller
                 ->orderBy('users.first_name')
                 ->select('users.*')
                 ->get();
+
             $Datadrop = User::where('status', 1)->orderBy('first_name')->get();
 
-            $OneToOne = OneToOne::where([
-                'iStatus' => 1,
-                'isDelete' => 0
-            ])
-                ->where('isapproved_status', 0)
+            $OneToOne = OneToOne::where('one_to_one_detail.iStatus', 1)
+                ->where('one_to_one_detail.isDelete', 0)
+                ->where('one_to_one_detail.isapproved_status', 0)
+
+                // Important: sirf logged-in TO member ke pending records
+                ->where('one_to_one_detail.to_id', $session)
 
                 ->when($request->fromdate, function ($query, $FromDate) {
                     return $query->where(
-                        'date',
+                        'one_to_one_detail.date',
                         '>=',
                         date('Y-m-d 00:00:00', strtotime($FromDate))
                     );
@@ -58,21 +60,31 @@ class OneToOneController extends Controller
 
                 ->when($request->todate, function ($query, $ToDate) {
                     return $query->where(
-                        'date',
+                        'one_to_one_detail.date',
                         '<=',
                         date('Y-m-d 23:59:59', strtotime($ToDate))
                     );
-                })
-
-                ->when($businesstype, function ($query, $businesstype) {
-                    return $query->where('isapproved_status', $businesstype);
                 });
 
-            $Business = $OneToOne->orderBy('one_to_one_detail.id', 'DESC')
+            if ($businesstype !== "" && $businesstype !== null) {
+                $OneToOne->where('one_to_one_detail.isapproved_status', $businesstype);
+            }
+
+            $Business = $OneToOne
+                ->orderBy('one_to_one_detail.id', 'DESC')
                 ->paginate(env('PAR_PAGE_COUNT', 20));
-            // dd($Business);
+
             $Count = $Business->count();
-            return view('OneToOne.pending', compact('Business', 'Data', 'Datadrop', 'Count', 'businesstype', 'FromDate', 'ToDate'));
+
+            return view('OneToOne.pending', compact(
+                'Business',
+                'Data',
+                'Datadrop',
+                'Count',
+                'businesstype',
+                'FromDate',
+                'ToDate'
+            ));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -173,7 +185,7 @@ class OneToOneController extends Controller
             $FromDate = $request->fromdate;
             $ToDate = $request->todate;
             $session = Auth::user()->id;
-            // $Data = User::where('status', 1)->orderBy('first_name')->get();
+
             $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
                 ->where('users.status', 1)
                 ->where('users.role_id', 2)
@@ -181,24 +193,67 @@ class OneToOneController extends Controller
                 ->orderBy('users.first_name')
                 ->select('users.*')
                 ->get();
+
             $Datadrop = User::where('status', 1)->orderBy('first_name')->get();
 
-            $OneToOne = OneToOne::leftjoin('users', 'users.id', '=', 'one_to_one_detail.from_id')
-                ->select('one_to_one_detail.*', 'users.first_name', 'users.id as user_id')
-                ->where('users.id', $session)
-                ->where(['iStatus' => 1, 'isDelete' => 0])
-                ->when($request->fromdate, fn($query, $FromDate) => $query
-                    ->where('one_to_one_detail.date', '>=', date('Y-m-d 00:00:00', strtotime($FromDate))))
-                ->when($request->todate, fn($query, $ToDate) => $query
-                    ->where('one_to_one_detail.date', '<=', date('Y-m-d 23:59:59', strtotime($ToDate))));
-            if ($businesstype != "") {
-                $OneToOne->where('one_to_one_detail.isapproved_status', '=', $businesstype);
+            $OneToOne = OneToOne::query()
+                ->select(
+                    'one_to_one_detail.*',
+                    DB::raw("
+                    CASE 
+                        WHEN one_to_one_detail.from_id = {$session} 
+                        THEN one_to_one_detail.to
+                        ELSE one_to_one_detail.from
+                    END AS meeting_with
+                "),
+                    DB::raw("
+                    CASE 
+                        WHEN one_to_one_detail.from_id = {$session} 
+                        THEN one_to_one_detail.to_id
+                        ELSE one_to_one_detail.from_id
+                    END AS meeting_with_id
+                ")
+                )
+                ->where(function ($query) use ($session) {
+                    $query->where('one_to_one_detail.from_id', $session)
+                        ->orWhere('one_to_one_detail.to_id', $session);
+                })
+                ->where('one_to_one_detail.iStatus', 1)
+                ->where('one_to_one_detail.isDelete', 0)
+                ->when($request->fromdate, function ($query, $FromDate) {
+                    return $query->where(
+                        'one_to_one_detail.date',
+                        '>=',
+                        date('Y-m-d 00:00:00', strtotime($FromDate))
+                    );
+                })
+                ->when($request->todate, function ($query, $ToDate) {
+                    return $query->where(
+                        'one_to_one_detail.date',
+                        '<=',
+                        date('Y-m-d 23:59:59', strtotime($ToDate))
+                    );
+                });
+
+            if ($businesstype !== "" && $businesstype !== null) {
+                $OneToOne->where('one_to_one_detail.isapproved_status', $businesstype);
             }
-            $Business = $OneToOne->orderBy('one_to_one_detail.id', 'DESC')
+
+            $Business = $OneToOne
+                ->orderBy('one_to_one_detail.id', 'DESC')
                 ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $Count = $Business->count();
-            return view('OneToOne.index', compact('Business', 'Data', 'Datadrop', 'Count', 'businesstype', 'FromDate', 'ToDate'));
+
+            return view('OneToOne.index', compact(
+                'Business',
+                'Data',
+                'Datadrop',
+                'Count',
+                'businesstype',
+                'FromDate',
+                'ToDate'
+            ));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -246,27 +301,24 @@ class OneToOneController extends Controller
     {
         try {
             $session = Auth::user();
-
             $ToUser = User::find($request->oneToone_to);
             $ToUserName = $ToUser ? $ToUser->first_name : 'Unknown User';
             $request->validate([
-                'place'   => 'required',
                 'oneToone_to'     => 'required',
-                'comment' => 'required',
                 'Date'   => 'required|date',
             ]);
 
-            $img = "";
-            if ($request->hasFile('photo')) {
-                $root = $_SERVER['DOCUMENT_ROOT'];
-                $image = $request->file('photo');
-                $img = time() . '.' . $image->getClientOriginalExtension();
-                $destinationpath = $root . '/OneToOne/';
-                if (!file_exists($destinationpath)) {
-                    mkdir($destinationpath, 0755, true);
-                }
-                $image->move($destinationpath, $img);
-            }
+            // $img = "";
+            // if ($request->hasFile('photo')) {
+            //     $root = $_SERVER['DOCUMENT_ROOT'];
+            //     $image = $request->file('photo');
+            //     $img = time() . '.' . $image->getClientOriginalExtension();
+            //     $destinationpath = $root . '/OneToOne/';
+            //     if (!file_exists($destinationpath)) {
+            //         mkdir($destinationpath, 0755, true);
+            //     }
+            //     $image->move($destinationpath, $img);
+            // }
 
             $gu_id = Str::random(10);
 
@@ -274,9 +326,17 @@ class OneToOneController extends Controller
                 'from'   => $session->first_name,
                 'to'     => $ToUserName,
                 'date'   => $request->Date,
-                'photo'   => $img,
-                'place'   => $request->place,
-                'comment'   => $request->comment,
+                'question_1'   => $request->question_1,
+                'question_2'   => $request->question_2,
+                'question_3'   => $request->question_3,
+                'question_4'   => $request->question_4,
+                'question_5'   => $request->question_5,
+                'question_6'   => $request->question_6,
+                'question_7'   => $request->question_7,
+                'question_8'   => $request->question_8,
+                'question_9'   => $request->question_9,
+                'business_worth'   => $request->business_worth,
+                'business_till'   => $request->business_till,
                 'gu_id'           => $gu_id,
                 'from_id' => $session->id,
                 'to_id' => $request->oneToone_to,
@@ -321,48 +381,56 @@ class OneToOneController extends Controller
 
     public function update(Request $request)
     {
-
         $session = Auth::user();
         $ToUser = User::find($request->oneToone_to);
         $ToUserName = $ToUser ? $ToUser->first_name : 'Unknown User';
         $request->validate([
-            'place'   => 'required',
+            //'place'   => 'required',
             'oneToone_to'     => 'required',
-            'comment' => 'required',
+            //'comment' => 'required',
             'Date'   => 'required|date',
         ]);
 
-        $img = "";
-        if ($request->hasFile('photo')) {
-            $root = $_SERVER['DOCUMENT_ROOT'];
-            $image = $request->file('photo');
-            $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/OneToOne/';
-            if (!file_exists($destinationpath)) {
-                mkdir($destinationpath, 0755, true);
-            }
-            $image->move($destinationpath, $img);
-            $oldImg = $request->input('hiddenPhoto') ? $request->input('hiddenPhoto') : null;
+        // $img = "";
+        // if ($request->hasFile('photo')) {
+        //     $root = $_SERVER['DOCUMENT_ROOT'];
+        //     $image = $request->file('photo');
+        //     $img = time() . '.' . $image->getClientOriginalExtension();
+        //     $destinationpath = $root . '/OneToOne/';
+        //     if (!file_exists($destinationpath)) {
+        //         mkdir($destinationpath, 0755, true);
+        //     }
+        //     $image->move($destinationpath, $img);
+        //     $oldImg = $request->input('hiddenPhoto') ? $request->input('hiddenPhoto') : null;
 
-            if ($oldImg != null || $oldImg != "") {
-                if (file_exists($destinationpath . $oldImg)) {
-                    unlink($destinationpath . $oldImg);
-                }
-            }
-        } else {
-            $oldImg = $request->input('hiddenPhoto');
-            $img = $oldImg;
-        }
+        //     if ($oldImg != null || $oldImg != "") {
+        //         if (file_exists($destinationpath . $oldImg)) {
+        //             unlink($destinationpath . $oldImg);
+        //         }
+        //     }
+        // } else {
+        //     $oldImg = $request->input('hiddenPhoto');
+        //     $img = $oldImg;
+        // }
 
         $Data = array(
             'from'   => $session->first_name,
             'to'     => $ToUserName,
             'date'   => $request->Date,
-            'photo'   => $img,
-            'place'   => $request->place,
-            'comment'   => $request->comment,
+            //'photo'   => $img,
             'from_id' => $session->id,
             'to_id' => $request->oneToone_to,
+            'question_1'   => $request->question_1,
+            'question_2'   => $request->question_2,
+            'question_3'   => $request->question_3,
+            'question_4'   => $request->question_4,
+            'question_5'   => $request->question_5,
+            'question_6'   => $request->question_6,
+            'question_7'   => $request->question_7,
+            'question_8'   => $request->question_8,
+            'question_9'   => $request->question_9,
+            'business_worth'   => $request->business_worth,
+            'business_till'   => $request->business_till,
             'updated_at'      => now(),
             'updated_by'      => auth()->id(),
             "strIP" => request()->ip()
