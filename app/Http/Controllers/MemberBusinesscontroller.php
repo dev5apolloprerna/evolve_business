@@ -413,7 +413,10 @@ class MemberBusinesscontroller extends Controller
 
     public function meetinglogincheck(Request $request)
     {
-        DB::table('Cluster_Meet_Member_meeting')->where('id', $request->id)->update([
+        $id = Auth::user()->id;
+        $members = members::where('user_id', $id)->first();
+
+        DB::table('Cluster_Meet_Member_meeting')->where(['id' => $request->id, 'member_id' => $members->id])->update([
             'is_approve_meeting' => $request->newStatus,
             'is_approve_by' => Auth::user()->id,
             'created_at' => date('Y-m-d H:i:s'),

@@ -753,8 +753,6 @@ Route::prefix('admin')->name('Membersearch.')->middleware('auth')->group(functio
 Route::get('/product', function () {
     return redirect('/');
 });
-
-
 //Member subscription expried
 Route::prefix('auth')->name('Membersub.')->middleware('auth')->group(function () {
     Route::get('Membersub/index', [FrontController::class, 'membersub'])->name('index');
