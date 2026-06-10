@@ -22,6 +22,7 @@ use App\Mail\BusinessCreated;
 use validate;
 use Illuminate\Support\Str;
 use App\Mail\BusinessStatusMail;
+use Carbon\Carbon;
 
 class MemberBusinesscontroller extends Controller
 {
@@ -307,6 +308,25 @@ class MemberBusinesscontroller extends Controller
             ->groupby('Cluster_Meet_Member_meeting.member_id')
             ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
+        if ($member) {
+            $pendingMeeting = DB::table('Cluster_Meet')
+                ->select(
+                    'Cluster_Meet.*',
+                    'mm.is_approve_meeting',
+                    'mm.id as member_meeting_id',
+                    DB::raw('GROUP_CONCAT(mm.member_id) AS member_ids'),
+                    DB::raw('COUNT(mm.member_id) AS member_count')
+                )
+                ->join('Cluster_Meet_Member_meeting AS mm', 'mm.meeting_id', '=', 'Cluster_Meet.id')
+                ->where('Cluster_Meet.city_group_id', $member->citygroup_id)
+                ->where('mm.is_approve_meeting', 0)
+                ->where('mm.member_id', $member->id)
+                ->whereRaw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') >= ?", [Carbon::today()->format('Y-m-d')])
+                ->groupBy('Cluster_Meet.id')
+                ->orderByRaw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %T') ASC")
+                ->paginate(env('PAR_PAGE_COUNT', 20));
+            //dd($pendingMeeting);
+        }
         $Events = Event::where([
             'iStatus' => 1,
             'isDelete' => 0,
@@ -318,7 +338,7 @@ class MemberBusinesscontroller extends Controller
             })
             ->orderBy('event_id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
-        return view('pendinglogincheck.index', compact('member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
+        return view('pendinglogincheck.index', compact('pendingMeeting', 'member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
     public function statuspendinglogin(Request $request)
@@ -385,6 +405,16 @@ class MemberBusinesscontroller extends Controller
     {
         DB::table('Cluster_Meet_Member_meeting')->where('id', $request->id)->update([
             'is_approve' => $request->newStatus,
+            'is_approve_by' => Auth::user()->id,
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
+        return redirect()->back();
+    }
+
+    public function meetinglogincheck(Request $request)
+    {
+        DB::table('Cluster_Meet_Member_meeting')->where('id', $request->id)->update([
+            'is_approve_meeting' => $request->newStatus,
             'is_approve_by' => Auth::user()->id,
             'created_at' => date('Y-m-d H:i:s'),
         ]);

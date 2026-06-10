@@ -3,8 +3,19 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
-
+    <style>
+        .meeting-strip {
+            background: #61a143;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+            text-align: center;
+        }
+    </style>
 
     <style>
         marquee {
@@ -160,12 +171,6 @@
         }
     </style>
 
-    <!-- ============================================================== -->
-
-    <!-- Start right Content here -->
-
-    <!-- ============================================================== -->
-
     <div class="main-content">
 
         {{--  <div style="background-image: url(assets/images/banner1.jpg);height: 550px;">  --}}
@@ -198,23 +203,19 @@
                         @endif
 
                     </div>
+
                     <div class="col-lg-12">
-
                         @if ($meetings)
-                            <marquee>
-                                <ul class="mb-0">
-                                    <li>
-                                        <a href="#" class="text-white">
-                                            {{ \Carbon\Carbon::createFromFormat('d.m.y H:i', $meetings->start_date)->format('d.m.y H:i') }}
-                                            To
-                                            {{ \Carbon\Carbon::createFromFormat('d.m.y H:i', $meetings->End_date)->format('d.m.y H:i') }}
-                                            {{ $meetings->Meeting_title }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </marquee>
+                            <div class="meeting-strip">
+                                <strong>
+                                    {{ \Carbon\Carbon::createFromFormat('d.m.y H:i', $meetings->start_date)->format('d.m.y H:i') }}
+                                    To
+                                    {{ \Carbon\Carbon::createFromFormat('d.m.y H:i', $meetings->End_date)->format('d.m.y H:i') }}
+                                </strong>
+                                -
+                                {{ $meetings->Meeting_title }}
+                            </div>
                         @endif
-
                     </div>
                     <div class="col-lg-6 mt-3">
 

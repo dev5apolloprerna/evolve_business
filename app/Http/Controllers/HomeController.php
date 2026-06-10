@@ -329,7 +329,6 @@ class HomeController extends Controller
                 ->orderByRaw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %T') ASC")
                 ->get();
 
-
             return view('home', compact('monthname', 'meetings', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'subexpricount', 'permissions', 'totalpendingamount', 'totalapproveamount', 'totalrejectedamount', 'paymenttotal', 'businessData', 'topDirect', 'topReference', 'formatted_combined_data', 'Top_Reference_Givers', 'TopReferenceGivers'));
         } else {
 
@@ -359,7 +358,6 @@ class HomeController extends Controller
                 ->orderBy('event_id', 'DESC')
                 ->get();
             $member = members::where('user_id', $user->id)->first();
-
             $Member_metting = Member_metting::join('members', 'members.id', '=', 'Cluster_Meet_Member_meeting.member_id')
                 ->where('members.id', $member->id)
                 ->select('Cluster_Meet_Member_meeting.*', 'members.Contact_person As name')
@@ -434,11 +432,11 @@ class HomeController extends Controller
             } else {
                 $BusinesscurrentYear = Carbon::now()->year;
             }
-
             $manOfTheMonth = MemberPoint::join('users', 'users.id', '=', 'member_points.member_id')
                 ->join('members', 'members.user_id', '=', 'users.id')
                 ->join('city_groups', 'city_groups.id', '=', 'members.citygroup_id')
                 ->join('categories', 'categories.id', '=', 'members.category_id')
+                ->where('city_groups.id', $member->citygroup_id)
                 ->whereYear('member_points.created_at', $BusinesscurrentYear)
                 ->whereMonth('member_points.created_at', $BusinesscurrentMonth)
                 ->select(
@@ -452,7 +450,6 @@ class HomeController extends Controller
                 ->groupBy('member_points.member_id', 'users.first_name', 'users.email')
                 ->orderByDesc('total_points')
                 ->first();
-
             $Visitor = Visitor::join('users', 'users.id', '=', 'visitors.created_by')
                 ->where('users.id', $session->id)
                 //->where(['iStatus' => 1])
@@ -698,6 +695,7 @@ class HomeController extends Controller
                 ->where('Business.isapproved_status', 1)
                 ->where('Business.iStatus', 1)
                 ->where('Business.isDelete', 0)
+                ->where('members.citygroup_id', '=', $membersget->citygroup_id)
                 // ->where('Business.business_from_id', '!=', 121)
                 ->groupBy('business_from_id')
                 ->orderByDesc('total_amount')
@@ -768,7 +766,11 @@ class HomeController extends Controller
             $meetings = $upcomingMeetings;
             //$meetingscount = $meetings->count();
             $Announcement = DB::table('Announcement')->first();
-
+            $meeting = DB::table('Cluster_Meet as cm')
+                ->join('members as m', 'm.citygroup_id', '=', 'cm.city_group_id')
+                ->where('m.user_id', auth()->id())
+                ->select('cm.*')
+                ->get();
             return view('Memberhome', compact('manOfTheMonth', 'oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopOneToOne'));
         }
     }

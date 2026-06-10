@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
 use App\Models\Member_metting;
+use Carbon\Carbon;
 
 
 class CheckApprovalStatus
@@ -55,7 +56,17 @@ class CheckApprovalStatus
                 ->orderBy('event_id', 'DESC')
                 ->get();
             $member = members::where('user_id', $user->id)->first();
-
+            $pendingMeeting = false;
+            if ($member) {
+                $pendingMeeting = DB::table('Cluster_Meet')
+                    ->select('Cluster_Meet.*', DB::raw('GROUP_CONCAT(mm.member_id) AS member_ids'), DB::raw('COUNT(mm.member_id) AS member_count'))
+                    ->join('Cluster_Meet_Member_meeting AS mm', 'mm.meeting_id', '=', 'Cluster_Meet.id')
+                    ->where('Cluster_Meet.city_group_id', $member->citygroup_id)
+                    ->whereRaw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') >= ?", [Carbon::today()->format('Y-m-d')])
+                    ->groupBy('Cluster_Meet.id')
+                    ->orderByRaw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %T') ASC")
+                    ->get();
+            }
             $Member_metting = Member_metting::join('members', 'members.id', '=', 'Cluster_Meet_Member_meeting.member_id')
                 ->where('members.id', $member->id)
                 ->select('Cluster_Meet_Member_meeting.*', 'members.Contact_person As name')
@@ -63,8 +74,7 @@ class CheckApprovalStatus
                 ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
                 ->get();
 
-
-            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty() || !$Member_metting->isEmpty()) {
+            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty() || !$Member_metting->isEmpty() || $pendingMeeting) {
                 // foreach ($loginPendingCheck as $pendingCheck)
                 // {
                 //     if ($pendingCheck->isapproved_status == 0)

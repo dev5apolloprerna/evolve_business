@@ -574,8 +574,6 @@ Route::prefix('admin')->name('Adminuser.')->middleware('auth')->group(function (
     Route::get('/check/Adminuser/', [Adminusercontroller::class, 'checkserviceprovider'])->name('checkserviceprovider');
     Route::get('/edit/check/Adminuser/', [Adminusercontroller::class, 'editcheckserviceprovider'])->name('editcheckserviceprovider');
 });
-
-
 Route::prefix('admin')->name('Userpermission.')->middleware('auth')->group(function () {
     Route::get('/Userpermission/index/{id?}', [Adminusercontroller::class, 'permissionindex'])->name('index');
     Route::post('/Userpermission/store', [Adminusercontroller::class, 'permissioncreate'])->name('store');
@@ -604,6 +602,7 @@ Route::prefix('admin')->name('pendinglogincheck.')->middleware('auth')->group(fu
     Route::post('/onependinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'onestatuspendinglogin'])->name('onestatuspendinglogin');
     Route::post('/Eventpendinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'Eventpendinglogin'])->name('Eventpendinglogin');
     Route::post('/Brandshowcaselogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'Brandshowcaselogincheck'])->name('Brandshowcaselogincheck');
+    Route::post('/meetinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'meetinglogincheck'])->name('meetinglogincheck');
 });
 Route::prefix('admin')->name('Youngleaders.')->middleware('auth')->group(function () {
     Route::get('/Young-leaders', [FrontController::class, 'Young_leaders_index'])->name('index');
@@ -775,6 +774,8 @@ Route::prefix('admin')->name('Membermeeting.')->middleware('auth')->group(functi
     Route::post('/Meeting-member-store', [Membermeetingcontroller::class, 'Meeting_add_member'])->name('Meeting_add_member');
     Route::post('save-brand-amount', [MembermeetingController::class, 'saveBrandAmount'])
         ->name('saveBrandAmount');
+    Route::post('meeting-status', [MembermeetingController::class, 'meetingstatus'])
+        ->name('meetingstatus');
 });
 Route::prefix('admin')->name('induction.')->middleware('auth')->group(function () {
     Route::get('induction/index', [FrontController::class, 'Admin_induction_index'])->name('index');

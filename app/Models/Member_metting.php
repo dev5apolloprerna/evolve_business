@@ -19,6 +19,7 @@ class Member_metting extends Model
         'brand_showcase_1_amount',
         'brand_showcase_2_amount',
         'is_approve',
-        'is_approve_by'
+        'is_approve_by',
+        'is_approve_meeting'
     ];
 }

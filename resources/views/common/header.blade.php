@@ -133,10 +133,11 @@
                                 $session = auth()->user()->id;
                                 
                                 $role = App\Models\User::select('users.id', 'users.role_id', 'roles.name')->where('users.id', $session)->join('roles', 'users.role_id', '=', 'roles.id')->first();
+                                $member = App\Models\members::select('members.id', 'members.profile_photo', 'city_groups.group_name as city_group_name')->join('city_groups', 'city_groups.id', '=', 'members.citygroup_id')->where('members.user_id', $session)->first();
                                 ?>
 
                                 <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
-                                    {{ $role->name }}
+                                    {{ $member->city_group_name ?? '' }}
                                 </span>
                             @else
                                 <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
