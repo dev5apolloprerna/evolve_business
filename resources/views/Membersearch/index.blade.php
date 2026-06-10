@@ -1,9 +1,8 @@
-
 @extends('layouts.app')
 @section('title', 'Reference List')
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
-<style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <style>
         .box {
             border: 2px solid #78c046;
             border-radius: 6px;
@@ -90,15 +89,15 @@
             margin-left: 5px;
             background: #78c046;
         }
-         
-         
-         .social-icons{
-    gap: 10px;
-    justify-content: space-around;
-    align-items: baseline;
-    margin: 20px 0px;
-    flex-direction: column;
-         }
+
+
+        .social-icons {
+            gap: 10px;
+            justify-content: space-around;
+            align-items: baseline;
+            margin: 20px 0px;
+            flex-direction: column;
+        }
 
         .social-icons a {
             position: relative;
@@ -110,12 +109,13 @@
             border-radius: 50%;
             background: #78c046;
         }
-            .cmp-name{
-                text-align: center;
-                font-size: 20px;
-                font-weight: 700;
-                color: #76be54;
-                }
+
+        .cmp-name {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #76be54;
+        }
 
         .social-icons a i {
             position: relative;
@@ -126,120 +126,143 @@
             line-height: 40px;
         }
 
-       .br1{
-           border: 2px solid #78c046;
-           height:360px;
-           
-       }  
+        .br1 {
+            border: 2px solid #78c046;
+            height: 360px;
 
-       .stf{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-       }
-       .cmp-lg{
-        width: 50px;
-        border-radius: 50%;
-        height: 50px;
-       }
-</style>
-                                <div class="main-content">
-                                    <div class="page-content">
-                                        <div class="container-fluid">
-                                                <div class="col-lg-12">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                                <div>
-                                                                    <h5 class="card-title mb-0 text-white" data-anchor="data-anchor">Member List
-                                                                    </h5>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-body">
-                                                    <div class="row">
-                                                  
-                                                    @foreach($members as $member)
-                                                        <div class="col-12 col-md-6 col-lg-4">
-                                                            <div class="card">
-                                                                <div class="card-header stf" >
-                                                                @if($member->Company_logo == null)    
-                                                                <img class="cmp-lg" src="https://groath.in/assets/images/users/user1.png" alt="No image" class="company-logo">
-                                                                @else 
-                                                                <img class="cmp-lg" src="{{ asset('Company_logo') . '/' . $member->Company_logo }}" alt="No image" class="company-logo">
-                                                                @endif
-                                                                    <div>
-                                                                        <h6 class="cmp-name text-white text-center mb-0">{{$member->companyname}}</h6>
-                                                                        <p class="cmp-name text-white text-center mb-0" style="font-size: 12px;">{{$member->categories_name ?? ''}}</p> 
-                                                                    </div>
-                                                                </div>
-                                                                <div class="card-body br1 p-4 text-center">  
-                                                                @if($member->profile_photo == null)    
-                                                                <img class="cmp-lg" src="https://groath.in/assets/images/users/undraw_profile.webp" alt="No image" class="company-logo">
-                                                                @else 
-                                                                <img class="cmp-lg" src="{{ asset('profile_photo') . '/' . $member->profile_photo }}" alt="No image" class="company-logo">
-                                                                @endif                
-                                                                <div class="user-name">{{$member->Contact_person}} - {{$member->group_name ?? 'No group name'}} </div>
-                                                                    <div class="social-icons d-flex justify-content-between">
-                                                            <div><a href="#" class=""><i class="fa fa-envelope text-white" aria-hidden="true"></i></a>{{$member->email}}</div>
-                                                            <div>
-                                                                <a href="tel:+91{{$member->phonenumber}}" class="">
-                                                                    <i class="fa fa-phone text-white" aria-hidden="true"></i>
-                                                                </a>
-                                                                {{$member->phonenumber}}
-                                                                
-                                                            </div>
+        }
 
-                                                            <div class="site-social-icons">
-                                                            @if(isset($member->phonenumber))
-                                                                <a class="text-white" href="https://wa.me/91{{$member->phonenumber}}" class="ml-2" target="_blank">
-                                                                    <i style="
-                                                                    font-size: 22px;
-                                                                    color: white !important;" class="fa-brands fa-whatsapp text-success"
-                                                                    aria-hidden="true"></i>
-                                                                </a>
-                                                            @endif       
-                                                            @if(isset($member->facebook_link))
-                                                              <a target="_blank" href="{{$member->facebook_link}}"><i class="fa-brands fa-facebook-f text-white"></i></a>
-                                                            @endif
-                                                            @if(isset($member->instagram_link))
-                                                            <a target="_blank" href="{{$member->instagram_link}}"><i class="fa-brands fa-instagram text-white"></i></a>
-                                                            @endif
-                                                            @if(isset($member->youtube_link))
-                                                            <a target="_blank" href="{{$member->youtube_link}}"><i class="fa-brands fa-youtube text-white"></i></a>
-                                                            @endif
-                                                            @if(isset($member->linkedin_link))
-                                                            <a target="_blank" href="{{$member->linkedin_link}}"><i class="fa-brands fa-linkedin text-white"></i></a>
-                                                            @endif
-                                                            @if(!empty($member->google_link) && $member->google_link !== "-")
-                                                                <a target="_blank" href="{{ $member->google_link }}"><i class="fa-brands fa-google-plus-g text-white"></i></a>
-                                                            @endif
-                                                            <!-- @if(isset($member->google_link))
-                                                            <a target="_blank" href="{{$member->google_link}}"><i class="fa-brands fa-google-plus-g text-white"></i></a>
-                                                            @endif -->
+        .stf {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
 
-                                                            </div>
-                                                        </div>
+        .cmp-lg {
+            width: 50px;
+            border-radius: 50%;
+            height: 50px;
+        }
+    </style>
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="card-title mb-0 text-white" data-anchor="data-anchor">Member List
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+
+                                @foreach ($members as $member)
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="card">
+                                            <div class="card-header stf">
+                                                @if ($member->Company_logo == null)
+                                                    <img class="cmp-lg"
+                                                        src="https://groath.in/assets/images/users/user1.png" alt="No image"
+                                                        class="company-logo">
+                                                @else
+                                                    <img class="cmp-lg"
+                                                        src="{{ asset('Company_logo') . '/' . $member->Company_logo }}"
+                                                        alt="No image" class="company-logo">
+                                                @endif
+                                                <div>
+                                                    <h6 class="cmp-name text-white text-center mb-0">
+                                                        {{ $member->companyname }}</h6>
+                                                    <p class="cmp-name text-white text-center mb-0"
+                                                        style="font-size: 12px;">{{ $member->categories_name ?? '' }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="card-body br1 p-4 text-center">
+                                                @if ($member->profile_photo == null)
+                                                    <img class="cmp-lg"
+                                                        src="https://groath.in/assets/images/users/undraw_profile.webp"
+                                                        alt="No image" class="company-logo">
+                                                @else
+                                                    <img class="cmp-lg"
+                                                        src="{{ asset('profile_photo') . '/' . $member->profile_photo }}"
+                                                        alt="No image" class="company-logo">
+                                                @endif
+                                                <div class="user-name">{{ $member->Contact_person }} -
+                                                    {{ $member->group_name ?? 'No group name' }} </div>
+                                                <div class="social-icons d-flex justify-content-between">
+                                                    <div><a href="#" class=""><i
+                                                                class="fa fa-envelope text-white"
+                                                                aria-hidden="true"></i></a>{{ $member->email }}</div>
                                                     <div>
-                                                        <a class="btns" href="{{ route('Membersearch.Detail',$member->id) }}">
-                                                            <button>Product & Services</button>
+                                                        <a href="tel:+91{{ $member->phonenumber }}" class="">
+                                                            <i class="fa fa-phone text-white" aria-hidden="true"></i>
                                                         </a>
+                                                        {{ $member->phonenumber }}
+
                                                     </div>
+
+                                                    <div class="site-social-icons">
+                                                        @if (isset($member->phonenumber))
+                                                            <a class="text-white"
+                                                                href="https://wa.me/91{{ $member->phonenumber }}"
+                                                                class="ml-2" target="_blank">
+                                                                <i style="
+                                                                    font-size: 22px;
+                                                                    color: white !important;"
+                                                                    class="fa-brands fa-whatsapp text-success"
+                                                                    aria-hidden="true"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if (isset($member->facebook_link))
+                                                            <a target="_blank" href="{{ $member->facebook_link }}"><i
+                                                                    class="fa-brands fa-facebook-f text-white"></i></a>
+                                                        @endif
+                                                        @if (isset($member->instagram_link))
+                                                            <a target="_blank" href="{{ $member->instagram_link }}"><i
+                                                                    class="fa-brands fa-instagram text-white"></i></a>
+                                                        @endif
+                                                        @if (isset($member->youtube_link))
+                                                            <a target="_blank" href="{{ $member->youtube_link }}"><i
+                                                                    class="fa-brands fa-youtube text-white"></i></a>
+                                                        @endif
+                                                        @if (isset($member->linkedin_link))
+                                                            <a target="_blank" href="{{ $member->linkedin_link }}"><i
+                                                                    class="fa-brands fa-linkedin text-white"></i></a>
+                                                        @endif
+                                                        @if (!empty($member->google_link) && $member->google_link !== '-')
+                                                            <a target="_blank" href="{{ $member->google_link }}"><i
+                                                                    class="fa-brands fa-google-plus-g text-white"></i></a>
+                                                        @endif
+                                                        <!-- @if (isset($member->google_link))
+    <a target="_blank" href="{{ $member->google_link }}"><i class="fa-brands fa-google-plus-g text-white"></i></a>
+    @endif -->
+
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a class="btns"
+                                                        href="{{ route('Membersearch.Detail', $member->id) }}">
+                                                        <button>View Details</button>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
-                                        @endforeach
-                                    </div> 
-                                     <!-- Pagination Links -->
-                                        <div class="d-flex justify-content-center mt-3">
-                                            {{ $members->links() }}
-                                        </div>              
                                     </div>
-                                </div>
+                                @endforeach
+                            </div>
+                            <!-- Pagination Links -->
+                            <div class="d-flex justify-content-center mt-3">
+                                {{ $members->links() }}
                             </div>
                         </div>
                     </div>
                 </div>
-             
+            </div>
+        </div>
+    </div>
+
 @endsection

@@ -24,14 +24,31 @@
                             <div class="card-body">
                                 <div class="live-preview">
                                     <!-- <form action="{{ route('OneToOne.create') }}" method="post"
-                                                                                                                                                                                                                                    enctype="multipart/form-data"> -->
+                                                                                                                                                                                                                                                                                                                                                                            enctype="multipart/form-data"> -->
                                     <form id="oneTooneForm" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row gy-3 mb-3">
 
+                                            <div class="col-lg-4 col-md-6">
+                                                <label for="Place"><span style="color:red;">*</span>Name of the
+                                                    Member</label>
+                                                <input type="text" class="form-control" name="name_of_the_member"
+                                                    id="name_of_the_member" placeholder="Enter Name of the Member"
+                                                    value="{{ $session->first_name }}" readonly>
+                                            </div>
+
+                                            <div class="col-lg-4 col-md-6">
+                                                <label for="Place">Name of the
+                                                    Brand</label>
+                                                <input type="text" class="form-control" name="name_of_the_brand"
+                                                    id="name_of_the_brand" placeholder="Enter Name of the Brand"
+                                                    value="">
+                                            </div>
+
                                             <!-- this same user name not select code start -->
                                             <div class="col-lg-4 col-md-6">
-                                                <label for="oneToone_to"><span style="color:red;">*</span>Done With</label>
+                                                <label for="oneToone_to"><span style="color:red;">*</span>One To One
+                                                    With</label>
                                                 <select class="form-control" data-choices name="oneToone_to"
                                                     id="choices-single-default">
                                                     <option value="" disabled selected>Select Done With</option>
@@ -44,32 +61,69 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <!-- this same user name not select code end -->
-                                            <div class="col-lg-4 col-md-6">
-                                                <label for="Place"><span style="color:red;">*</span>Place</label>
-                                                <input type="text" class="form-control" name="place" id="place"
-                                                    placeholder="Enter Place" value="{{ old('place') }}" required>
+                                            <div class="col-lg-4 col-md-6">Glimpscs about Personal and Business
+                                                Background
+                                                <textarea class="form-control" name="question_1" id="question_1"></textarea>
                                             </div>
 
-                                            <div class="col-lg-4 col-md-6">
-                                                <span style="color:red;">*</span> Comment
-                                                <textarea class="form-control" name="comment" id="comment" placeholder="Enter Comment" required></textarea>
+                                            <div class="col-lg-4 col-md-6">Best Products and/or Service
+                                                <textarea class="form-control" name="question_2" id="question_2"></textarea>
                                             </div>
 
+                                            <div class="col-lg-4 col-md-6">Top 5 Clients
+                                                <textarea class="form-control" name="question_3" id="question_3"></textarea>
+                                            </div>
+
+                                            <div class="col-lg-4 col-md-6">Looking to Connect with
+                                                <textarea class="form-control" name="question_4" id="question_4"></textarea>
+                                            </div>
+
+                                            <div class="col-lg-4 col-md-6">Best Testimonial Received till date
+                                                <textarea class="form-control" name="question_5" id="question_5"></textarea>
+                                            </div>
+
+                                            <div class="col-lg-4 col-md-6">My Dream Client
+                                                <textarea class="form-control" name="question_6" id="question_6"></textarea>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6">Future Plans
+                                                <textarea class="form-control" name="question_7" id="question_7"></textarea>
+                                            </div>
                                             <div class="col-lg-4 col-md-6">
+                                            </div>
+                                            <div class="col-lg-4 col-md-6">
+                                            </div>
+                                            <p>My commitment to help you and your business</p>
+                                            <div class="col-lg-4 col-md-6">I can help you with
+                                                <textarea class="form-control" name="question_8" id="question_8"></textarea>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6">I will connect you with
+                                                <textarea class="form-control" name="question_9" id="question_9"></textarea>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6">
+                                                <label class="form-label d-block">
+                                                    I will give business to you, worth
+                                                    <input type="text" name="business_worth"
+                                                        class="border-0 border-bottom mx-2" style="width:120px;">
+
+                                                    till
+
+                                                    <input type="text" name="business_till"
+                                                        class="border-0 border-bottom mx-2" style="width:180px;">
+                                                </label>
+                                            </div>
+
+                                            {{-- <div class="col-lg-4 col-md-6">
                                                 <label for="photo"><span style="color:red;">*</span>photo</label>
                                                 <input type="file" class="form-control" name="photo" id="photovalidate"
                                                     placeholder="Enter photo" value="{{ old('photo') }}" required>
-
                                                 <div id="viewimg" style="margin-top:10px;"></div>
+                                            </div> --}}
 
-                                            </div>
-
-                                            <div class="col-lg-4 col-md-6">
+                                            {{-- <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;">*</span>date
                                                 <input type="text" class="form-control" name="Date"
                                                     id="startdatepicker" placeholder="Enter Date" required>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="text-center">
                                                 <button type="button" class="btn btn-success btn-user"

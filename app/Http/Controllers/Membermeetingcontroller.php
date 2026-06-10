@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use validate;
 
-
 class Membermeetingcontroller extends Controller
 {
     public function index(Request $request)
@@ -85,6 +84,13 @@ class Membermeetingcontroller extends Controller
         DB::table('Cluster_Meet_Member_meeting')->where(['iStatus' => 1, 'isDelete' => 0, 'meeting_id' => $request->id])->delete();
 
         return back()->with('success', 'Cluster Meet Deleted Successfully!.');
+    }
+
+    public function meetingstatus(Request $request)
+    {
+        $data = Member_metting::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $request->id])->first();
+        // dd($Business);  
+        echo json_encode($data);
     }
 
     public function Memberindex(Request $request, $id)

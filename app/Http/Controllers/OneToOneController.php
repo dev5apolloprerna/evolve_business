@@ -227,7 +227,6 @@ class OneToOneController extends Controller
 
     public function storeview1()
     {
-
         try {
             $session = Auth::user();
             $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
