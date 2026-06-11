@@ -358,10 +358,22 @@ class HomeController extends Controller
                 ->orderBy('event_id', 'DESC')
                 ->get();
             $member = members::where('user_id', $user->id)->first();
-            $Member_metting = Member_metting::join('members', 'members.id', '=', 'Cluster_Meet_Member_meeting.member_id')
+            $Member_metting = Member_metting::join(
+                'members',
+                'members.id',
+                '=',
+                'Cluster_Meet_Member_meeting.member_id'
+            )
                 ->where('members.id', $member->id)
-                ->select('Cluster_Meet_Member_meeting.*', 'members.Contact_person As name')
-                ->where(['Cluster_Meet_Member_meeting.iStatus' => 1, 'Cluster_Meet_Member_meeting.isDelete' => 0, 'Cluster_Meet_Member_meeting.is_approve' => 0])
+                ->where('Cluster_Meet_Member_meeting.iStatus', 1)
+                ->where('Cluster_Meet_Member_meeting.isDelete', 0)
+                ->where('Cluster_Meet_Member_meeting.is_approve', 0)
+                ->where(function ($q) {
+                    $q->where('brand_showcase_1', '>', 0)
+                        ->orWhere('brand_showcase_2', '>', 0)
+                        ->orWhere('ppt_taken_1', '>', 0)
+                        ->orWhere('ppt_taken_2', '>', 0);
+                })
                 ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
                 ->get();
 

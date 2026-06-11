@@ -54,8 +54,8 @@
                                                     class="btn btn-success">Cancel</button>
                                             </div>
                                             <!-- <button class="btn btn-success" type="button" onclick="exportExcel();">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="fa-solid fa-file-excel fa-xl"></i>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        </button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="fa-solid fa-file-excel fa-xl"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +146,73 @@
                                                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                                                         </a>
                                                                     @else
-                                                                        N/A
+                                                                        @php
+                                                                            $isFromUser =
+                                                                                $session->id == $Business1->from_id;
+                                                                            $isToUser =
+                                                                                $session->id == $Business1->to_id;
+
+                                                                            if ($isFromUser) {
+                                                                                $questions = [
+                                                                                    'Glimpscs about Personal and Business Background' =>
+                                                                                        $Business1->question_1,
+                                                                                    'Best Products and/or Service' =>
+                                                                                        $Business1->question_2,
+                                                                                    'Top 5 Clients' =>
+                                                                                        $Business1->question_3,
+                                                                                    'Looking to Connect with' =>
+                                                                                        $Business1->question_4,
+                                                                                    'Best Testimonial Received till date' =>
+                                                                                        $Business1->question_5,
+                                                                                    'My Dream Client' =>
+                                                                                        $Business1->question_6,
+                                                                                    'Future Plans' =>
+                                                                                        $Business1->question_7,
+                                                                                    'I can help you with' =>
+                                                                                        $Business1->question_8,
+                                                                                    'I will connect you with' =>
+                                                                                        $Business1->question_9,
+                                                                                    'Business Worth' =>
+                                                                                        $Business1->business_worth,
+                                                                                    'Business Till' =>
+                                                                                        $Business1->business_till,
+                                                                                ];
+                                                                            } elseif ($isToUser) {
+                                                                                $questions = [
+                                                                                    'Glimpscs about Personal and Business Background' =>
+                                                                                        $Business1->to_question_1,
+                                                                                    'Best Products and/or Service' =>
+                                                                                        $Business1->to_question_2,
+                                                                                    'Top 5 Clients' =>
+                                                                                        $Business1->to_question_3,
+                                                                                    'Looking to Connect with' =>
+                                                                                        $Business1->to_question_4,
+                                                                                    'Best Testimonial Received till date' =>
+                                                                                        $Business1->to_question_5,
+                                                                                    'My Dream Client' =>
+                                                                                        $Business1->to_question_6,
+                                                                                    'Future Plans' =>
+                                                                                        $Business1->to_question_7,
+                                                                                    'I can help you with' =>
+                                                                                        $Business1->to_question_8,
+                                                                                    'I will connect you with' =>
+                                                                                        $Business1->to_question_9,
+                                                                                    'Business Worth' =>
+                                                                                        $Business1->to_business_worth,
+                                                                                    'Business Till' =>
+                                                                                        $Business1->to_business_till,
+                                                                                ];
+                                                                            } else {
+                                                                                $questions = [];
+                                                                            }
+                                                                        @endphp
+
+                                                                        <button type="button" class="btn btn-sm btn-info"
+                                                                            title="View Questions" data-bs-toggle="modal"
+                                                                            data-bs-target="#questionViewModal"
+                                                                            onclick='viewQuestions(@json($questions))'>
+                                                                            <i class="fa fa-info-circle"></i>
+                                                                        </button>
                                                                     @endif
                                                                 </td>
 
@@ -359,9 +425,73 @@
     </div>
     <!--Delete modal End -->
 
+    <!-- Question View Modal Start -->
+    <div class="modal fade" id="questionViewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">One To One Questions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="questionList"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Question View Modal End -->
+
 @endsection
 
 @section('scripts')
+    <script>
+        function viewQuestions(questions) {
+            let html = '';
+
+            if (!questions || Object.keys(questions).length === 0) {
+                html = '<div class="alert alert-info mb-0">No question data found.</div>';
+            } else {
+                html += '<div class="table-responsive">';
+                html += '<table class="table table-bordered table-striped">';
+                html += '<thead>';
+                html += '<tr>';
+                html += '<th style="width:40%">Question</th>';
+                html += '<th>Answer</th>';
+                html += '</tr>';
+                html += '</thead>';
+                html += '<tbody>';
+
+                Object.entries(questions).forEach(function([question, answer]) {
+                    html += '<tr>';
+                    html += '<td><strong>' + escapeHtml(question) + '</strong></td>';
+                    html += '<td>' + escapeHtml(answer ?? 'N/A') + '</td>';
+                    html += '</tr>';
+                });
+
+                html += '</tbody>';
+                html += '</table>';
+                html += '</div>';
+            }
+
+            $('#questionList').html(html);
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
     <script>
         function getEditData(id) {
 

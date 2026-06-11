@@ -227,10 +227,10 @@ class Membermeetingcontroller extends Controller
             Member_metting::create([
                 'meeting_id' => $meetingId,
                 'member_id' => $memberId,
-                'ppt_taken_1' => $request->ppt_taken_1,
-                'ppt_taken_2' => $request->ppt_taken_2,
-                'brand_showcase_1' => $request->brand_showcase_1,
-                'brand_showcase_2' => $request->brand_showcase_2,
+                'ppt_taken_1' => $request->ppt_taken_1 ?? 0,
+                'ppt_taken_2' => $request->ppt_taken_2 ?? 0,
+                'brand_showcase_1' => $request->brand_showcase_1 ?? 0,
+                'brand_showcase_2' => $request->brand_showcase_2 ?? 0,
             ]);
         }
 
