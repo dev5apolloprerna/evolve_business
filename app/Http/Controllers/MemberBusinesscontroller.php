@@ -338,7 +338,14 @@ class MemberBusinesscontroller extends Controller
             })
             ->orderBy('event_id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
-        return view('pendinglogincheck.index', compact('pendingMeeting', 'member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
+
+        $hasBrandShowcase = $Member_metting->getCollection()->contains(function ($item) {
+            return $item->ppt_taken_1 > 0 ||
+                $item->ppt_taken_2 > 0 ||
+                $item->brand_showcase_1 > 0 ||
+                $item->brand_showcase_2 > 0;
+        });
+        return view('pendinglogincheck.index', compact('hasBrandShowcase', 'pendingMeeting', 'member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
     public function statuspendinglogin(Request $request)
@@ -381,7 +388,10 @@ class MemberBusinesscontroller extends Controller
                 'status' => $request->newStatus,
                 'updated_at' => now()
             ]);
-        return redirect()->back();
+        if ($request->newStatus == 2) {
+            return redirect()->back();
+        }
+        return redirect()->route('OneToOne.Tostoreview');
     }
 
     public function Eventpendinglogin(Request $request)

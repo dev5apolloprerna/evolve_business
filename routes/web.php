@@ -122,8 +122,11 @@ Route::middleware(['check_approval'])->group(function () {
     Route::prefix('admin')->name('OneToOne.')->middleware('auth')->group(function () {
         Route::any('OneToOne/index', [OneToOneController::class, 'index'])->name('index');
         Route::get('OneToOne/storeview', [OneToOneController::class, 'storeview1'])->name('storeview');
+        Route::get('OneToOne/Tostoreview', [OneToOneController::class, 'Tostoreview'])->name('Tostoreview');
+
         // Route::get('OneToOne/edit', [OneToOneController::class, 'editview'])->name('edit');
         Route::post('OneToOne/create', [OneToOneController::class, 'create'])->name('create');
+        Route::post('OneToOne/Tocreate', [OneToOneController::class, 'Tocreate'])->name('Tocreate');
         Route::get('OneToOne/{Id}', [OneToOneController::class, 'editview'])->name('edit');
         Route::post('/OneToOne/update', [OneToOneController::class, 'update'])->name('update');
         Route::delete('/OneToOne/delete', [OneToOneController::class, 'delete'])->name('delete');
@@ -168,25 +171,23 @@ Route::get('/', function () {
 Route::get('/auth/Memberlogin', function () {
     return view('/auth/Memberlogin');
 })->name('Memberlogin');
-Route::group(['middleware' => 'check_user_status'], function () {
+Route::group(['middleware' => 'check_approval'], function () {
     // Routes that require active users
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    // Profile Routes
+    Route::prefix('profile')->name('profile.')->middleware('auth')->group(function () {
+        Route::get('/', [HomeController::class, 'getProfile'])->name('detail');
+        Route::get('/edit', [HomeController::class, 'EditProfile'])->name('EditProfile');
+        Route::post('/update', [HomeController::class, 'updateProfile'])->name('update');
+        Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
+        Route::get('/user-edit', [HomeController::class, 'UserEditProfile'])->name('UserEditProfile');
+        Route::post('/user-update', [HomeController::class, 'UserupdateProfile'])->name('Userupdate');
+    });
 });
 Auth::routes(['register' => false]);
 
 Route::get('/Memberhome', [App\Http\Controllers\HomeController::class, 'index'])->name('Memberhome');
 Route::get('/Adminuserhome', [App\Http\Controllers\HomeController::class, 'index'])->name('Adminuserhome');
-
-// Profile Routes
-Route::prefix('profile')->name('profile.')->middleware('auth')->group(function () {
-    Route::get('/', [HomeController::class, 'getProfile'])->name('detail');
-    Route::get('/edit', [HomeController::class, 'EditProfile'])->name('EditProfile');
-    Route::post('/update', [HomeController::class, 'updateProfile'])->name('update');
-    Route::post('/change-password', [HomeController::class, 'changePassword'])->name('change-password');
-    Route::get('/user-edit', [HomeController::class, 'UserEditProfile'])->name('UserEditProfile');
-    Route::post('/user-update', [HomeController::class, 'UserupdateProfile'])->name('Userupdate');
-});
-
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
 // Roles
@@ -432,7 +433,6 @@ Route::post('gallerydetail/create', [GalleryDetailController::class, 'create'])-
 Route::delete('/gallerydetail-delete', [GalleryDetailController::class, 'delete'])->name('gallerydetail.delete');
 Route::DELETE('/gallerydetail-deleteselected', [GalleryDetailController::class, 'deleteselected'])->name('gallerydetail.deleteselected');
 
-
 //video_gallery master
 Route::prefix('admin')->name('videogallery.')->middleware('auth')->group(function () {
     Route::get('videogallery/index', [VideogalleryController::class, 'index'])->name('index');
@@ -442,7 +442,6 @@ Route::prefix('admin')->name('videogallery.')->middleware('auth')->group(functio
     Route::post('/videogallery/update', [VideogalleryController::class, 'update'])->name('update');
     Route::delete('/videogallery-delete', [VideogalleryController::class, 'delete'])->name('delete');
 });
-
 
 //New and Event master
 Route::prefix('admin')->name('Event.')->middleware('auth', 'check_approval')->group(function () {

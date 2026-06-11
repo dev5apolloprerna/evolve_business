@@ -297,6 +297,23 @@ class OneToOneController extends Controller
         }
     }
 
+    public function Tostoreview()
+    {
+        try {
+            $session = Auth::user();
+            $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
+                ->where('users.status', 1)
+                ->where('users.role_id', 2)
+                ->where('members.Arrival_flag', 0)
+                ->orderBy('users.first_name')
+                ->select('users.*')
+                ->get();
+            return view('OneToOne.Tostoreview', compact('Data', 'session'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
     public function create(Request $request)
     {
         try {
@@ -367,6 +384,44 @@ class OneToOneController extends Controller
             ]);
 
             return response()->json(['success' => true, 'message' => 'One To One Created Successfully.']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
+    public function Tocreate(Request $request)
+    {
+        try {
+            $session = Auth::user();
+            $oneToOne = OneToOne::where('to_id', $session->id)->first();
+
+            // Check logged in user is receiver
+            if ($oneToOne->to_id != $session->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized Access'
+                ], 403);
+            }
+            OneToOne::where('to_id', $session->id)
+                ->update([
+                    'to_question_1'     => $request->to_question_1,
+                    'to_question_2'     => $request->to_question_2,
+                    'to_question_3'     => $request->to_question_3,
+                    'to_question_4'     => $request->to_question_4,
+                    'to_question_5'     => $request->to_question_5,
+                    'to_question_6'     => $request->to_question_6,
+                    'to_question_7'     => $request->to_question_7,
+                    'to_question_8'     => $request->to_question_8,
+                    'to_question_9'     => $request->to_question_9,
+                    'to_business_worth' => $request->to_business_worth,
+                    'to_business_till'  => $request->to_business_till,
+                    'updated_by'        => $session->id,
+                    'updated_at'        => now(),
+                ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Questions Updated Successfully'
+            ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
