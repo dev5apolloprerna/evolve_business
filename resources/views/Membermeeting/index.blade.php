@@ -73,11 +73,16 @@
                                                         placeholder="Cluster Meet" required>
                                                 </div>
                                                 <div class="mt-3">
+                                                    <span style="color:red;">*</span>Venue
+                                                    <input type="text" class="form-control" name="venue" id="venue"
+                                                        maxlength="100" autocomplete="off" placeholder="Venue" required>
+                                                </div>
+                                                <div class="mt-3">
                                                     <span style="color: red;">*</span>Start Date & Time
                                                     <span style="color:red;"
                                                         class="error-message">{{ $errors->first('start_date') }}</span>
                                                     <!-- <input type="datetime" class="form-control" name="start_date"
-                                                                id="start_date" placeholder="Enter Start Date & Time"  value="{{ old('start_date') }}" required> -->
+                                                                    id="start_date" placeholder="Enter Start Date & Time"  value="{{ old('start_date') }}" required> -->
                                                     <input type="text" name="start_date"
                                                         class="form-control flatpickr-input active"
                                                         data-provider="flatpickr" data-date-format="d.m.y"
@@ -89,7 +94,7 @@
                                                     <span style="color:red;"
                                                         class="error-message">{{ $errors->first('End_date') }}</span>
                                                     <!-- <input type="datetime" class="form-control" name="End_date"
-                                                                id="End_date" placeholder="Enter End Date & Time"   value="{{ old('End_date') }}" required> -->
+                                                                    id="End_date" placeholder="Enter End Date & Time"   value="{{ old('End_date') }}" required> -->
                                                     <input type="text" class="form-control flatpickr-input active"
                                                         data-provider="flatpickr" data-date-format="d.m.y"
                                                         data-enable-time="" name="End_date"
@@ -130,6 +135,7 @@
                                                 <th scope="col">Meeting Title</th>
                                                 <th scope="col">City Name</th>
                                                 <th scope="col">City Group name</th>
+                                                <th scope="col">Venue</th>
                                                 <th scope="col">Start Date & Time</th>
                                                 <th scope="col">End Date & Time</th>
                                                 <th scope="col">Action</th>
@@ -155,6 +161,7 @@
                                                     <td class="text-center">
                                                         {{ optional($cityGroups->firstWhere('id', $data->city_group_id))->group_name }}
                                                     </td>
+                                                    <td class="text-center">{{ $data->venue ?? '' }}</td>
 
                                                     <td class="text-center">{{ $data->start_date }}</td>
                                                     <td class="text-center">{{ $data->End_date }}</td>
@@ -253,12 +260,17 @@
                                             id="EditMeetingtitle" maxlength="100" autocomplete="off"
                                             placeholder="Cluster Meet" required>
                                     </div>
+                                    <div class="mt-3">
+                                        <span style="color:red;">*</span>Venue
+                                        <input type="text" class="form-control" name="venue" id="editvenue"
+                                            maxlength="100" autocomplete="off" placeholder="Venue" required>
+                                    </div>
                                     <div class="mb-3 pt-3">
                                         <span style="color: red;">*</span>Start Date & Time
                                         <span style="color:red;"
                                             class="error-message">{{ $errors->first('start_date') }}</span>
                                         <!-- <input type="text" class="form-control" name="start_date"
-                                                                id="Editstart_date" placeholder="Enter Start Date & Time"  value="{{ old('start_date') }}" required> -->
+                                                                    id="Editstart_date" placeholder="Enter Start Date & Time"  value="{{ old('start_date') }}" required> -->
                                         <input type="text" class="form-control flatpickr-input active"
                                             name="start_date" id="Editstart_date" placeholder="Enter Start Date & Time"
                                             value="{{ old('start_date') }}" data-provider="flatpickr"
@@ -269,7 +281,7 @@
                                         <span style="color:red;"
                                             class="error-message">{{ $errors->first('End_date') }}</span>
                                         <!-- <input type="text" class="form-control" name="End_date"
-                                                                id="EditEnd_date" placeholder="Enter End Date & Time"   value="{{ old('End_date') }}" required> -->
+                                                                    id="EditEnd_date" placeholder="Enter End Date & Time"   value="{{ old('End_date') }}" required> -->
                                         <input type="text" class="form-control flatpickr-input active" name="End_date"
                                             id="EditEnd_date" placeholder="Enter End Date & Time"
                                             value="{{ old('End_date') }}" data-provider="flatpickr"
@@ -360,6 +372,7 @@
                         $('#Editcitygroup_id').val(obj.city_group_id);
                         $('#Editstart_date').val(obj.start_date);
                         $('#EditEnd_date').val(obj.End_date);
+                        $('#editvenue').val(obj.venue);
 
                     }
                 });
