@@ -34,6 +34,7 @@ class Membermeetingcontroller extends Controller
         // dd($request);
 
         $Data = array(
+            'venue' => $request->venue,
             'city_id' => $request->city_id,
             'city_group_id'    => $request->citygroup_id,
             'Meeting_title'    => $request->Meetingtitle,
@@ -65,6 +66,7 @@ class Membermeetingcontroller extends Controller
             ->where(['iStatus' => 1, 'isDelete' => 0, 'id' => $request->id])
             ->update([
                 'city_id' => $request->city_id,
+                'venue' => $request->venue,
                 'city_group_id'    => $request->citygroup_id,
                 'Meeting_title'    => $request->Meeting_title,
                 'start_date'    => $request->start_date,
