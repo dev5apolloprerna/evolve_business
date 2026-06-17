@@ -170,7 +170,7 @@ class MemberBusinesscontroller extends Controller
                 'Title' => $sendemaildetails->strTitle ??  'business send',
                 //'ToEmail' => isset($ToUser) ? ($ToUser->email ?? '') : '',
                 'ToEmail' => 'ai.dev.laravel10@gmail.com',
-                'CCEmail' => 'k.krupa0101@gmail.com',
+                //'CCEmail' => 'k.krupa0101@gmail.com',
                 'Subject' => $sendemaildetails->strSubject ?? 'Business send' ?? '',
             ];
 
