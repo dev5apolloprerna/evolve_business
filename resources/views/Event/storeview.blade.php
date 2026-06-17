@@ -3,26 +3,75 @@
 @section('content')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <style>
-        /* Fix text cutting issue in dropdown */
-        .choices__list--dropdown .choices__item {
-            padding-left: 25px !important;
+        .assign-member-box {
+            position: relative !important;
+            overflow: visible !important;
+        }
+
+        .assign-member-box .choices {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+            position: relative !important;
+            overflow: visible !important;
+            z-index: 9999 !important;
+        }
+
+        .assign-member-box .choices.is-open {
+            z-index: 999999 !important;
+        }
+
+        .assign-member-box .choices__inner {
+            min-height: 45px !important;
+            padding: 8px 12px !important;
+            background: #fff !important;
+            border: 1px solid #ced4da !important;
+            border-radius: 4px !important;
+            overflow: hidden !important;
+        }
+
+        .assign-member-box .choices__list--dropdown,
+        .assign-member-box .choices__list[aria-expanded] {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: auto !important;
+            width: 100% !important;
+            min-width: 100% !important;
+            max-height: 250px !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            background: #fff !important;
+            border: 1px solid #ced4da !important;
+            z-index: 999999 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .assign-member-box .choices__list--dropdown .choices__item,
+        .assign-member-box .choices__list[aria-expanded] .choices__item {
+            padding: 10px 15px !important;
+            margin: 0 !important;
+            width: 100% !important;
+            display: block !important;
             white-space: normal !important;
+            word-break: normal !important;
             overflow: visible !important;
-        }
-
-        /* Fix selected items display */
-        .choices__inner {
-            padding-left: 10px !important;
-        }
-
-        /* Prevent clipping */
-        .choices__list--dropdown {
-            overflow: visible !important;
-        }
-
-        /* Optional: better alignment */
-        .choices__item--selectable {
             text-indent: 0 !important;
+            line-height: 20px !important;
+            color: #212529 !important;
+            box-sizing: border-box !important;
+        }
+
+        .assign-member-box .choices__item--choice.is-highlighted {
+            background: #f1f1f1 !important;
+        }
+
+        .card,
+        .card-body,
+        .live-preview,
+        form,
+        .row,
+        .container-fluid {
+            overflow: visible !important;
         }
     </style>
     <div class="main-content">
@@ -96,18 +145,17 @@
                                                     <option value="3">Event</option>
                                                 </select>
                                             </div>
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-4 col-md-6 assign-member-box">
                                                 <label for="assign_members">
                                                     <span style="color:red;">*</span> Assign Members
                                                 </label>
+
                                                 <select class="form-select" name="assign_member_id[]" id="assign_members"
                                                     multiple required>
-                                                    <option value="" disabled>Select Member
-                                                    </option>
+                                                    <option value="select_all">Select All</option>
                                                     @foreach ($members as $member)
                                                         <option value="{{ $member->id }}">
-                                                            {{ $member->Contact_person }}
-                                                            ({{ $member->phonenumber }})
+                                                            {{ $member->Contact_person }} ({{ $member->phonenumber }})
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -151,10 +199,12 @@
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
 
             const memberSelect = document.getElementById('assign_members');
+            let choicesInstance = null;
+
             if (memberSelect) {
                 new Choices(memberSelect, {
                     removeItemButton: true,
@@ -166,6 +216,33 @@
                 });
             }
 
+            // Handle Select All functionality
+            // memberSelect.addEventListener('change', function() {
+            //     const allOptions = Array.from(memberSelect.options);
+            //     const selectAllOption = memberSelect.querySelector('option[value="select_all"]');
+
+            //     if (selectAllOption.selected) {
+            //         // Select all member options
+            //         allOptions.forEach(option => {
+            //             if (option.value !== 'select_all') {
+            //                 option.selected = true;
+            //             }
+            //         });
+            //     } else {
+            //         // Check if only select_all was selected, if so deselect it
+            //         const selectedCount = allOptions.filter(o => o.selected).length;
+            //         if (selectedCount === 1) {
+            //             selectAllOption.selected = false;
+            //         }
+            //     }
+
+            //     // Trigger change to update Choices.js
+            //     memberSelect.dispatchEvent(new Event('change', {
+            //         bubbles: true
+            //     }));
+            // });
+
+
             const eventType = document.getElementById('event_type');
             if (eventType) {
                 new Choices(eventType, {
@@ -175,18 +252,60 @@
             }
 
         });
+    </script> --}}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const memberSelect = document.getElementById('assign_members');
+
+            if (memberSelect) {
+                const memberChoices = new Choices(memberSelect, {
+                    removeItemButton: true,
+                    itemSelectText: '',
+                    placeholder: true,
+                    placeholderValue: 'Select Members',
+                    searchPlaceholderValue: 'Search members...',
+                    noResultsText: 'No matching members found',
+                    shouldSort: false,
+                    searchEnabled: true,
+                    position: 'auto'
+                });
+
+                memberSelect.addEventListener('change', function() {
+                    const selectedValues = memberChoices.getValue(true);
+
+                    if (selectedValues.includes('select_all')) {
+                        const allValues = Array.from(memberSelect.options)
+                            .filter(option => option.value !== 'select_all')
+                            .map(option => option.value);
+
+                        memberChoices.removeActiveItems();
+                        memberChoices.setChoiceByValue(allValues);
+                    }
+                });
+            }
+
+            // const eventType = document.getElementById('event_type');
+
+            // if (eventType) {
+            //     new Choices(eventType, {
+            //         searchEnabled: false,
+            //         itemSelectText: '',
+            //         shouldSort: false
+            //     });
+            // }
+
+        });
     </script>
 
     <script>
         function validateFile() {
-            var allowedExtension = ['jpeg', 'jpg', 'png',
-                'webp'
-            ];
+            var allowedExtension = ['jpeg', 'jpg', 'png', 'webp'];
             var fileExtension = document.getElementById('photovalidate').value.split('.').pop().toLowerCase();
             var isValidFile = false;
 
             for (var index in allowedExtension) {
-
                 if (fileExtension === allowedExtension[index]) {
                     isValidFile = true;
                     break;
