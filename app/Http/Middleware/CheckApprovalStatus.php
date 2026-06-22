@@ -48,14 +48,24 @@ class CheckApprovalStatus
                 ->orderBy('one_to_one_detail.id', 'DESC')
                 ->get();
 
+            // $loginPendingEventCheck = Event::where('iStatus', 1)
+            //     ->where('isDelete', 0)
+            //     ->whereNotIn('event_id', function ($query) use ($user) {
+            //         $query->select('event_id')
+            //             ->from('event_members')
+            //             ->where('member_id', $user->id);
+            //     })
+            //     ->orderBy('event_id', 'DESC')
+            //     ->get();
             $loginPendingEventCheck = Event::where('iStatus', 1)
                 ->where('isDelete', 0)
+                ->whereJsonContains('assign_member_id', (string) Auth::id())
                 ->whereNotIn('event_id', function ($query) use ($user) {
                     $query->select('event_id')
                         ->from('event_members')
                         ->where('member_id', $user->id);
                 })
-                ->orderBy('event_id', 'DESC')
+                ->orderByDesc('event_id')
                 ->get();
 
             $member = members::where('user_id', $user->id)->first();

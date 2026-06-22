@@ -397,6 +397,7 @@ Route::prefix('admin')->name('reports.')->middleware('auth')->group(function () 
     Route::any('/reports/BusinessAnalysis', [ReportController::class, 'Analysisindex'])->name('BusinessAnalysis');
     Route::view('/reports/businessexportdata', '/reports/businessexportdata')->name('businessexportdata');
     Route::any('/reports/inducted', [ReportController::class, 'inducted'])->name('inducted');
+    Route::any('/reports/monthlyreview', [ReportController::class, 'monthlyreview'])->name('monthlyreview');
 
     //30-7-25
     Route::any('/Member-reports-detail/{id?}', [ReportController::class, 'Member_reports_detail'])->name('Member_reports_detail');
