@@ -327,17 +327,30 @@ class MemberBusinesscontroller extends Controller
                 ->paginate(env('PAR_PAGE_COUNT', 20));
             //dd($pendingMeeting);
         }
+        // $Events = Event::where([
+        //     'iStatus' => 1,
+        //     'isDelete' => 0,
+        // ])
+        //     ->whereNotIn('event_id', function ($query) {
+        //         $query->select('event_id')
+        //             ->from('event_members')
+        //             ->where('member_id', Auth::id());
+        //     })
+        //     ->orderBy('event_id', 'DESC')
+        //     ->paginate(env('PAR_PAGE_COUNT', 20));  
         $Events = Event::where([
             'iStatus' => 1,
             'isDelete' => 0,
         ])
+            ->whereJsonContains('assign_member_id', (string) Auth::id())
             ->whereNotIn('event_id', function ($query) {
                 $query->select('event_id')
                     ->from('event_members')
                     ->where('member_id', Auth::id());
             })
-            ->orderBy('event_id', 'DESC')
+            ->orderByDesc('event_id')
             ->paginate(env('PAR_PAGE_COUNT', 20));
+        //dd($Events);
 
         $hasBrandShowcase = $Member_metting->getCollection()->contains(function ($item) {
             return $item->ppt_taken_1 > 0 ||

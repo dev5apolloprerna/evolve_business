@@ -349,6 +349,13 @@
                                         </a>
                                     </li>
 
+                                    <li class="nav-item">
+                                        <a href="{{ route('reports.monthlyreview') }}" class="nav-link"
+                                            data-key="t-chat">
+                                            <i class="far fa-calendar-alt"></i>Monthly View Report
+                                        </a>
+                                    </li>
+
                                 </ul>
                             </div>
                         </li>
