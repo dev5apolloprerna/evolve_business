@@ -274,6 +274,7 @@ Route::prefix('admin')->name('MemberAnnouncement.')->middleware(['auth', 'check_
         Route::post('/MemberAnnouncement/update', [MemberAnnouncementController::class, 'update'])->name('update');
         Route::delete('/MemberAnnouncement/delete', [MemberAnnouncementController::class, 'delete'])->name('delete');
         Route::get('/MemberAnnouncement', [MemberAnnouncementController::class, 'otherMemberAnnouncements'])->name('MemberAnnouncement');
+        Route::get('/admin-member-announcements', [MemberAnnouncementController::class, 'adminAllAnnouncements'])->name('adminAll');
     }
 );
 
@@ -300,7 +301,6 @@ Route::prefix('admin')->name('MemberOneToOne.')->middleware(['auth', 'check_appr
     function () {
         Route::get('/MemberOneToOne/index', [MemberOneToOneController::class, 'index'])->name('index');
         Route::post('/MemberOneToOne/update-status', [MemberOneToOneController::class, 'updateStatus'])->name('updateStatus');
-
         Route::get('/MemberOneToOne/get-status/{id}', [MemberOneToOneController::class, 'getStatus'])->name('getStatus');
     }
 );

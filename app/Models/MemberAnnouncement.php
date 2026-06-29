@@ -17,4 +17,9 @@ class MemberAnnouncement extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function member()
+    {
+        return $this->belongsTo(members::class, 'member_id', 'id');
+    }
 }

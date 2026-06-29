@@ -87,8 +87,8 @@
                                                     class="btn btn-success">Cancel</button>
                                             </div>
                                             <!-- <button class="btn btn-success" type="button" onclick="exportExcel();">
-                                                                                                                                                                                                                                                                                                                                <i class="fa-solid fa-file-excel fa-xl"></i>
-                                                                                                                                                                                                                                                                                                                            </button> -->
+                                                                                                                                                                                                                                                                                                                                            <i class="fa-solid fa-file-excel fa-xl"></i>
+                                                                                                                                                                                                                                                                                                                                        </button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -126,6 +126,7 @@
                                                             <th width="5%" data-sort="Date">Place</th>
                                                             <th width="5%" data-sort="Date">Meeting date
                                                             </th>
+                                                            <th width="8%" data-sort="Date">Questions</th>
                                                             <th width="5%" data-sort="Date">Comment
                                                             </th>
                                                             <th width="5%" data-sort="Date">Photo
@@ -152,6 +153,36 @@
                                                                     {{ \Carbon\Carbon::parse($Business1->date)->format('d-m-Y') }}
                                                                 </td>
 
+                                                                @php
+                                                                    $fromQs = [];
+                                                                    for ($q = 1; $q <= 9; $q++) {
+                                                                        $col = 'question_' . $q;
+                                                                        if (!empty($Business1->$col)) {
+                                                                            $fromQs[] = $Business1->$col;
+                                                                        }
+                                                                    }
+                                                                    $toQs = [];
+                                                                    for ($q = 1; $q <= 9; $q++) {
+                                                                        $col = 'to_question_' . $q;
+                                                                        if (!empty($Business1->$col)) {
+                                                                            $toQs[] = $Business1->$col;
+                                                                        }
+                                                                    }
+                                                                @endphp
+                                                                <td class="text-center">
+                                                                    <button class="btn btn-sm btn-primary" type="button"
+                                                                        onclick="showQuestions({{ $Business1->id }})">View
+                                                                        Qs</button>
+                                                                    <div id="questions-{{ $Business1->id }}"
+                                                                        style="display:none;">
+                                                                        <textarea class="from-json">@json($fromQs)</textarea>
+                                                                        <textarea class="to-json">@json($toQs)</textarea>
+                                                                        <div class="from-name" style="display:none">
+                                                                            {{ $Business1->from }}</div>
+                                                                        <div class="to-name" style="display:none">
+                                                                            {{ $Business1->to }}</div>
+                                                                    </div>
+                                                                </td>
                                                                 <td class="text-center">
                                                                     {{ $Business1->comment !== null ? $Business1->comment : 'N/A' }}
                                                                 </td>
@@ -313,6 +344,81 @@
 @endsection
 
 @section('scripts')
+    <script>
+        function showQuestions(id) {
+            var container = document.getElementById('questions-' + id);
+            if (!container) return;
+            var fromJson = container.querySelector('.from-json').value || '[]';
+            var toJson = container.querySelector('.to-json').value || '[]';
+            var fromName = container.querySelector('.from-name').innerText || '';
+            var toName = container.querySelector('.to-name').innerText || '';
+            try {
+                var fromQs = JSON.parse(fromJson);
+                var toQs = JSON.parse(toJson);
+            } catch (e) {
+                var fromQs = [];
+                var toQs = [];
+            }
+
+            document.getElementById('qFromName').innerText = fromName;
+            document.getElementById('qToName').innerText = toName;
+
+            var fromList = document.getElementById('qFromList');
+            var toList = document.getElementById('qToList');
+            fromList.innerHTML = '';
+            toList.innerHTML = '';
+
+            if (fromQs.length === 0) {
+                fromList.innerHTML = '<div>N/A</div>';
+            } else {
+                fromQs.forEach(function(q, idx) {
+                    var div = document.createElement('div');
+                    var strong = document.createElement('strong');
+                    strong.textContent = 'Q' + (idx + 1) + ':';
+                    div.appendChild(strong);
+                    div.appendChild(document.createTextNode(' ' + q));
+                    fromList.appendChild(div);
+                });
+            }
+
+            if (toQs.length === 0) {
+                toList.innerHTML = '<div>N/A</div>';
+            } else {
+                toQs.forEach(function(q, idx) {
+                    var div = document.createElement('div');
+                    var strong = document.createElement('strong');
+                    strong.textContent = 'Q' + (idx + 1) + ':';
+                    div.appendChild(strong);
+                    div.appendChild(document.createTextNode(' ' + q));
+                    toList.appendChild(div);
+                });
+            }
+
+            var modal = new bootstrap.Modal(document.getElementById('questionsModal'));
+            modal.show();
+        }
+    </script>
+
+    <!-- Questions Modal -->
+    <div class="modal fade" id="questionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">One-to-One Questions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>From: <span id="qFromName"></span></h6>
+                    <div id="qFromList" class="mb-3"></div>
+                    <h6>To: <span id="qToName"></span></h6>
+                    <div id="qToList"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         function getEditData(id) {
 
