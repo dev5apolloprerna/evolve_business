@@ -131,6 +131,15 @@
                                             </a>
                                         </li>
                                     @endif
+                                    @if ($session->role_id == 1)
+                                        <li class="nav-item">
+                                            <a href="{{ route('MemberAnnouncement.adminAll') }}"
+                                                class="nav-link @if (request()->routeIs('MemberAnnouncement.adminAll')) {{ 'active' }} @endif"
+                                                data-key="t-chat">
+                                                <i class="fa fa-bullhorn"></i>Member Announcements
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
                         </li>

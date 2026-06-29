@@ -48,6 +48,18 @@ class MemberAnnouncementController extends Controller
         return view('MemberAnnouncement.MemberAnnouncement', compact('datas', 'user', 'id', 'count'));
     }
 
+    public function adminAllAnnouncements(Request $request)
+    {
+        $user = Auth::user();
+        $datas = MemberAnnouncement::with('member')
+            ->orderBy('created_at', 'desc')
+            ->paginate(env('PAR_PAGE_COUNT', 20));
+
+        $count = $datas->count();
+
+        return view('MemberAnnouncement.admin-index', compact('datas', 'user', 'count'));
+    }
+
     public function createnew(Request $request, $id)
     {
         $memberid = $id;
