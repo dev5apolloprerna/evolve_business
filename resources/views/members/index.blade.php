@@ -133,6 +133,7 @@
                                             <th scope="col">City</th>
                                             <th scope="col">Group Name</th>
                                             <th scope="col">Category name</th>
+                                            <th scope="col">Points</th>
                                             <th scope="col">Referred By</th>
                                             <!-- <th scope="col">SubCategory name</th> -->
                                             <th scope="col">Status</th>
@@ -161,6 +162,7 @@
                                                 <td class="text-center">{{ $data->city_name }}</td>
                                                 <td class="text-center">{{ $data->group_name }}</td>
                                                 <td class="text-center">{{ $data->categoriesname }}</td>
+                                                <td class="text-center">{{ $data->points_total ?? 0 }}</td>
                                                 <td class="text-center">{{ $data->from_display }}</td>
                                                 <!-- <td class="text-center">{{ $data->subcategoriesname }}</td> -->
                                                 {{-- <td class="text-center">{{ $data->pincode }}</td> --}}

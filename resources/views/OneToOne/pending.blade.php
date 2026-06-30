@@ -87,8 +87,8 @@
                                                     class="btn btn-success">Cancel</button>
                                             </div>
                                             <!-- <button class="btn btn-success" type="button" onclick="exportExcel();">
-                                                                                                                                                                                                                                                                                                                                            <i class="fa-solid fa-file-excel fa-xl"></i>
-                                                                                                                                                                                                                                                                                                                                        </button> -->
+                                                                                                                                                                                                                                                                                                                                                <i class="fa-solid fa-file-excel fa-xl"></i>
+                                                                                                                                                                                                                                                                                                                                            </button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -137,9 +137,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody class="list">
-                                                        <?php $i = 1;
-                                                        
-                                                        ?>
+                                                        <?php $i = 1; ?>
                                                         @foreach ($Business as $Business1)
                                                             <tr>
                                                                 <td class="text-center">

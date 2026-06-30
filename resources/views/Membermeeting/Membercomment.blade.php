@@ -44,6 +44,8 @@
                                             <th scope="col">Meeting title</th>
                                             <th scope="col">Meeting start date</th>
                                             <th scope="col">Meeting End date</th>
+                                            <th scope="col">Meeting Status</th>
+                                            <th scope="col">Comment</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -59,13 +61,37 @@
                                                 <td class="text-center">{{ $data->start_date }}</td>
                                                 <td class="text-center">{{ $data->End_date }}</td>
                                                 <td class="text-center">
-                                                    <a href="javascript:void(0);"
-                                                        class="btn btn-sm btn-outline-sucess open-comment-modal"
-                                                        data-id="{{ $data->Cluster_Meet_Member_meeting_id }}"
-                                                        data-member_id="{{ $data->member_id }}"
-                                                        data-meeting_id="{{ $data->meeting_id }}">
-                                                        <i class="fas fa-comment-dots"></i>
-                                                    </a>
+                                                    @if ($data->is_approve_meeting == 1)
+                                                        <span class="badge bg-success">Approved</span>
+                                                    @elseif($data->is_approve_meeting == 2)
+                                                        <span class="badge bg-danger">Rejected</span>
+                                                    @else
+                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center"
+                                                    style="max-width:250px; white-space:normal; word-wrap:break-word; word-break:break-word;"
+                                                    title="{{ $data->comment ?? '' }}">
+                                                    {{ \Illuminate\Support\Str::limit($data->comment, 100, '...') ?? 'No Comment' }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="d-flex gap-2 justify-content-center">
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-sm btn-outline-primary open-status-modal"
+                                                            data-id="{{ $data->Cluster_Meet_Member_meeting_id }}"
+                                                            data-status="{{ $data->is_approve_meeting ?? 0 }}"
+                                                            data-comment="{{ e($data->comment ?? '') }}"
+                                                            data-meeting_id="{{ $data->meeting_id }}">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </a>
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-sm btn-outline-sucess open-comment-modal"
+                                                            data-id="{{ $data->Cluster_Meet_Member_meeting_id }}"
+                                                            data-member_id="{{ $data->member_id }}"
+                                                            data-meeting_id="{{ $data->meeting_id }}">
+                                                            <i class="fas fa-comment-dots"></i>
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <?php $i++; ?>
@@ -249,6 +275,39 @@
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="meetingStatusModal" tabindex="-1" aria-labelledby="meetingStatusModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="meetingStatusForm" method="POST"
+                action="{{ route('pendinglogincheck.meetinglogincheck', ['id' => ':id']) }}">
+                @csrf
+                <input type="hidden" name="id" id="statusMeetingMemberId">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="meetingStatusModalLabel">Update Meeting Status</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="meetingStatusSelect" class="form-label">Status</label>
+                            <select class="form-control" name="newStatus" id="meetingStatusSelect" required>
+                                <option value="1">Approve</option>
+                                <option value="2">Reject</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="meetingStatusCommentGroup" style="display:none;">
+                            <label for="meetingStatusComment" class="form-label">Comment</label>
+                            <textarea class="form-control" name="comment" id="meetingStatusComment" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Save Status</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     {{-- end model comment --}}
     {{-- start add member model --}}
     <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel"
@@ -369,7 +428,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const commentButtons = document.querySelectorAll('.open-comment-modal');
-            const modal = new bootstrap.Modal(document.getElementById('commentModal'));
+            const statusButtons = document.querySelectorAll('.open-status-modal');
+            const commentModal = new bootstrap.Modal(document.getElementById('commentModal'));
+            const statusModal = new bootstrap.Modal(document.getElementById('meetingStatusModal'));
 
             commentButtons.forEach(button => {
                 button.addEventListener('click', function() {
@@ -377,13 +438,33 @@
                     const memberId = this.dataset.member_id;
                     const meetingId = this.dataset.meeting_id;
 
-                    // Set the values to hidden fields
                     document.getElementById('clusterMeetMemberMeetingId').value =
                         clusterMeetMemberMeetingId;
                     document.getElementById('commentMemberId').value = memberId;
                     document.getElementById('commentMeetingId').value = meetingId;
-                    modal.show();
+                    commentModal.show();
                 });
+            });
+
+            statusButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const status = this.dataset.status;
+                    const comment = this.dataset.comment || '';
+
+                    document.getElementById('statusMeetingMemberId').value = id;
+                    document.getElementById('meetingStatusSelect').value = status;
+                    document.getElementById('meetingStatusComment').value = comment;
+                    document.getElementById('meetingStatusCommentGroup').style.display = status ===
+                        '2' ? 'block' : 'none';
+                    statusModal.show();
+                });
+            });
+
+            const meetingStatusSelect = document.getElementById('meetingStatusSelect');
+            const meetingStatusCommentGroup = document.getElementById('meetingStatusCommentGroup');
+            meetingStatusSelect.addEventListener('change', function() {
+                meetingStatusCommentGroup.style.display = this.value === '2' ? 'block' : 'none';
             });
         });
     </script>

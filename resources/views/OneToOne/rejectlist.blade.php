@@ -87,8 +87,8 @@
                                                     class="btn btn-success">Cancel</button>
                                             </div>
                                             <!-- <button class="btn btn-success" type="button" onclick="exportExcel();">
-                                                                                                                                                                                                                                                                                                                                                <i class="fa-solid fa-file-excel fa-xl"></i>
-                                                                                                                                                                                                                                                                                                                                            </button> -->
+                                                                                                                                                                                                                                                                                                                                                    <i class="fa-solid fa-file-excel fa-xl"></i>
+                                                                                                                                                                                                                                                                                                                                                </button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -422,34 +422,35 @@
             </div>
         </div>
     </div>
-    function getEditData(id) {
+    <script>
+        function getEditData(id) {
 
-    var url = "{{ route('OneToOne.edit', ':id') }}";
-    url = url.replace(':id', id);
+            var url = "{{ route('OneToOne.edit', ':id') }}";
+            url = url.replace(':id', id);
 
-    $.ajax({
-    url: url,
-    type: 'GET',
-    success: function(res) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(res) {
 
-    $('#edit_id').val(res.id);
-    $('#edit_place').val(res.place);
-    $('#edit_comment').val(res.comment);
-    $('#edit_date').val(res.date);
-    $('#edit_to').val(res.to_id);
-    $('#hiddenPhoto').val(res.photo);
+                    $('#edit_id').val(res.id);
+                    $('#edit_place').val(res.place);
+                    $('#edit_comment').val(res.comment);
+                    $('#edit_date').val(res.date);
+                    $('#edit_to').val(res.to_id);
+                    $('#hiddenPhoto').val(res.photo);
 
-    // image show
-    if (res.photo) {
-    $('#edit_img').html(
-    '<img src="/OneToOne/' + res.photo + '" width="80">'
-    );
-    }
+                    // image show
+                    if (res.photo) {
+                        $('#edit_img').html(
+                            '<img src="/OneToOne/' + res.photo + '" width="80">'
+                        );
+                    }
 
-    $('#EditModal').modal('show');
-    }
-    });
-    }
+                    $('#EditModal').modal('show');
+                }
+            });
+        }
     </script>
 
     <script>
