@@ -87,8 +87,8 @@
                                                     class="btn btn-success">Cancel</button>
                                             </div>
                                             <!-- <button class="btn btn-success" type="button" onclick="exportExcel();">
-                                                                                                                                                                                                                                                                                                                                                <i class="fa-solid fa-file-excel fa-xl"></i>
-                                                                                                                                                                                                                                                                                                                                            </button> -->
+                                                                                                                                                                                                                                                                                                                                                        <i class="fa-solid fa-file-excel fa-xl"></i>
+                                                                                                                                                                                                                                                                                                                                                    </button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -203,16 +203,10 @@
                                                                 <td class="text-center">
                                                                     {{ $Business1->isapproved_status == 0 ? 'Pending' : ($Business1->isapproved_status == 1 ? 'Approved' : 'Rejected') }}
                                                                 </td>
-
-
-
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
-
-
                                                 </table>
-
                                             </div>
                                             <div class="d-flex justify-content-center mt-3">
                                                 {{ $Business->links() }}

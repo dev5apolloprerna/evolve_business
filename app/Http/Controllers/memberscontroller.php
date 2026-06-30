@@ -59,6 +59,7 @@ class memberscontroller extends Controller
             'members.address',
             'members.pincode',
             'members.gstnumber',
+            DB::raw('COALESCE(mp.points_total, 0) AS points_total'),
             'ref_user.first_name as referred_by_name'
         )
             ->orderBy('members.id', 'desc')
@@ -66,6 +67,7 @@ class memberscontroller extends Controller
             ->leftjoin('city_groups', 'city_groups.id', 'members.citygroup_id')
             ->leftjoin('categories', 'categories.id', 'members.category_id')
             ->leftjoin('users', 'users.id', 'members.user_id')
+            ->leftJoin(DB::raw('(SELECT member_id, SUM(points) AS points_total FROM member_points GROUP BY member_id) AS mp'), 'mp.member_id', '=', 'users.id')
             ->leftJoin('users as ref_user', function ($join) {
                 $join->on('ref_user.id', '=', 'members.from')
                     ->whereRaw('members.from REGEXP "^[0-9]+$"');
@@ -596,7 +598,7 @@ class memberscontroller extends Controller
 
 
 
-    public function activity($id = null)
+    public function activity(Request $request, $id = null)
     {
         $member = members::select(
             'members.id',
@@ -613,6 +615,9 @@ class memberscontroller extends Controller
             ])
             ->firstOrFail();
 
+        $fromDate = $request->filled('from_date') ? date('Y-m-d', strtotime($request->from_date)) : null;
+        $toDate = $request->filled('to_date') ? date('Y-m-d', strtotime($request->to_date)) : null;
+
         $directBusinesses = DB::table('Business')
             ->where([
                 'iStatus' => 1,
@@ -620,6 +625,12 @@ class memberscontroller extends Controller
                 'business_type' => 1,
                 'business_from_id' => $member->user_id,
             ])
+            ->when($fromDate, function ($query) use ($fromDate) {
+                return $query->whereDate('business_Date', '>=', $fromDate);
+            })
+            ->when($toDate, function ($query) use ($toDate) {
+                return $query->whereDate('business_Date', '<=', $toDate);
+            })
             ->orderByDesc('business_id')
             ->get();
 
@@ -630,6 +641,12 @@ class memberscontroller extends Controller
                 'business_type' => 2,
                 'business_from_id' => $member->user_id,
             ])
+            ->when($fromDate, function ($query) use ($fromDate) {
+                return $query->whereDate('business_Date', '>=', $fromDate);
+            })
+            ->when($toDate, function ($query) use ($toDate) {
+                return $query->whereDate('business_Date', '<=', $toDate);
+            })
             ->orderByDesc('business_id')
             ->get();
 
@@ -639,16 +656,34 @@ class memberscontroller extends Controller
                 'isDelete' => 0,
                 'Reference_from' => $member->user_id,
             ])
+            ->when($fromDate, function ($query) use ($fromDate) {
+                return $query->whereDate('Reference_Date', '>=', $fromDate);
+            })
+            ->when($toDate, function ($query) use ($toDate) {
+                return $query->whereDate('Reference_Date', '<=', $toDate);
+            })
             ->orderByDesc('Reference_id')
             ->get();
 
         $visitors = DB::table('visitors')
             ->where('created_by', $member->user_id)
+            ->when($fromDate, function ($query) use ($fromDate) {
+                return $query->whereDate('created_at', '>=', $fromDate);
+            })
+            ->when($toDate, function ($query) use ($toDate) {
+                return $query->whereDate('created_at', '<=', $toDate);
+            })
             ->orderByDesc('id')
             ->get();
 
         $events = DB::table('news_and_events')
             ->where('created_by', $member->user_id)
+            ->when($fromDate, function ($query) use ($fromDate) {
+                return $query->whereDate('eventstart_date', '>=', $fromDate);
+            })
+            ->when($toDate, function ($query) use ($toDate) {
+                return $query->whereDate('eventstart_date', '<=', $toDate);
+            })
             ->orderByDesc('event_id')
             ->get();
         $attendedEvents = DB::table('event_members as em')
@@ -662,6 +697,12 @@ class memberscontroller extends Controller
             )
             ->leftJoin('news_and_events as ne', 'ne.event_id', '=', 'em.event_id')
             ->where('em.member_id', $member->user_id)
+            ->when($fromDate, function ($query) use ($fromDate) {
+                return $query->whereDate('em.created_at', '>=', $fromDate);
+            })
+            ->when($toDate, function ($query) use ($toDate) {
+                return $query->whereDate('em.created_at', '<=', $toDate);
+            })
             ->orderByDesc('em.id')
             ->get();
 
@@ -671,11 +712,52 @@ class memberscontroller extends Controller
                 'isDelete' => 0,
                 'from_id' => $member->user_id,
             ])
+            ->when($fromDate, function ($query) use ($fromDate) {
+                return $query->whereDate('date', '>=', $fromDate);
+            })
+            ->when($toDate, function ($query) use ($toDate) {
+                return $query->whereDate('date', '<=', $toDate);
+            })
             ->orderByDesc('id')
             ->get();
         $directBusinessTotal = $directBusinesses->sum('Business_amount');
 
         $referenceBusinessTotal = $referenceBusinesses->sum('Business_amount');
+
+        $memberMeetingCount = DB::table('Cluster_Meet_Member_meeting')
+            ->where('member_id', $member->id)
+            ->where('iStatus', 1)
+            ->where('isDelete', 0)
+            ->count();
+        $memberPointCount = DB::table('member_points')
+            ->where('member_id', $member->user_id)
+            ->when($fromDate, function ($query) use ($fromDate) {
+                return $query->whereDate('created_at', '>=', $fromDate);
+            })
+            ->when($toDate, function ($query) use ($toDate) {
+                return $query->whereDate('created_at', '<=', $toDate);
+            })
+            ->sum('points');
+
+        $memberMeetings = DB::table('Cluster_Meet_Member_meeting as mm')
+            ->select('mm.*', 'Cluster_Meet.Meeting_title', 'Cluster_Meet.start_date', 'Cluster_Meet.End_date')
+            ->leftJoin('Cluster_Meet', 'mm.meeting_id', '=', 'Cluster_Meet.id')
+            ->where('mm.member_id', $member->id)
+            ->where('mm.iStatus', 1)
+            ->where('mm.isDelete', 0)
+            ->orderBy(DB::raw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i')"), 'DESC')
+            ->get();
+
+        $memberPoints = DB::table('member_points')
+            ->where('member_id', $member->user_id)
+            ->when($fromDate, function ($query) use ($fromDate) {
+                return $query->whereDate('created_at', '>=', $fromDate);
+            })
+            ->when($toDate, function ($query) use ($toDate) {
+                return $query->whereDate('created_at', '<=', $toDate);
+            })
+            ->orderByDesc('id')
+            ->get();
 
         return view('members.activity', compact(
             'member',
@@ -687,7 +769,13 @@ class memberscontroller extends Controller
             'attendedEvents',
             'oneToOnes',
             'directBusinessTotal',
-            'referenceBusinessTotal'
+            'referenceBusinessTotal',
+            'memberMeetingCount',
+            'memberPointCount',
+            'memberMeetings',
+            'memberPoints',
+            'fromDate',
+            'toDate'
         ));
     }
 }

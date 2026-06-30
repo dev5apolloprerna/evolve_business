@@ -434,16 +434,28 @@ class MemberBusinesscontroller extends Controller
         return redirect()->back();
     }
 
-    public function meetinglogincheck(Request $request)
+    public function meetinglogincheck(Request $request, $id = null)
     {
-        $id = Auth::user()->id;
-        $members = members::where('user_id', $id)->first();
-
-        DB::table('Cluster_Meet_Member_meeting')->where(['id' => $request->id, 'member_id' => $members->id])->update([
-            'is_approve_meeting' => $request->newStatus,
-            'is_approve_by' => Auth::user()->id,
-            'created_at' => date('Y-m-d H:i:s'),
+        $request->validate([
+            'newStatus' => 'required|in:1,2',
+            'id' => 'required|integer',
+            'comment' => 'required_if:newStatus,2|string|max:500',
         ]);
+
+        $userId = Auth::user()->id;
+        $members = members::where('user_id', $userId)->first();
+
+        $updateData = [
+            'is_approve_meeting' => $request->newStatus,
+            'is_approve_by' => $userId,
+            'created_at' => date('Y-m-d H:i:s'),
+        ];
+
+        if ($request->filled('comment')) {
+            $updateData['comment'] = $request->comment;
+        }
+
+        DB::table('Cluster_Meet_Member_meeting')->where(['id' => $request->id, 'member_id' => $members->id])->update($updateData);
         return redirect()->back();
     }
 

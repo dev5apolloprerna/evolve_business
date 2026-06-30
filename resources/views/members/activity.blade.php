@@ -36,6 +36,29 @@
                     </div>
                 </div>
 
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <form method="get" action="{{ route('members.activity', $member->id) }}"
+                            class="row gy-3 gx-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">From Date</label>
+                                <input type="date" name="from_date" class="form-control"
+                                    value="{{ $fromDate ? date('Y-m-d', strtotime($fromDate)) : '' }}">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">To Date</label>
+                                <input type="date" name="to_date" class="form-control"
+                                    value="{{ $toDate ? date('Y-m-d', strtotime($toDate)) : '' }}">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success">Filter</button>
+                                <a href="{{ route('members.activity', $member->id) }}"
+                                    class="btn btn-outline-secondary ms-2">Reset</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
                         <div class="card activity-card active" data-target="direct-business-section">
@@ -59,6 +82,22 @@
                             <div class="card-body text-center">
                                 <h6 class="mb-1">Reference List</h6>
                                 <h4 class="mb-0">{{ $references->count() }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card activity-card" data-target="member-meetings-section">
+                            <div class="card-body text-center">
+                                <h6 class="mb-1">Member Meeting Count</h6>
+                                <h4 class="mb-0">{{ $memberMeetingCount }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card activity-card" data-target="member-points-section">
+                            <div class="card-body text-center">
+                                <h6 class="mb-1">Member Point Count</h6>
+                                <h4 class="mb-0">{{ $memberPointCount }}</h4>
                             </div>
                         </div>
                     </div>
@@ -208,6 +247,82 @@
                                 @empty
                                     <tr>
                                         <td colspan="6" class="text-center">No references found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card mb-3 activity-section d-none" id="member-meetings-section">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Member Meeting History</h5>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Meeting Title</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($memberMeetings as $item)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $item->Meeting_title ?? '-' }}</td>
+                                        <td>{{ !empty($item->start_date) ? $item->start_date : '-' }}</td>
+                                        <td>{{ !empty($item->End_date) ? $item->End_date : '-' }}</td>
+                                        <td>
+                                            @if (!empty($item->meeting_id))
+                                                <a href="{{ route('Membermeeting.Membercomment', $item->meeting_id) }}"
+                                                    class="btn btn-sm btn-outline-primary">
+                                                    View Comments
+                                                </a>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center">No member meetings found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card mb-3 activity-section d-none" id="member-points-section">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Member Point History</h5>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Points</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($memberPoints as $item)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $item->points ?? 0 }}</td>
+                                        <td>{{ $item->description ?? '-' }}</td>
+                                        <td>{{ !empty($item->created_at) ? date('d-m-Y H:i', strtotime($item->created_at)) : '-' }}
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">No member points found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

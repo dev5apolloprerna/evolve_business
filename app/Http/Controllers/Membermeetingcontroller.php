@@ -260,7 +260,15 @@ class Membermeetingcontroller extends Controller
         try {
             $metting_id = $id ?? '';
             $datas = DB::table('Cluster_Meet_Member_meeting')
-                ->select('Cluster_Meet_Member_meeting.id as Cluster_Meet_Member_meeting_id', 'Cluster_Meet_Member_meeting.member_id', 'Cluster_Meet_Member_meeting.meeting_id', 'members.Contact_person', 'Cluster_Meet.*')
+                ->select(
+                    'Cluster_Meet_Member_meeting.id as Cluster_Meet_Member_meeting_id',
+                    'Cluster_Meet_Member_meeting.member_id',
+                    'Cluster_Meet_Member_meeting.meeting_id',
+                    'Cluster_Meet_Member_meeting.is_approve_meeting',
+                    'Cluster_Meet_Member_meeting.comment',
+                    'members.Contact_person',
+                    'Cluster_Meet.*'
+                )
                 ->leftJoin('members', 'Cluster_Meet_Member_meeting.member_id', '=', 'members.id')
                 ->leftJoin('Cluster_Meet', 'Cluster_Meet_Member_meeting.meeting_id', '=', 'Cluster_Meet.id')
                 ->where('Cluster_Meet_Member_meeting.meeting_id', $id)

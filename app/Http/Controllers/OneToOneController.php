@@ -42,13 +42,17 @@ class OneToOneController extends Controller
                 ->get();
 
             $Datadrop = User::where('status', 1)->orderBy('first_name')->get();
-
+            //dd($session);
             $OneToOne = OneToOne::where('one_to_one_detail.iStatus', 1)
                 ->where('one_to_one_detail.isDelete', 0)
                 ->where('one_to_one_detail.isapproved_status', 0)
 
                 // Important: sirf logged-in TO member ke pending records
-                ->where('one_to_one_detail.to_id', $session)
+
+                // ->where('one_to_one_detail.to_id', $session)
+                ->when($session != 1, function ($query) use ($session) {
+                    return $query->where('one_to_one_detail.to_id', $session);
+                })
 
                 ->when($request->fromdate, function ($query, $FromDate) {
                     return $query->where(
@@ -65,7 +69,6 @@ class OneToOneController extends Controller
                         date('Y-m-d 23:59:59', strtotime($ToDate))
                     );
                 });
-
             if ($businesstype !== "" && $businesstype !== null) {
                 $OneToOne->where('one_to_one_detail.isapproved_status', $businesstype);
             }
