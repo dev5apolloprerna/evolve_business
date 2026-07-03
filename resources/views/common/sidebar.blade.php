@@ -409,20 +409,35 @@
                             } else {
                                 $BusinesscurrentYear = \Carbon\Carbon::now()->year;
                             }
+                            // $manOfTheMonth = App\Models\MemberPoint::join(
+                            //     'users',
+                            //     'users.id',
+                            //     '=',
+                            //     'member_points.member_id',
+                            // )
+                            //     ->whereYear('member_points.created_at', $BusinesscurrentYear)
+                            //     ->whereMonth('member_points.created_at', $BusinesscurrentMonth)
+                            //     ->select('users.first_name', 'users.email')
+                            //     ->selectRaw('SUM(member_points.points) as total_points')
+                            //     ->groupBy('member_points.member_id', 'users.first_name', 'users.email')
+                            //     ->orderByDesc('total_points')
+                            //     ->first();
+
+                            $loginMemberId = Auth::id();
+
                             $manOfTheMonth = App\Models\MemberPoint::join(
                                 'users',
                                 'users.id',
                                 '=',
                                 'member_points.member_id',
                             )
+                                ->where('member_points.member_id', $loginMemberId)
                                 ->whereYear('member_points.created_at', $BusinesscurrentYear)
                                 ->whereMonth('member_points.created_at', $BusinesscurrentMonth)
                                 ->select('users.first_name', 'users.email')
-                                ->selectRaw('SUM(member_points.points) as total_points')
-                                ->groupBy('member_points.member_id', 'users.first_name', 'users.email')
-                                ->orderByDesc('total_points')
+                                ->selectRaw('COALESCE(SUM(member_points.points), 0) as total_points')
+                                ->groupBy('users.id', 'users.first_name', 'users.email')
                                 ->first();
-
                         @endphp
                 <li class="nav-item">
                     <a href="#" class="nav-link" data-key="t-chat">

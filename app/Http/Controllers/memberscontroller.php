@@ -129,6 +129,8 @@ class memberscontroller extends Controller
             'password'       => 'required',
             'address'     => 'required',
             'city_id'     => 'required',
+            'referred_to'   => 'required',
+            'referred_to_type' => 'required|in:member,other',
             'citygroup_id'  => [
                 'required',
                 Rule::unique('members')
@@ -141,8 +143,6 @@ class memberscontroller extends Controller
         ], [
             'citygroup_id.unique' => 'This group already exists for the selected category.',
         ]);
-
-
         $planId = $request->input('plan_id');
 
         $membershipPlan = membershipplans::where('id', $planId)->first();
@@ -172,6 +172,8 @@ class memberscontroller extends Controller
             // 'subcategories_id' => 0,                                               
             'pincode'        => $request->pincode,
             'from'        => $request->referred_to,
+            //'referred_to_type' => $request->referred_to_type,
+
             'priority_club_3_year' => $request->priority_club_3_year,
             'gstnumber'      => $request->gstnumber,
             'date_of_birth'      => $request->date_of_birth,
@@ -183,6 +185,32 @@ class memberscontroller extends Controller
             'strIP'          => $request->ip(),
             'created_by'     => auth()->id(),
         ]);
+        if (
+            $request->filled('referred_to') &&
+            $request->filled('referred_to_type') &&
+            $request->referred_to_type == 'member'
+        ) {
+            $referredMember = User::leftJoin('members', 'members.user_id', '=', 'users.id')
+                ->where('users.id', $request->referred_to)
+                ->where('users.status', 1)
+                ->where('members.Arrival_flag', 0)
+                ->select('users.id')
+                ->first();
+
+            if ($referredMember) {
+                DB::table('member_points')->insert([
+                    'business_id' => 0,
+                    'member_id'   => $referredMember->id,
+                    'points_id'   => 1,
+                    'points'      => 20,
+                    'status'      => 0,
+                    'description' => 'New Member Induction',
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]);
+            }
+        }
+
         $renewalHistory = DB::table('renewal_history')->insertGetId([
             'member_id'     => $member,
             'plan_id'       => $request->plan_id,

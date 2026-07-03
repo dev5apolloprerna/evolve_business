@@ -130,39 +130,6 @@ class MemberBusinesscontroller extends Controller
             );
 
             $businessId = DB::table('Business')->insertGetId($Data);
-
-            /* ================================
-                Insert into member_points
-                ================================ */
-
-            $pointsId = null;
-
-            if ($request->business_type == 1) {
-                // Direct
-                $pointsId = 4;
-            } elseif ($request->business_type == 2) {
-                // Reference
-                $pointsId = 5;
-            }
-
-            if ($pointsId) {
-                $pointsData = DB::table('points_master')
-                    ->where('id', $pointsId)
-                    ->first();
-
-                if ($pointsData) {
-                    DB::table('member_points')->insert([
-                        'business_id' => $businessId,
-                        'member_id'  => $session->id,
-                        'points_id'  => $pointsData->id,
-                        'points'     => $pointsData->points,
-                        'status'     => 0,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                }
-            }
-
             $toUserEmail = $ToUser ? $ToUser->email : null;
             $sendemaildetails = DB::table('sendemaildetails')->where('id', 2)->first();
             $msg = [
@@ -338,19 +305,18 @@ class MemberBusinesscontroller extends Controller
         //     })
         //     ->orderBy('event_id', 'DESC')
         //     ->paginate(env('PAR_PAGE_COUNT', 20));  
+
+        $Memberid = $member->id;
+
         $Events = Event::where([
             'iStatus' => 1,
             'isDelete' => 0,
+            'isapproved_status' => 0,
+
         ])
-            ->whereJsonContains('assign_member_id', (string) Auth::id())
-            ->whereNotIn('event_id', function ($query) {
-                $query->select('event_id')
-                    ->from('event_members')
-                    ->where('member_id', Auth::id());
-            })
+            ->whereJsonContains('assign_member_id', (string) $Memberid)
             ->orderByDesc('event_id')
             ->paginate(env('PAR_PAGE_COUNT', 20));
-        //dd($Events);
 
         $hasBrandShowcase = $Member_metting->getCollection()->contains(function ($item) {
             return $item->ppt_taken_1 > 0 ||
@@ -361,24 +327,94 @@ class MemberBusinesscontroller extends Controller
         return view('pendinglogincheck.index', compact('hasBrandShowcase', 'pendingMeeting', 'member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
+    // public function statuspendinglogin(Request $request)
+    // {
+    //     DB::table('Business')->where('business_id', $request->id)->update([
+    //         'isapproved_status' => $request->newStatus,
+    //         'businesscomment'  => $request->businesscomment,
+    //         'approved_by' => Auth::user()->user_type,
+    //         'approved_by_id' => Auth::user()->id,
+    //         'Business_received_date' => date('Y-m-d H:i:s'),
+
+    //     ]);
+    //     $business = DB::table('Business')->where('business_id', $request->id)->first();
+    //     $pointsId = null;
+
+    //     if ($business->business_type == 1) {
+    //         // Direct
+    //         $pointsId = 4;
+    //     } elseif ($business->business_type == 2) {
+    //         // Reference
+    //         $pointsId = 5;
+    //     }
+
+    //     if ($pointsId) {
+    //         $pointsData = DB::table('points_master')
+    //             ->where('id', $pointsId)
+    //             ->first();
+
+    //         if ($pointsData) {
+    //             DB::table('member_points')->insert([
+    //                 'business_id' => $business->business_id,
+    //                 'member_id'  => Auth::id(),
+    //                 'points_id'  => $pointsData->id,
+    //                 'points'     => $pointsData->points,
+    //                 'status'     => 0,
+    //                 'created_at' => now(),
+    //                 'updated_at' => now()
+    //             ]);
+    //         }
+    //     }
+    //     return redirect()->back();
+    // }
+
     public function statuspendinglogin(Request $request)
     {
         DB::table('Business')->where('business_id', $request->id)->update([
             'isapproved_status' => $request->newStatus,
-            'businesscomment'  => $request->businesscomment,
-            'approved_by' => Auth::user()->user_type,
-            'approved_by_id' => Auth::user()->id,
-            'Business_received_date' => date('Y-m-d H:i:s'),
-
+            'businesscomment'   => $request->businesscomment,
+            'approved_by'       => Auth::user()->user_type,
+            'approved_by_id'    => Auth::user()->id,
+            'Business_received_date' => now(),
         ]);
 
-        // update member_points status
-        DB::table('member_points')
-            ->where('business_id', $request->id)
-            ->update([
-                'status' => $request->newStatus,
-                'updated_at' => now()
-            ]);
+        // Only add points if Approved
+        if ($request->newStatus == 1) {
+
+            $business = DB::table('Business')
+                ->where('business_id', $request->id)
+                ->first();
+
+            $pointsId = null;
+
+            if ($business->business_type == 1) {
+                // Direct
+                $pointsId = 4;
+            } elseif ($business->business_type == 2) {
+                // Reference
+                $pointsId = 5;
+            }
+
+            if ($pointsId) {
+                $pointsData = DB::table('points_master')
+                    ->where('id', $pointsId)
+                    ->first();
+
+                if ($pointsData) {
+                    DB::table('member_points')->insert([
+                        'business_id' => $business->business_id,
+                        'member_id'   => Auth::id(),
+                        'points_id'   => $pointsData->id,
+                        'points'      => $pointsData->points,
+                        'status'      => 0,
+                        'description'      => 'Business ' . ($business->business_type == 1 ? 'Direct' : 'Reference') . ' Approved',
+                        'created_at'  => now(),
+                        'updated_at'  => now(),
+                    ]);
+                }
+            }
+        }
+
         return redirect()->back();
     }
 
@@ -393,6 +429,16 @@ class MemberBusinesscontroller extends Controller
             'receive_date' => date('Y-m-d H:i:s'),
 
         ]);
+        // Meeting User Points
+        DB::table('member_points')->insert([
+            'member_id'   => Auth::id(),
+            'business_id' => $request->id,
+            'points_id'   => 6,
+            'points'      => 5,
+            'description' => 'One to One Approved',
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
 
         // update member_points status
         DB::table('member_points')
@@ -401,6 +447,7 @@ class MemberBusinesscontroller extends Controller
                 'status' => $request->newStatus,
                 'updated_at' => now()
             ]);
+
         if ($request->newStatus == 2) {
             return redirect()->back();
         }
@@ -421,6 +468,42 @@ class MemberBusinesscontroller extends Controller
             'member_id' => Auth::user()->id,
             'created_at' => date('Y-m-d H:i:s'),
         ]);
+
+        if ($request->newStatus == 1) {
+            $events = DB::table('news_and_events')
+                ->where('event_id', $request->id)
+                ->first();
+
+            $pointsId = null;
+
+            if ($events->event_type == 1) {
+                // Direct
+                $pointsId = 2;
+            } elseif ($events->event_type == 2) {
+                // Reference
+                $pointsId = 7;
+            }
+
+            if ($pointsId) {
+                $pointsData = DB::table('points_master')
+                    ->where('id', $pointsId)
+                    ->first();
+
+                if ($pointsData) {
+                    DB::table('member_points')->insert([
+                        'business_id' => $request->id,
+                        'member_id'   => Auth::id(),
+                        'points_id'   => $pointsData->id,
+                        'points'      => $pointsData->points,
+                        'status'      => 0,
+                        'description'      => 'Event ' . ($events->event_type == 1 ? 'ESP' : 'Training') . ' Joined',
+                        'created_at'  => now(),
+                        'updated_at'  => now(),
+                    ]);
+                }
+            }
+        }
+
         return redirect()->back();
     }
 
@@ -454,8 +537,19 @@ class MemberBusinesscontroller extends Controller
         if ($request->filled('comment')) {
             $updateData['comment'] = $request->comment;
         }
-
         DB::table('Cluster_Meet_Member_meeting')->where(['id' => $request->id, 'member_id' => $members->id])->update($updateData);
+        if ($request->newStatus == 1) {
+            DB::table('member_points')->insert([
+                'business_id' => $request->id,
+                'member_id'   => Auth::id(),
+                'points_id'   => 3,
+                'points'      => 15,
+                'status'      => 0,
+                'description'      => 'Meeting Joined',
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+        }
         return redirect()->back();
     }
 

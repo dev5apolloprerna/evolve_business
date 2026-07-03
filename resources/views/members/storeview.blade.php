@@ -7,10 +7,10 @@
             <div class="container-fluid">
 
                 <!-- @if ($errors->any())
-                                                                                    @foreach ($errors->all() as $error)
+                                                                                                                                        @foreach ($errors->all() as $error)
     <li class="mb-5" style="color:red">{{ $error }}</li>
     @endforeach
-                                                                                @endif -->
+                                                                                                                                    @endif -->
 
                 {{-- Alert Messages --}}
                 @include('common.alert')
@@ -135,27 +135,42 @@
                                                 <label for="referred_to"><span style="color:red;">*</span>Inducted
                                                     By</label>
 
-                                                <select class="form-select" name="referred_to"
-                                                    id="choices-single-default">
+                                                <select class="form-select" name="referred_to" id="referred_to_select"
+                                                    required>
+                                                    <option value="" disabled
+                                                        {{ old('referred_to') ? '' : 'selected' }}>
+                                                        Select Inducted
+                                                    </option>
 
-                                                    <option value="" disabled selected>Select Inducted</option>
-
-                                                    {{-- ✅ Dynamic Members --}}
+                                                    {{-- Dynamic Members --}}
                                                     @foreach ($Data as $data)
                                                         @if ($data->id)
-                                                            <option value="{{ $data->id }}">
+                                                            <option value="{{ $data->id }}" data-type="member"
+                                                                {{ old('referred_to') == $data->id && old('referred_to_type') == 'member' ? 'selected' : '' }}>
                                                                 {{ $data->first_name }} - ({{ $data->mobile_number }})
                                                             </option>
                                                         @endif
                                                     @endforeach
-                                                    {{-- ✅ Static Options --}}
-                                                    <option value="1">Social Media</option>
-                                                    <option value="2">Committee Member
+
+                                                    {{-- Static Options --}}
+                                                    <option value="1" data-type="other"
+                                                        {{ old('referred_to') == '1' && old('referred_to_type') == 'other' ? 'selected' : '' }}>
+                                                        Social Media
                                                     </option>
-                                                    <option value="3">Website</option>
 
+                                                    <option value="2" data-type="other"
+                                                        {{ old('referred_to') == '2' && old('referred_to_type') == 'other' ? 'selected' : '' }}>
+                                                        Committee Member
+                                                    </option>
 
+                                                    <option value="3" data-type="other"
+                                                        {{ old('referred_to') == '3' && old('referred_to_type') == 'other' ? 'selected' : '' }}>
+                                                        Website
+                                                    </option>
                                                 </select>
+
+                                                <input type="hidden" name="referred_to_type" id="referred_to_type"
+                                                    value="{{ old('referred_to_type') }}">
                                             </div>
                                             <div class="col-lg-4 col-md-6 mt-3">
                                                 <div class="form-check">
@@ -291,6 +306,28 @@
 @endsection
 
 @section('scripts')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const referredSelect = document.getElementById('referred_to_select');
+            const referredType = document.getElementById('referred_to_type');
+
+            function setReferredType() {
+                const selectedOption = referredSelect.options[referredSelect.selectedIndex];
+
+                if (selectedOption && selectedOption.dataset.type) {
+                    referredType.value = selectedOption.dataset.type;
+                } else {
+                    referredType.value = '';
+                }
+            }
+
+            referredSelect.addEventListener('change', setReferredType);
+
+            // Set value on page load also
+            setReferredType();
+        });
+    </script>
 
     <script>
         new Choices('#choices-single-default', {
