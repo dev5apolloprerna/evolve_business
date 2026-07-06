@@ -60,6 +60,21 @@
                                                 value="<?= isset($ToDate) ? $ToDate : '' ?>">
                                         </div>
                                     </div>
+
+                                    <div class="col-md-2 mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select select2" id="given_by" name="given_by" data-choices
+                                                name="Contact_person">
+                                                <option value="">Select givenby</option>
+                                                @foreach ($businesses as $businesses1)
+                                                    <option value="{{ $businesses1->user_id }}"
+                                                        {{ isset($givenby) && $businesses1->user_id == $givenby ? 'selected' : '' }}>
+                                                        {{ $businesses1->Contact_person }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-3 mb-2">
                                         <div class="d-flex align-items-center">
                                             <div class="input-group d-flex">
@@ -142,7 +157,8 @@
                                                                 </td>
                                                                 <td class="text-center">{{ $Business1->Reference_from }}
                                                                 </td>
-                                                                <td class="text-center">{{ $Business1->Reference_to }}</td>
+                                                                <td class="text-center">{{ $Business1->Reference_to }}
+                                                                </td>
                                                                 <td class="text-center">
                                                                     {{ $Business1->Company_Name ? $Business1->Company_Name : 'N/A' }}
                                                                 </td>

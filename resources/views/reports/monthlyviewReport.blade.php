@@ -11,84 +11,110 @@
                 @include('common.alert')
                 <div class="row">
                     <div class="col-12">
+                        <div class="card-body">
 
+                            <form method="GET" action="{{ route('reports.monthlyreview') }}">
+                                <div class="row mb-3">
+
+                                    <div class="col-md-3">
+                                        <label>From Date</label>
+                                        <input type="date" name="from_date" class="form-control"
+                                            value="{{ request('from_date') }}">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label>To Date</label>
+                                        <input type="date" name="to_date" class="form-control"
+                                            value="{{ request('to_date') }}">
+                                    </div>
+
+                                    <div class="col-md-3 mt-4">
+                                        <button class="btn btn-primary">
+                                            Search
+                                        </button>
+
+                                        <a href="{{ route('reports.monthlyreview') }}" class="btn btn-secondary">
+                                            Reset
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                    <!-- Page Heading -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Monthly View Report</h5>
+                                </div>
+                                <div class="card-body">
 
-
-                <!-- Page Heading -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Monthly View Report</h5>
-                            </div>
-                            <div class="card-body">
-
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>City Group</th>
-                                            <th>Member Of The Month</th>
-                                            <th>Total Points</th>
-                                            <th>Highest Direct Business</th>
-                                            <th>Direct Amount</th>
-                                            <th>Highest Reference Business</th>
-                                            <th>Reference Amount</th>
-                                            <th>Top One To One</th>
-                                            <th>Total Meetings</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($reportData as $row)
+                                    <table class="table table-bordered">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $row['city_group'] }}</td>
-
-                                                <td>
-                                                    {{ $row['member_of_the_month']->Contact_person ?? '-' }}
-                                                    <br>
-                                                    <small>{{ $row['member_of_the_month']->companyname ?? '' }}</small>
-                                                </td>
-
-                                                <td>
-                                                    {{ $row['member_of_the_month']->total_points ?? 0 }}
-                                                </td>
-
-                                                <td>
-                                                    {{ $row['top_direct_business']->member_name ?? '-' }}
-                                                </td>
-
-                                                <td>
-                                                    ₹{{ number_format($row['top_direct_business']->total_amount ?? 0, 2) }}
-                                                </td>
-
-                                                <td>
-                                                    {{ $row['top_reference_business']->member_name ?? '-' }}
-                                                </td>
-
-                                                <td>
-                                                    ₹{{ number_format($row['top_reference_business']->total_amount ?? 0, 2) }}
-                                                </td>
-
-                                                <td>
-                                                    {{ $row['top_one_to_one']->member_name ?? '-' }}
-                                                </td>
-
-                                                <td>
-                                                    {{ $row['top_one_to_one']->total_meetings ?? 0 }}
-                                                </td>
+                                                <th>City Group</th>
+                                                <th>Member Of The Month</th>
+                                                <th>Total Points</th>
+                                                <th>Highest Direct Business</th>
+                                                <th>Direct Amount</th>
+                                                <th>Highest Reference Business</th>
+                                                <th>Reference Amount</th>
+                                                <th>Top One To One</th>
+                                                <th>Total Meetings</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($reportData as $row)
+                                                <tr>
+                                                    <td>{{ $row['city_group'] }}</td>
 
-                                {{-- <div class="d-flex justify-content-center mt-3">
+                                                    <td>
+                                                        {{ $row['member_of_the_month']->Contact_person ?? '-' }}
+                                                        <br>
+                                                        <small>{{ $row['member_of_the_month']->companyname ?? '' }}</small>
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $row['member_of_the_month']->total_points ?? 0 }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $row['top_direct_business']->member_name ?? '-' }}
+                                                    </td>
+
+                                                    <td>
+                                                        ₹{{ number_format($row['top_direct_business']->total_amount ?? 0, 2) }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $row['top_reference_business']->member_name ?? '-' }}
+                                                    </td>
+
+                                                    <td>
+                                                        ₹{{ number_format($row['top_reference_business']->total_amount ?? 0, 2) }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $row['top_one_to_one']->member_name ?? '-' }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $row['top_one_to_one']->total_meetings ?? 0 }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
+                                    {{-- <div class="d-flex justify-content-center mt-3">
                                     {{ $reportData->links() }}
                                 </div> --}}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endsection
-            @section('scripts')
-            @endsection
+                @endsection
+                @section('scripts')
+                @endsection

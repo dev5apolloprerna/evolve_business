@@ -77,6 +77,19 @@
                                                 value="<?= isset($ToDate) ? $ToDate : '' ?>">
                                         </div>
                                     </div>
+                                    <div class="col-md-2 mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select select2" id="given_by" name="given_by" data-choices
+                                                name="Contact_person">
+                                                <option value="">Select givenby</option>
+                                                @foreach ($businesses as $businesses1)
+                                                    <option value="{{ $businesses1->user_id }}"
+                                                        {{ isset($givenby) && $businesses1->user_id == $givenby ? 'selected' : '' }}>
+                                                        {{ $businesses1->Contact_person }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
 
                                     <div class="col-md-4 mb-2">
                                         <div class="d-flex align-items-center ">
@@ -87,8 +100,8 @@
                                                     class="btn btn-success">Cancel</button>
                                             </div>
                                             <!-- <button class="btn btn-success" type="button" onclick="exportExcel();">
-                                                                                                                                                                                                                                                                                                                                                <i class="fa-solid fa-file-excel fa-xl"></i>
-                                                                                                                                                                                                                                                                                                                                            </button> -->
+                                                                                                                                                                                                                                                                                                                                                    <i class="fa-solid fa-file-excel fa-xl"></i>
+                                                                                                                                                                                                                                                                                                                                                </button> -->
                                         </div>
                                     </div>
                                 </div>

@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 @section('title', 'Business List')
 @section('content')
@@ -40,7 +39,7 @@
                 {{-- start search  --}}
                 <div class="col-lg-12">
                     <div class="card">
-                       
+
                         <div class="card-body">
                             <form method="post" id="form" action="{{ route('Business.index') }}">
                                 @csrf
@@ -48,37 +47,42 @@
                                     <!-- new search add -->
                                     <div class="col-md-2 mb-2">
                                         <div class="d-flex align-items-center">
-                                        <select class="form-control" name="business_type" id="business_type">
-                                            <option value="">Select Business Type</option>
-                                            <option value="1" {{ $businesstype == '1' ? 'selected' : '' }}>Direct</option>
-                                            <option value="2" {{ $businesstype == '2' ? 'selected' : '' }}>Reference</option>
-                                        </select>
+                                            <select class="form-control" name="business_type" id="business_type">
+                                                <option value="">Select Business Type</option>
+                                                <option value="1" {{ $businesstype == '1' ? 'selected' : '' }}>Direct
+                                                </option>
+                                                <option value="2" {{ $businesstype == '2' ? 'selected' : '' }}>
+                                                    Reference</option>
+                                            </select>
                                         </div>
                                     </div>
-                                   
+
                                     <div class="col-md-2 mb-2">
-                                        <div class="d-flex align-items-center">                                
-                                            <select class="form-select select2" id="given_by" name="given_by" data-choices name="Contact_person">
-                                                    <option value="">Select givenby</option>
-                                                    @foreach ($businesses as $businesses1)
-                                                        <option value="{{ $businesses1->user_id }}" {{isset($givenby) && $businesses1->user_id == $givenby ? 'selected' : '' }}>{{ $businesses1->Contact_person }}</option>
-                                                    @endforeach
-                                                </select>                                         
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select select2" id="given_by" name="given_by" data-choices
+                                                name="Contact_person">
+                                                <option value="">Select givenby</option>
+                                                @foreach ($businesses as $businesses1)
+                                                    <option value="{{ $businesses1->user_id }}"
+                                                        {{ isset($givenby) && $businesses1->user_id == $givenby ? 'selected' : '' }}>
+                                                        {{ $businesses1->Contact_person }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
                                     <!-- <div class="col-md-2 mb-2">
-                                        <div class="d-flex align-items-center">                                
-                                            <select class="form-select" id="given_by" name="given_by">
-                                                    <option value="">Select given by</option>
-                                                    @foreach ($businesses as $businesses1)
-                                                        <option value="{{ $businesses1->user_id }}" {{isset($givenby) && $businesses1->user_id == $givenby ? 'selected' : '' }}>{{ $businesses1->Contact_person }}</option>
-                                                    @endforeach
-                                                </select>                                         
-                                        </div>
-                                    </div> -->
-                                    
-                                        <!-- new search add -->
+                                            <div class="d-flex align-items-center">
+                                                <select class="form-select" id="given_by" name="given_by">
+                                                        <option value="">Select given by</option>
+                                                        @foreach ($businesses as $businesses1)
+    <option value="{{ $businesses1->user_id }}" {{ isset($givenby) && $businesses1->user_id == $givenby ? 'selected' : '' }}>{{ $businesses1->Contact_person }}</option>
+    @endforeach
+                                                    </select>
+                                            </div>
+                                        </div> -->
+
+                                    <!-- new search add -->
                                     <div class="col-md-2 mb-2">
                                         <div class="d-flex align-items-center">
                                             <input placeholder="Enter From Date" type="text" class="form-control"
@@ -93,13 +97,14 @@
                                                 value="<?= isset($ToDate) ? $ToDate : '' ?>">
                                         </div>
                                     </div>
-                                  
+
                                     <div class="col-md-4 mb-2">
                                         <div class="d-flex align-items-center ">
                                             <div class="input-group d-flex ">
-                                                <input type="submit" id="search" class="btn btn-success mx-2" name="search"
-                                                    title="Search" value="Search">
-                                                <button type="button" id="cancel_search" class="btn btn-success">Cancel</button>   
+                                                <input type="submit" id="search" class="btn btn-success mx-2"
+                                                    name="search" title="Search" value="Search">
+                                                <button type="button" id="cancel_search"
+                                                    class="btn btn-success">Cancel</button>
                                             </div>
                                             <button class="btn btn-success" type="button" onclick="exportExcel();">
                                                 <i class="fa-solid fa-file-excel fa-xl"></i>
@@ -124,7 +129,7 @@
                                 <div>
                                     <a href="{{ route('Business.resendReminder') }}"class="btn btn-success">Resend
                                         Reminder</a>
-                                    <a href="{{ route('Business.storeview') }}"   class="btn btn-success">Add Business</a>
+                                    <a href="{{ route('Business.storeview') }}" class="btn btn-success">Add Business</a>
                                 </div>
                             </div>
                         </div>
@@ -134,93 +139,99 @@
                                     aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
                                     id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
                                     <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
-                                        @if($Count > 0)
-                                        <div class="table-responsive scrollbar">
-                                            <table class="table table-bordered table-striped fs--1 mb-0">
-                                                <thead class="bg-200 text-900">
-                                                    <tr>
-                                                        <th width="2%" data-sort="Title">Sr No</th>
-                                                        <th width="2%" data-sort="Title">Business Type
-                                                        </th>
-                                                        <th width="5%" data-sort="Date">Given By</th>
-                                                        <th width="5%" data-sort="Date">Given To</th>
-                                                        <th width="5%" data-sort="Date">Amount</th>
-                                                        <th width="5%" data-sort="Date">Business date
-                                                        </th>
-                                                        <th width="5%" data-sort="Date">Status</th>
-                                                        <!-- <th width="5%" class="sort" data-sort="Date">Available seats
-                                                            </th> -->
-                                                        <th width="5%" data-sort="Action">Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="list">
-                                                    <?php $i = 1; 
-                                                     $total=0;
-                                                    ?>
-                                                    @foreach ($Business as $Business1)
+                                        @if ($Count > 0)
+                                            <div class="table-responsive scrollbar">
+                                                <table class="table table-bordered table-striped fs--1 mb-0">
+                                                    <thead class="bg-200 text-900">
                                                         <tr>
-                                                            <td class="text-center">
-                                                               
-                                                                {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
-                                                            </td>
-                                                            <td class="text-center">
-                                                                {{ $Business1->business_type == 1 ? 'Direct' : 'Reference' }}
-                                                            </td>
-                                                            <td class="text-center">{{ $Business1->business_from }}</td>
-                                                            <td class="text-center">{{ $Business1->business_to }}</td>
-                                                            <td class="text-center">{{ $Business1->Business_amount }}</td>
-                                                            <td class="text-center">
-                                                                {{ \Carbon\Carbon::parse($Business1->business_Date)->format('d-m-Y') }}
-                                                            </td>
-                                                            <td class="text-center">
-                                                                {{ $Business1->isapproved_status == 0 ? 'Pending' : '' }}
-                                                            </td>
-
-                                                            <td class="d-flex gap-2 justify-content-center">
-                                                                <a href="#" data-bs-toggle="modal"
-                                                                    data-bs-target="#EditModal"
-                                                                    onclick="getEditData(<?= $Business1->business_id ?>)"
-                                                                    class="" title="Edit">
-                                                                    <span class="text-500 fas fa-edit"></span>
-                                                                </a>
-                                                                <a class="" href="#"
-                                                                    data-bs-toggle="modal" title="Delete"
-                                                                    data-bs-target="#deleteRecordModal"
-                                                                    onclick="deleteData(<?= $Business1->business_id ?>);">
-                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                </a>
-                                                                <a class="" href="#"
-                                                                    data-bs-toggle="modal" title="Status Changed"
-                                                                    data-bs-target="#statusModal"
-                                                                    onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
-                                                                    <i class="fas fa-plus-square" aria-hidden="true"></i>
-                                                                </a>
-
-                                                            </td>
+                                                            <th width="2%" data-sort="Title">Sr No</th>
+                                                            <th width="2%" data-sort="Title">Business Type
+                                                            </th>
+                                                            <th width="5%" data-sort="Date">Given By</th>
+                                                            <th width="5%" data-sort="Date">Given To</th>
+                                                            <th width="5%" data-sort="Date">Amount</th>
+                                                            <th width="5%" data-sort="Date">Business date
+                                                            </th>
+                                                            <th width="5%" data-sort="Date">Status</th>
+                                                            <!-- <th width="5%" class="sort" data-sort="Date">Available seats
+                                                                </th> -->
+                                                            <th width="5%" data-sort="Action">Action</th>
                                                         </tr>
-                                                        <?php $i++; 
-                                                        $total += $Business1->Business_amount;
+                                                    </thead>
+                                                    <tbody class="list">
+                                                        <?php $i = 1;
+                                                        $total = 0;
                                                         ?>
-                                                    @endforeach
-                                                </tbody>
-                                                <tr class="text-center">
-                                                    <td colspan="4" style="text-align: center;">Total</td>
-                                                    <td style="text-align: center;">{{$total}}</td>
-                                                <td colspan="3" style="text-align: center;"></td></tr>
+                                                        @foreach ($Business as $Business1)
+                                                            <tr>
+                                                                <td class="text-center">
 
-                                            </table>
-                                        </div>
-                                        <div class="d-flex justify-content-center mt-3">                                      
-                                        {{ $Business->appends(['business_type' => $businesstype,"given_by" => $givenby,'fromdate' => $FromDate,'todate' => $ToDate,])->links() }}
-                                        </div>
-                                        @else 
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
-                                                <div class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
-                                                    <h1 class="font-white text-center"> No Data Found ! </h1>
+                                                                    {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->business_type == 1 ? 'Direct' : 'Reference' }}
+                                                                </td>
+                                                                <td class="text-center">{{ $Business1->business_from }}
+                                                                </td>
+                                                                <td class="text-center">{{ $Business1->business_to }}</td>
+                                                                <td class="text-center">{{ $Business1->Business_amount }}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ \Carbon\Carbon::parse($Business1->business_Date)->format('d-m-Y') }}
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    {{ $Business1->isapproved_status == 0 ? 'Pending' : '' }}
+                                                                </td>
+
+                                                                <td class="d-flex gap-2 justify-content-center">
+                                                                    <a href="#" data-bs-toggle="modal"
+                                                                        data-bs-target="#EditModal"
+                                                                        onclick="getEditData(<?= $Business1->business_id ?>)"
+                                                                        class="" title="Edit">
+                                                                        <span class="text-500 fas fa-edit"></span>
+                                                                    </a>
+                                                                    <a class="" href="#"
+                                                                        data-bs-toggle="modal" title="Delete"
+                                                                        data-bs-target="#deleteRecordModal"
+                                                                        onclick="deleteData(<?= $Business1->business_id ?>);">
+                                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                    </a>
+                                                                    <a class="" href="#"
+                                                                        data-bs-toggle="modal" title="Status Changed"
+                                                                        data-bs-target="#statusModal"
+                                                                        onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
+                                                                        <i class="fas fa-plus-square"
+                                                                            aria-hidden="true"></i>
+                                                                    </a>
+
+                                                                </td>
+                                                            </tr>
+                                                            <?php $i++;
+                                                            $total += $Business1->Business_amount;
+                                                            ?>
+                                                        @endforeach
+                                                    </tbody>
+                                                    <tr class="text-center">
+                                                        <td colspan="4" style="text-align: center;">Total</td>
+                                                        <td style="text-align: center;">{{ $total }}</td>
+                                                        <td colspan="3" style="text-align: center;"></td>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                            <div class="d-flex justify-content-center mt-3">
+                                                {{ $Business->appends(['business_type' => $businesstype, 'given_by' => $givenby, 'fromdate' => $FromDate, 'todate' => $ToDate])->links() }}
+                                            </div>
+                                        @else
+                                            <div class="row">
+                                                <div
+                                                    class="col-lg-12 col-md-12  col-xs-12 col-sm-12 padding-5 bottom-border-verydark">
+                                                    <div
+                                                        class="alert alert-info clearfix profile-information padding-all-10 margin-all-0 backgroundDark">
+                                                        <h1 class="font-white text-center"> No Data Found ! </h1>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                         @endif
                                     </div>
                                 </div>
@@ -263,7 +274,8 @@
                                             required>
                                             <option value="" selected>Select Given By</option>
                                             @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }} - ({{$data->mobile_number}})
+                                                <option value="{{ $data->first_name }}">{{ $data->first_name }} -
+                                                    ({{ $data->mobile_number }})
                                                 </option>
                                             @endforeach
                                         </select>
@@ -285,20 +297,23 @@
                                         <select class="form-control" name="business_to" id="Editbusiness_to" required>
                                             <option value="" disabled selected>Select Given By</option>
                                             @foreach ($Data as $data)
-                                                <option value="{{ $data->first_name }}">{{ $data->first_name }} - ({{$data->mobile_number}})</option>
+                                                <option value="{{ $data->first_name }}">{{ $data->first_name }} -
+                                                    ({{ $data->mobile_number }})</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="md-3 mb-2">
                                         <lable><span style="color:red;">*</span>Amount</lable>
-                                        <input style="margin-top: 0.5rem !important;" type="number" class="form-control" name="Business_amount"
-                                            id="EditBusiness_amount" placeholder="Enter Business_amount"
-                                            value="{{ old('Business_amount') }}" required>
+                                        <input style="margin-top: 0.5rem !important;" type="number" class="form-control"
+                                            name="Business_amount" id="EditBusiness_amount"
+                                            placeholder="Enter Business_amount" value="{{ old('Business_amount') }}"
+                                            required>
                                     </div>
                                     <div class="md-3 mb-2">
                                         <lable class="mb-2"><span style="color:red;">*</span> Business date</lable>
-                                        <input style="margin-top: 0.5rem !important;" type="text" class="form-control" name="business_Date"
-                                            id="Editbusiness_Date" placeholder="Enter business Date" required>
+                                        <input style="margin-top: 0.5rem !important;" type="text" class="form-control"
+                                            name="business_Date" id="Editbusiness_Date" placeholder="Enter business Date"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -378,7 +393,6 @@
                             <label for="newStatus">Update Status:</label>
                             {{-- {{dd($data)}} --}}
                             @if (isset($Business1->isapproved_status))
-                               
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
                                     <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>
@@ -393,10 +407,10 @@
                                 </select>
                             @endif
                         </div>
-                            <div class="form-group rejectedComments" id="rejectedComments" style="display : none;">
-                                <label for="rejectedComments">Rejected Comments:</label>
-                                <textarea class="form-control" name="businesscomment"></textarea>                
-                            </div><br>
+                        <div class="form-group rejectedComments" id="rejectedComments" style="display : none;">
+                            <label for="rejectedComments">Rejected Comments:</label>
+                            <textarea class="form-control" name="businesscomment"></textarea>
+                        </div><br>
                         <button type="submit" class="btn btn-success">Save Changes</button>
                     </form>
                 </div>
@@ -410,8 +424,8 @@
 
 @section('scripts')
 
-<script>
-    function toggleRejectedComments() {
+    <script>
+        function toggleRejectedComments() {
             let newStatus = $("#newStatus").val();
             if (newStatus == 2) {
                 $("#rejectedComments").show();
@@ -429,7 +443,7 @@
                 rejectedComments.style.display = 'block';
             }
         }
-</script>
+    </script>
 
     <script>
         function getEditData(id) {
@@ -589,7 +603,7 @@
         });
     </script>
 
-   
+
     <script>
         function getEditDatastatus(id) {
             // alert(id);
@@ -620,68 +634,66 @@
         }
     </script>
 
-<script>
-    function exportExcel() {
-// alert('hello');
-        var fromdate = $("#startdatepicker").val();
-        var todate = $("#enddatepicker").val();
-        // var first_name = $("#first_name").val();
+    <script>
+        function exportExcel() {
+            // alert('hello');
+            var fromdate = $("#startdatepicker").val();
+            var todate = $("#enddatepicker").val();
+            // var first_name = $("#first_name").val();
 
-        var strURL = "{{ route('Business.exportbusiness') }}";
-        strURL += "/" + fromdate +"/"+todate;
+            var strURL = "{{ route('Business.exportbusiness') }}";
+            strURL += "/" + fromdate + "/" + todate;
 
-        window.location.href = strURL;
-    }
-</script>
+            window.location.href = strURL;
+        }
+    </script>
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-<script>
+    <script>
+        $(function() {
+            $("#startdatepicker").datepicker({
+                dateFormat: 'd-m-yy',
+                //minDate: 0
+            });
 
-    
-    $(function() {
-        $("#startdatepicker").datepicker({
-            dateFormat: 'd-m-yy',
-            //minDate: 0
+            $("#enddatepicker").datepicker({
+                dateFormat: 'd-m-yy',
+                //minDate: 0
+            });
         });
+    </script>
 
-        $("#enddatepicker").datepicker({
-            dateFormat: 'd-m-yy',
-            //minDate: 0
+    <!-- search new code -->
+    <script>
+        $(document).ready(function() {
+            // Add click event listener to the cancel button
+            $('#cancel_search').click(function() {
+                // Reset the value of the category_id select element to empty
+                $('#startdatepicker').val('');
+                $('#enddatepicker').val('');
+                $('#business_type').val('');
+                $('#given_by').val('');
+                $('#form').submit();
+            });
         });
-    });
-</script>
-
-<!-- search new code -->
-<script>
-    $(document).ready(function(){
-        // Add click event listener to the cancel button
-        $('#cancel_search').click(function(){
-            // Reset the value of the category_id select element to empty
-            $('#startdatepicker').val('');
-            $('#enddatepicker').val('');
-            $('#business_type').val('');
-            $('#given_by').val('');
-            $('#form').submit();
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                minimumResultsForSearch: Infinity
+            });
         });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('.select2').select2({
-            minimumResultsForSearch: Infinity
+    </script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $("#Editbusiness_Date").datepicker({
+                dateFormat: "yy-mm-dd",
+                //minDate: 0
+            });
         });
-    });
-</script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script>
-    $(function() {
-        $("#Editbusiness_Date").datepicker({
-            dateFormat: "yy-mm-dd",
-            //minDate: 0
-        });      
-    });
-</script>
+    </script>
 @endsection

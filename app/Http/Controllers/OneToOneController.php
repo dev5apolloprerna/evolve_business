@@ -27,7 +27,7 @@ class OneToOneController extends Controller
     public function pending(Request $request)
     {
         try {
-
+            $givenby = $request->given_by;
             $businesstype = $request->business_type;
             $FromDate = $request->fromdate;
             $ToDate = $request->todate;
@@ -61,6 +61,9 @@ class OneToOneController extends Controller
                         date('Y-m-d 00:00:00', strtotime($FromDate))
                     );
                 })
+                ->when($request->given_by, function ($query) use ($givenby) {
+                    $query->where('one_to_one_detail.to_id', 'LIKE', '%' . $givenby . '%');
+                })
 
                 ->when($request->todate, function ($query, $ToDate) {
                     return $query->where(
@@ -78,8 +81,15 @@ class OneToOneController extends Controller
                 ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $Count = $Business->count();
+            $businesses = DB::table('members')
+                ->where('iStatus', 1)
+                ->where('isDelete', 0)
+                ->orderBy('Contact_person', 'asc')
+                ->get();
 
             return view('OneToOne.pending', compact(
+                'givenby',
+                'businesses',
                 'Business',
                 'Data',
                 'Datadrop',
@@ -96,7 +106,7 @@ class OneToOneController extends Controller
     public function approved(Request $request)
     {
         try {
-
+            $givenby = $request->given_by;
             $businesstype = $request->business_type;
             $FromDate = $request->fromdate;
             $ToDate = $request->todate;
@@ -108,6 +118,11 @@ class OneToOneController extends Controller
                 ->where('members.Arrival_flag', 0)
                 ->orderBy('users.first_name')
                 ->select('users.*')
+                ->get();
+            $businesses = DB::table('members')
+                ->where('iStatus', 1)
+                ->where('isDelete', 0)
+                ->orderBy('Contact_person', 'asc')
                 ->get();
             $Datadrop = User::where('status', 1)->orderBy('first_name')->get();
 
@@ -125,6 +140,9 @@ class OneToOneController extends Controller
                         date('Y-m-d 00:00:00', strtotime($FromDate))
                     );
                 })
+                ->when($request->given_by, function ($query) use ($givenby) {
+                    $query->where('one_to_one_detail.to_id', 'LIKE', '%' . $givenby . '%');
+                })
 
                 ->when($request->todate, function ($query, $ToDate) {
                     return $query->where(
@@ -141,7 +159,17 @@ class OneToOneController extends Controller
                 ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $Count = $Business->count();
-            return view('OneToOne.approve', compact('Business', 'Data', 'Datadrop', 'Count', 'businesstype', 'FromDate', 'ToDate'));
+            return view('OneToOne.approve', compact(
+                'givenby',
+                'businesses',
+                'Business',
+                'Data',
+                'Datadrop',
+                'Count',
+                'businesstype',
+                'FromDate',
+                'ToDate'
+            ));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -150,6 +178,7 @@ class OneToOneController extends Controller
     public function rejectlist(Request $request)
     {
         try {
+            $givenby = $request->given_by;
 
             $businesstype = $request->business_type;
             $FromDate = $request->fromdate;
@@ -163,12 +192,20 @@ class OneToOneController extends Controller
                 ->orderBy('users.first_name')
                 ->select('users.*')
                 ->get();
+            $businesses = DB::table('members')
+                ->where('iStatus', 1)
+                ->where('isDelete', 0)
+                ->orderBy('Contact_person', 'asc')
+                ->get();
             $Datadrop = User::where('status', 1)->orderBy('first_name')->get();
 
             $OneToOne = OneToOne::where(['iStatus' => 1, 'isDelete' => 0])
                 ->when($request->fromdate, fn($query, $FromDate) => $query
                     ->where('date', '>=', date('Y-m-d 00:00:00', strtotime($FromDate))))
                 ->where('isapproved_status', '=', 2)
+                ->when($request->given_by, function ($query) use ($givenby) {
+                    $query->where('one_to_one_detail.to_id', 'LIKE', '%' . $givenby . '%');
+                })
                 ->when($request->todate, fn($query, $ToDate) => $query
                     ->where('date', '<=', date('Y-m-d 23:59:59', strtotime($ToDate))));
 
@@ -176,7 +213,17 @@ class OneToOneController extends Controller
                 ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $Count = $Business->count();
-            return view('OneToOne.rejectlist', compact('Business', 'Data', 'Datadrop', 'Count', 'businesstype', 'FromDate', 'ToDate'));
+            return view('OneToOne.rejectlist', compact(
+                'givenby',
+                'businesses',
+                'Business',
+                'Data',
+                'Datadrop',
+                'Count',
+                'businesstype',
+                'FromDate',
+                'ToDate'
+            ));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
