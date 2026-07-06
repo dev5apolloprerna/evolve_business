@@ -20,10 +20,13 @@ use Carbon\Carbon;
 class ReportController extends Controller
 {
 
-    public function monthlyreview()
+    public function monthlyreview(Request $request)
     {
         $currentYear  = date('Y');
         $currentMonth = date('m');
+
+        $fromDate = $request->from_date;
+        $toDate   = $request->to_date;
 
         $cityGroups = City_group::all();
 
@@ -38,6 +41,10 @@ class ReportController extends Controller
                 ->where('members.citygroup_id', $group->id)
                 ->whereYear('member_points.created_at', $currentYear)
                 ->whereMonth('member_points.created_at', $currentMonth)
+                ->whereBetween('member_points.created_at', [
+                    $fromDate . ' 00:00:00',
+                    $toDate . ' 23:59:59'
+                ])
                 ->select(
                     'users.first_name',
                     'users.email',
@@ -67,6 +74,10 @@ class ReportController extends Controller
                 ->where('members.citygroup_id', $group->id)
                 ->whereYear('business_Date', $currentYear)
                 ->whereMonth('business_Date', $currentMonth)
+                ->whereBetween('business_Date', [
+                    $fromDate,
+                    $toDate
+                ])
                 ->where('Business.business_type', 1)
                 ->where('Business.isapproved_status', 1)
                 ->where('Business.iStatus', 1)
@@ -89,6 +100,10 @@ class ReportController extends Controller
                 ->where('members.citygroup_id', $group->id)
                 ->whereYear('business_Date', $currentYear)
                 ->whereMonth('business_Date', $currentMonth)
+                ->whereBetween('business_Date', [
+                    $fromDate,
+                    $toDate
+                ])
                 ->where('Business.business_type', 2)
                 ->where('Business.isapproved_status', 1)
                 ->where('Business.iStatus', 1)
@@ -107,6 +122,10 @@ class ReportController extends Controller
                 ->where('members.citygroup_id', $group->id)
                 ->whereYear('receive_date', $currentYear)
                 ->whereMonth('receive_date', $currentMonth)
+                ->whereBetween('receive_date', [
+                    $fromDate,
+                    $toDate
+                ])
                 ->where('one_to_one_detail.isapproved_status', 1)
                 ->where('one_to_one_detail.iStatus', 1)
                 ->where('one_to_one_detail.isDelete', 0)
