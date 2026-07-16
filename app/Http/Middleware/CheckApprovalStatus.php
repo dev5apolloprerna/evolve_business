@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Models\Business;
 use App\Models\OneToOne;
+use App\Models\Reference;
 use App\Models\Event;
 use App\Models\members;
 use App\Models\Member_metting;
@@ -33,6 +34,8 @@ class CheckApprovalStatus
             if ($request->routeIs('pendinglogincheck.*')) {
                 return $next($request);
             }
+            $member = members::where('user_id', $user->id)->first();
+
 
             $loginPendingCheck = Business::where('Business.business_to_id', $user->id)
                 ->where('Business.iStatus', 1)
@@ -41,12 +44,30 @@ class CheckApprovalStatus
                 ->orderBy('Business.business_id', 'DESC')
                 ->get();
 
+
             $loginPendingOneToOneCheck = OneToOne::where('one_to_one_detail.to_id', $user->id)
                 ->where('one_to_one_detail.iStatus', 1)
                 ->where('one_to_one_detail.isDelete', 0)
                 ->where('one_to_one_detail.isapproved_status', 0)
                 ->orderBy('one_to_one_detail.id', 'DESC')
                 ->get();
+
+            $loginPendingReferralCheck = Reference::join('users as reference_to_user', 'reference_to_user.id', '=', 'Reference.Reference_to')
+                ->leftJoin('users as reference_from_user', 'reference_from_user.id', '=', 'Reference.Reference_from')
+                ->where('reference_to_user.id', $user->id)
+                ->where([
+                    'Reference.iStatus' => 1,
+                    'Reference.isDelete' => 0,
+                    'Reference.isapproved_status' => 0,
+                ])
+                ->select(
+                    'Reference.*',
+                    'reference_to_user.first_name as reference_to_name',
+                    'reference_from_user.first_name as reference_from_name'
+                )
+                ->orderBy('Reference.Reference_id', 'DESC')
+                ->get();
+
 
             // $loginPendingEventCheck = Event::where('iStatus', 1)
             //     ->where('isDelete', 0)
@@ -57,16 +78,29 @@ class CheckApprovalStatus
             //     })
             //     ->orderBy('event_id', 'DESC')
             //     ->get();
-            $loginPendingEventCheck = Event::where('iStatus', 1)
-                ->where('isDelete', 0)
-                ->whereJsonContains('assign_member_id', (string) Auth::id())
-                ->whereNotIn('event_id', function ($query) use ($user) {
-                    $query->select('event_id')
-                        ->from('event_members')
-                        ->where('member_id', $user->id);
-                })
+
+
+            $loginPendingEventCheck = Event::where([
+                'iStatus' => 1,
+                'isDelete' => 0,
+                'isapproved_status' => 0,
+
+            ])
+                ->whereJsonContains('assign_member_id', (string) $member->id)
                 ->orderByDesc('event_id')
                 ->get();
+
+            // $loginPendingEventCheck = Event::where('iStatus', 1)
+            //     ->where('isDelete', 0)
+            //     ->whereJsonContains('assign_member_id', (string) Auth::id())
+            //     ->whereNotIn('event_id', function ($query) use ($user) {
+            //         $query->select('event_id')
+            //             ->from('event_members')
+            //             ->where('member_id', $user->id);
+            //     })
+            //     ->orderByDesc('event_id')
+            //     ->get();
+            // dd($loginPendingEventCheck);
 
             $member = members::where('user_id', $user->id)->first();
 
@@ -124,6 +158,7 @@ class CheckApprovalStatus
                     ->get();
             }
             if (
+                !$loginPendingReferralCheck->isEmpty() ||
                 !$loginPendingCheck->isEmpty() ||
                 !$loginPendingOneToOneCheck->isEmpty() ||
                 !$loginPendingEventCheck->isEmpty() ||

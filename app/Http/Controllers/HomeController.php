@@ -28,8 +28,6 @@ use App\Models\Visitor;
 use Session;
 use Carbon\Carbon;
 
-
-
 class HomeController extends Controller
 {
     /**
@@ -50,7 +48,6 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-
 
         $session = Auth::user();
         $permissions = AdminuserPermission::where('user_id', $session->id)->first();
@@ -333,11 +330,28 @@ class HomeController extends Controller
         } else {
 
             $user = Auth::user();
+            $member = members::where('user_id', $user->id)->first();
             $loginPendingOneToOneCheck =
                 OneToOne::join('users', 'users.id', '=', 'one_to_one_detail.to_id')
                 ->where('users.id', $user->id)
                 ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
                 ->orderBy('one_to_one_detail.id', 'DESC')
+                ->get();
+
+            $loginPendingReferralCheck = Reference::join('users as reference_to_user', 'reference_to_user.id', '=', 'Reference.Reference_to')
+                ->leftJoin('users as reference_from_user', 'reference_from_user.id', '=', 'Reference.Reference_from')
+                ->where('reference_to_user.id', $user->id)
+                ->where([
+                    'Reference.iStatus' => 1,
+                    'Reference.isDelete' => 0,
+                    'Reference.isapproved_status' => 0,
+                ])
+                ->select(
+                    'Reference.*',
+                    'reference_to_user.first_name as reference_to_name',
+                    'reference_from_user.first_name as reference_from_name'
+                )
+                ->orderBy('Reference.Reference_id', 'DESC')
                 ->get();
 
             $loginPendingCheck = Business::join('users', 'users.id', '=', 'Business.business_to_id')
@@ -346,17 +360,40 @@ class HomeController extends Controller
                 ->orderBy('Business.business_id', 'DESC')
                 ->get();
 
+            // $loginPendingEventCheck = Event::where([
+            //     'iStatus' => 1,
+            //     'isDelete' => 0,
+            // ])
+            //     ->whereNotIn('event_id', function ($query) {
+            //         $query->select('event_id')
+            //             ->from('event_members')
+            //             ->where('member_id', Auth::id());
+            //     })
+            //     ->orderBy('event_id', 'DESC')
+            //     ->get();
+
             $loginPendingEventCheck = Event::where([
                 'iStatus' => 1,
                 'isDelete' => 0,
+                'isapproved_status' => 0,
+
             ])
-                ->whereNotIn('event_id', function ($query) {
-                    $query->select('event_id')
-                        ->from('event_members')
-                        ->where('member_id', Auth::id());
-                })
-                ->orderBy('event_id', 'DESC')
+                ->whereJsonContains('assign_member_id', (string) $member->id)
+                ->orderByDesc('event_id')
                 ->get();
+
+            // $loginPendingEventCheck = Event::where([
+            //     'iStatus' => 1,
+            //     'isDelete' => 0,
+            // ])
+            // ->whereJsonContains('assign_member_id', (string) Auth::id())
+            // ->whereNotIn('event_id', function ($query) {
+            //     $query->select('event_id')
+            //         ->from('event_members')
+            //         ->where('member_id', Auth::id());
+            // })
+            // ->orderByDesc('event_id')
+            // ->get();
             $member = members::where('user_id', $user->id)->first();
             $Member_metting = Member_metting::join(
                 'members',
@@ -783,7 +820,7 @@ class HomeController extends Controller
                 ->where('m.user_id', auth()->id())
                 ->select('cm.*')
                 ->get();
-            return view('Memberhome', compact('manOfTheMonth', 'oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopOneToOne'));
+            return view('Memberhome', compact('loginPendingReferralCheck', 'manOfTheMonth', 'oneTooneReceive', 'VisitorCount', 'oneTooneGiven', 'previousMeetings', 'formatted_combined_data', 'to_formatted_combined_data', 'monthname', 'Announcement', 'Received_bussiness', 'topReferencecount', 'topDirectcount', 'upcoming', 'Financed', 'active', 'pending', 'approvecount', 'rejectedcount', 'members', 'businessData', 'Reference_Received', 'Reference_Given', 'bookspodcast', 'topDirect', 'topReference', 'search', 'meetings', 'TopOneToOne'));
         }
     }
 
@@ -879,7 +916,7 @@ class HomeController extends Controller
                 $root = $_SERVER['DOCUMENT_ROOT'];
                 $image = $request->file('profile_photo');
                 $img = time() . '.' . $image->getClientOriginalExtension();
-                $destinationpath = $root . '/profile_photo/';
+                $destinationpath = $root . '/evolv_business/profile_photo/';
                 if (!file_exists($destinationpath)) {
                     mkdir($destinationpath, 0755, true);
                 }
@@ -901,7 +938,7 @@ class HomeController extends Controller
                 $root = $_SERVER['DOCUMENT_ROOT'];
                 $image = $request->file('Company_logo');
                 $logo = time() . '.' . $image->getClientOriginalExtension();
-                $destinationpath = $root . '/Company_logo/';
+                $destinationpath = $root . '/evolv_business/Company_logo/';
                 if (!file_exists($destinationpath)) {
                     mkdir($destinationpath, 0755, true);
                 }

@@ -38,7 +38,7 @@
                                                         </th>
                                                         <th scop="col">Status</th>
                                                         <!-- <th width="5%" class="sort" data-sort="Date">Available seats
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </th> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </th> -->
                                                         <th w scop="col">Action</th>
                                                     </tr>
                                                 </thead>
@@ -64,17 +64,17 @@
 
                                                             <td>
                                                                 <!-- <a href="#" data-bs-toggle="modal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-bs-target="#EditModal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    onclick="getEditData(<?= $Business1->business_id ?>)"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    class="btn btn-link p-0" title="Edit">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <span class="text-500 fas fa-edit"></span>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="btn btn-link p-0" href="#"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-bs-toggle="modal" title="Delete"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    data-bs-target="#deleteRecordModal"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    onclick="deleteData(<?= $Business1->business_id ?>);">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </a> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            data-bs-target="#EditModal"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            onclick="getEditData(<?= $Business1->business_id ?>)"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            class="btn btn-link p-0" title="Edit">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <span class="text-500 fas fa-edit"></span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <a class="btn btn-link p-0" href="#"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            data-bs-toggle="modal" title="Delete"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            data-bs-target="#deleteRecordModal"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            onclick="deleteData(<?= $Business1->business_id ?>);">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </a> -->
                                                                 <a class="" href="#" data-bs-toggle="modal"
                                                                     title="Status Changed" data-bs-target="#statusModal"
                                                                     onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
@@ -91,6 +91,78 @@
 
                                             <div class="d-flex justify-content-center mt-3">
                                                 {{ $Business->links() }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Referral  --}}
+                @if ($Referral->count() > 0)
+                    <div class="col-md-12 mt-3">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title mb-0" data-anchor="data-anchor">Referral List
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane preview-tab-pane active" role="tabpanel"
+                                        aria-labelledby="tab-dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540"
+                                        id="dom-dcc399ed-d1d3-44f8-99e0-31c1d0b7b540">
+                                        <div id="tableExample" data-list='{"valueNames":["name","email","age"]}'>
+
+                                            <table class="table table-bordered table-striped fs--1 mb-0">
+                                                <thead class="bg-200 text-900">
+                                                    <tr>
+                                                        <th scope="col">No</th>
+                                                        <th scop="col">Referral Given By</th>
+                                                        <th scop="col">date</th>
+                                                        <th scop="col">Status</th>
+                                                        <th w scop="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="list">
+                                                    <?php $i = 1; ?>
+                                                    @foreach ($Referral as $Ref)
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                {{ $i + $Referral->perPage() * ($Referral->currentPage() - 1) }}
+                                                            </td>
+                                                            <td class="text-center">{{ $Ref->reference_from_name }}</td>
+
+                                                            <td class="text-center">
+                                                                {{ \Carbon\Carbon::parse($Ref->Reference_Date)->format('d-m-Y') }}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ $Ref->isapproved_status == 0 ? 'Pending' : '' }}
+                                                            </td>
+
+                                                            <td>
+                                                                <a href="#" data-bs-toggle="modal"
+                                                                    title="Status Changed"
+                                                                    data-bs-target="#ReferralstatusModal"
+                                                                    onclick="getEditReferralDatastatus(<?= $Ref->Reference_id ?>);">
+                                                                    <i class="fas fa-plus-square" aria-hidden="true"></i>
+                                                                </a>
+
+                                                            </td>
+                                                        </tr>
+                                                        <?php $i++; ?>
+                                                    @endforeach
+                                                </tbody>
+
+                                            </table>
+
+                                            <div class="d-flex justify-content-center mt-3">
+                                                {{ $Referral->links() }}
                                             </div>
                                         </div>
                                     </div>
@@ -530,10 +602,10 @@
                             {{-- {{dd($data)}} --}}
                             @if (isset($Business1->isapproved_status))
                                 <!-- <select class="form-control" name="newStatus">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </select> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <option value="1" {{ $Business1->isapproved_status == 1 ? 'selected' : '' }}>Approved
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <option value="0" {{ $Business1->isapproved_status == 0 ? 'selected' : '' }}>Rejected</option>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </select> -->
 
                                 <select class="form-control" name="newStatus" id="newStatus"
                                     onchange="toggleRejectedComments()">
@@ -598,6 +670,55 @@
                             @endif
                         </div>
                         <div class="form-group rejectedoneComments" id="rejectedoneComments" style="display : none;">
+                            <label for="rejectedComments">Rejected Comments:</label>
+                            <textarea class="form-control" name="businesscomment"></textarea>
+                        </div>
+
+
+                        <button type="submit" class="btn btn-success" style="margin-top: 20px;">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referral Status Modal -->
+    <div class="modal fade" id="ReferralstatusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
+        aria-hidden="true">
+
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel">Change Referral Status
+                        Comments</h5>
+                    <button type="button" class="btn btn-light" onclick="$('#ReferralstatusModal').modal('hide')">
+                        Close
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add a form for changing status and adding rejected comments -->
+                    <form action="{{ route('pendinglogincheck.referralstatuspendinglogin') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="id" id="referralid" value="">
+                        <div class="form-group">
+                            <label for="newStatus">Update Status:</label>
+                            @if (isset($Ref->isapproved_status))
+                                <select class="form-control" name="newStatus" id="referralnewStatus"
+                                    onchange="togglerReferralRejectedComments()">
+                                    <option value="1" {{ $Ref->isapproved_status == 1 ? 'selected' : '' }}>
+                                        Approved</option>
+                                    <option value="2" {{ $Ref->isapproved_status == 2 ? 'selected' : '' }}>
+                                        Rejected</option>
+                                </select>
+                            @else
+                                <select class="form-control" name="newStatus">
+                                    <option value="1">Approved</option>
+                                    <option value="0">Pending</option>
+                                </select>
+                            @endif
+                        </div>
+                        <div class="form-group rejectedreferralComments" id="rejectedreferralComments"
+                            style="display : none;">
                             <label for="rejectedComments">Rejected Comments:</label>
                             <textarea class="form-control" name="businesscomment"></textarea>
                         </div>
@@ -751,6 +872,31 @@
     </script>
 
     <script>
+        function getEditReferralDatastatus(id) {
+            // alert(id);
+            var url = "{{ route('Business.statusreferralget', ':id') }}";
+            url = url.replace(":id", id);
+            if (id) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        id,
+                        id
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        var obj = JSON.parse(data);
+                        $('#referralid').val(id);
+                        $("#isapproved_status").val(obj.isapproved_status);
+                    }
+                });
+            }
+            var name = $('#referralid').val(id);
+
+        }
+    </script>
+    <script>
         function toggleoneRejectedComments() {
             let newStatus = $("#oneToOnenewStatus").val();
             if (newStatus == 2) {
@@ -761,6 +907,27 @@
 
             var statusSelect = document.getElementById('oneToOnenewStatus');
             var rejectedComments = document.querySelector('.form-group.rejectedoneComments');
+
+            // Hide rejectedComments by default
+            rejectedComments.style.display = 'none';
+
+            if (statusSelect.value == 2) {
+                rejectedComments.style.display = 'block';
+            }
+        }
+    </script>
+
+    <script>
+        function togglerReferralRejectedComments() {
+            let newStatus = $("#referralnewStatus").val();
+            if (newStatus == 2) {
+                $("#rejectedreferralComments").show();
+            } else {
+                $("#rejectedreferralComments").hide();
+            }
+
+            var statusSelect = document.getElementById('referralnewStatus');
+            var rejectedComments = document.querySelector('.form-group.rejectedreferralComments');
 
             // Hide rejectedComments by default
             rejectedComments.style.display = 'none';
