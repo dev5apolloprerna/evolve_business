@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\members;
 use App\Models\User;
+use App\Models\Reference;
 use App\Models\City;
 use App\Models\City_group;
 use App\Models\Categories;
@@ -328,7 +329,13 @@ class Businesscontroller extends Controller
     public function statusonetooneget(Request $request)
     {
         $data = OneToOne::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $request->id])->first();
-        // dd($Business);  
+
+        echo json_encode($data);
+    }
+
+    public function statusreferralget(Request $request)
+    {
+        $data = Reference::where(['iStatus' => 1, 'isDelete' => 0, 'Reference_id' => $request->id])->first();
         echo json_encode($data);
     }
 

@@ -491,6 +491,8 @@ Route::prefix('admin')->name('Business.')->middleware(['auth', 'check_approval']
     Route::post('Business/search', [Businesscontroller::class, 'search'])->name('search');
     Route::get('/Business/statusget/{id?}', [Businesscontroller::class, 'statusget'])->name('statusget');
     Route::get('/Business/statusonetooneget/{id?}', [Businesscontroller::class, 'statusonetooneget'])->name('statusonetooneget');
+
+    Route::get('/Business/statusreferralget/{id}', [Businesscontroller::class, 'statusreferralget'])->name('statusreferralget');
     Route::get('/Business/statusEventget/{id?}', [Businesscontroller::class, 'statusEventget'])->name('statusEventget');
     Route::get('/Business/Brandshowcase/{id?}', [Businesscontroller::class, 'statusBrandshowcase'])->name('statusBrandshowcase');
     Route::any('Business-resendReminder', [Businesscontroller::class, 'Business_resend_Reminder'])->name('resendReminder');
@@ -600,6 +602,7 @@ Route::prefix('admin')->name('pendinglogincheck.')->middleware('auth')->group(fu
     Route::get('pendinglogincheck/index', [MemberBusinesscontroller::class, 'indexpending'])->name('index');
     Route::post('/pendinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'statuspendinglogin'])->name('statuspendinglogin');
     Route::post('/onependinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'onestatuspendinglogin'])->name('onestatuspendinglogin');
+    Route::post('/referralpendinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'referralstatuspendinglogin'])->name('referralstatuspendinglogin');
     Route::post('/Eventpendinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'Eventpendinglogin'])->name('Eventpendinglogin');
     Route::post('/Brandshowcaselogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'Brandshowcaselogincheck'])->name('Brandshowcaselogincheck');
     Route::post('/meetinglogincheck/statuspendinglogin/{id?}', [MemberBusinesscontroller::class, 'meetinglogincheck'])->name('meetinglogincheck');

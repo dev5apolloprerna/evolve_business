@@ -15,6 +15,7 @@ use App\Models\Business;
 use App\Models\OneToOne;
 use App\Models\Member_metting;
 use App\Models\Event;
+use App\Models\Reference;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -135,8 +136,8 @@ class MemberBusinesscontroller extends Controller
             $msg = [
                 'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
                 'Title' => $sendemaildetails->strTitle ??  'business send',
-                //'ToEmail' => isset($ToUser) ? ($ToUser->email ?? '') : '',
-                'ToEmail' => 'ai.dev.laravel10@gmail.com',
+                'ToEmail' => isset($ToUser) ? ($ToUser->email ?? '') : '',
+                //'ToEmail' => 'ai.dev.laravel10@gmail.com',
                 //'CCEmail' => 'k.krupa0101@gmail.com',
                 'Subject' => $sendemaildetails->strSubject ?? 'Business send' ?? '',
             ];
@@ -260,6 +261,21 @@ class MemberBusinesscontroller extends Controller
             ->orderBy('Business.business_id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
 
+        $Referral = Reference::join('users as reference_to_user', 'reference_to_user.id', '=', 'Reference.Reference_to')
+            ->leftJoin('users as reference_from_user', 'reference_from_user.id', '=', 'Reference.Reference_from')
+            ->where('reference_to_user.id', $session->id)
+            ->where([
+                'Reference.iStatus' => 1,
+                'Reference.isDelete' => 0,
+                'Reference.isapproved_status' => 0,
+            ])
+            ->select(
+                'Reference.*',
+                'reference_to_user.first_name as reference_to_name',
+                'reference_from_user.first_name as reference_from_name'
+            )
+            ->orderBy('Reference.Reference_id', 'DESC')
+            ->paginate(env('PAR_PAGE_COUNT', 20));
         $OneToOne = OneToOne::join('users', 'users.id', '=', 'one_to_one_detail.to_id')
             ->where('users.id', $session->id)
             ->select('one_to_one_detail.*')
@@ -324,7 +340,7 @@ class MemberBusinesscontroller extends Controller
                 $item->brand_showcase_1 > 0 ||
                 $item->brand_showcase_2 > 0;
         });
-        return view('pendinglogincheck.index', compact('hasBrandShowcase', 'pendingMeeting', 'member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
+        return view('pendinglogincheck.index', compact('Referral', 'hasBrandShowcase', 'pendingMeeting', 'member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
     // public function statuspendinglogin(Request $request)
@@ -452,6 +468,36 @@ class MemberBusinesscontroller extends Controller
             return redirect()->back();
         }
         return redirect()->route('OneToOne.Tostoreview');
+    }
+
+    public function referralstatuspendinglogin(Request $request)
+    {
+        DB::table('Reference')->where('Reference_id', $request->id)->update([
+            'isapproved_status' => $request->newStatus,
+            'Referencecomment'  => $request->businesscomment,
+            'approved_by' => Auth::user()->user_type,
+            'approved_by_id' => Auth::user()->id,
+            'Reference_received_date' => date('Y-m-d H:i:s'),
+        ]);
+        // Meeting User Points
+        DB::table('member_points')->insert([
+            'member_id'   => Auth::id(),
+            'business_id' => $request->id,
+            'points_id'   => 5,
+            'points'      => 10,
+            'description' => 'Reference Approved',
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+
+        // update member_points status
+        DB::table('member_points')
+            ->where('business_id', $request->id)
+            ->update([
+                'status' => $request->newStatus,
+                'updated_at' => now()
+            ]);
+        return redirect()->back();
     }
 
     public function Eventpendinglogin(Request $request)

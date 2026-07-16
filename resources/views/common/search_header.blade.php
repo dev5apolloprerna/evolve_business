@@ -21,7 +21,7 @@
                 <div class="row fd-col">
 
                     <?php $session1 = auth()->user(); ?>
-                    @if ($session1->role_id == 2)
+                    @if ((isset($session->role_id) && $session->role_id != '') && $session1->role_id == 2)
                         <div class="col-md-6 mb-2 d-flex">
                             <form class="d-flex f-d-col" method="post" action="{{ route('Membersearch.index') }}">
                                 @csrf
