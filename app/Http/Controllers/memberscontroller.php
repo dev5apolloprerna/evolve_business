@@ -173,8 +173,7 @@ class memberscontroller extends Controller
             'pincode'        => $request->pincode,
             'from'        => $request->referred_to,
             //'referred_to_type' => $request->referred_to_type,
-
-            'priority_club_3_year' => $request->priority_club_3_year,
+            'priority_club' => $request->priority_club,
             'gstnumber'      => $request->gstnumber,
             'date_of_birth'      => $request->date_of_birth,
             'brand_establish_year'      => $request->brand_establish_year,
@@ -330,7 +329,7 @@ class memberscontroller extends Controller
                     'updated_at'     => date('Y-m-d H:i:s'),
                 ]);
         }
-        if ($request->priority_club_3_year == 1) {
+        if ($request->priority_club == 3 || $request->priority_club == 5 || $request->priority_club == 7) {
 
             $name = $request->first_name;
 
@@ -364,7 +363,7 @@ class memberscontroller extends Controller
                 'category_id'    => $request->category_id,
                 'subcategories_id' => 0,
                 'pincode'        => $request->pincode,
-                'priority_club_3_year' => $request->priority_club_3_year,
+                'priority_club' => $request->priority_club,
                 'from'        => $request->referred_to,
                 'gstnumber'      => $request->gstnumber,
                 // 'Book_Your_Podcast'=>$request->Book_Your_Podcast,

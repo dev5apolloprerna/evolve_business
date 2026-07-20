@@ -144,16 +144,38 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-lg-4 col-md-6 mt-3">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        name="priority_club_3_year" id="priority_club_3_year"
-                                                        value="1"
-                                                        {{ old('priority_club_3_year', $data->priority_club_3_year ?? 0) == 1 ? 'checked' : '' }}>
+                                            <div class="col-lg-4 mt-3">
+                                                <label class="form-label fw-bold">Priority Club</label>
 
-                                                    <label class="form-check-label" for="priority_club_3_year">
-                                                        3 Year Priority Club
-                                                    </label>
+                                                <div class="d-flex gap-4">
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="priority_club" id="priority_club_3_year" value="3"
+                                                            {{ old('priority_club', $data->priority_club ?? '') == 3 ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="priority_club_3_year">
+                                                            3 Year
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="priority_club" id="priority_club_5_year" value="5"
+                                                            {{ old('priority_club', $data->priority_club ?? '') == 5 ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="priority_club_5_year">
+                                                            5 Year
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="priority_club" id="priority_club_7_year" value="7"
+                                                            {{ old('priority_club', $data->priority_club ?? '') == 7 ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="priority_club_7_year">
+                                                            7 Year
+                                                        </label>
+                                                    </div>
+
                                                 </div>
                                             </div>
 
