@@ -24,11 +24,6 @@
                     <!--<a href="{{ route('members.storeview') }}" class="btn btn-success">Add Member</a>-->
                 </div>
                 {{-- This is search field start --}}
-
-
-
-
-
                 <!-- Page Heading -->
                 <div class="col-lg-12">
                     <div class="card">

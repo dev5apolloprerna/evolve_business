@@ -566,14 +566,13 @@ class MemberBusinesscontroller extends Controller
     public function meetinglogincheck(Request $request, $id = null)
     {
         $request->validate([
-            'newStatus' => 'required|in:1,2',
+            'newStatus' => 'required|in:1,2,3',
             'id' => 'required|integer',
-            'comment' => 'required_if:newStatus,2|string|max:500',
+            'comment' => 'nullable',
         ]);
-
         $userId = Auth::user()->id;
-        $members = members::where('user_id', $userId)->first();
 
+        $members = members::where('user_id', $userId)->first();
         $updateData = [
             'is_approve_meeting' => $request->newStatus,
             'is_approve_by' => $userId,
@@ -583,11 +582,11 @@ class MemberBusinesscontroller extends Controller
         if ($request->filled('comment')) {
             $updateData['comment'] = $request->comment;
         }
-        DB::table('Cluster_Meet_Member_meeting')->where(['id' => $request->id, 'member_id' => $members->id])->update($updateData);
+        DB::table('Cluster_Meet_Member_meeting')->where(['id' => $request->id])->update($updateData);
         if ($request->newStatus == 1) {
             DB::table('member_points')->insert([
                 'business_id' => $request->id,
-                'member_id'   => Auth::id(),
+                'member_id'   => $request->memberid,
                 'points_id'   => 3,
                 'points'      => 15,
                 'status'      => 0,
@@ -595,6 +594,28 @@ class MemberBusinesscontroller extends Controller
                 'created_at'  => now(),
                 'updated_at'  => now(),
             ]);
+        }
+        if ($request->newStatus == 3) {
+
+            $exists = DB::table('member_points')
+                ->where('business_id', $request->id)
+                ->where('member_id', $request->memberid)
+                ->where('points_id', 3)
+                ->where('points', -15)
+                ->exists();
+
+            if (!$exists) {
+                DB::table('member_points')->insert([
+                    'business_id' => $request->id,
+                    'member_id'   => $request->memberid,
+                    'points_id'   => 3,
+                    'points'      => -15,
+                    'status'      => 0,
+                    'description' => 'Meeting Absent',
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]);
+            }
         }
         return redirect()->back();
     }

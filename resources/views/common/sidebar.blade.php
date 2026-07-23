@@ -222,7 +222,7 @@
                 @endif
 
 
-                @if ((isset($session->role_id) && $session->role_id != '') && ($session->role_id == 1 || $session->role_id == 3))
+                @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
                     @if ($session->role_id == 1 || $permission['Business'] == 1)
                         <!-- <li class="nav-item">
                     <a class="nav-link menu-link @if (request()->routeIs('Business.index')) {{ 'active' }} @endif"
@@ -315,7 +315,7 @@
                     </li>
                 @endif
                 <!-- new code 08-04-2024 -->
-                @if ((isset($session->role_id) && $session->role_id != '') && $session->role_id == 2)
+                @if (isset($session->role_id) && $session->role_id != '' && $session->role_id == 2)
                     {{-- <li class="nav-item">
                         <a class="nav-link menu-link @if (request()->routeIs('Reference.index')) {{ 'active' }} @endif"
                             href="#sidebarConnection" data-bs-toggle="collapse" role="button" aria-expanded="false"
@@ -374,7 +374,7 @@
 
                 {{-- new utolity --}}
                 <li class="nav-item">
-                    @if ((isset($session->role_id) && $session->role_id != '') && ($session->role_id == 1 || $session->role_id == 3))
+                    @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
                         @if ($session->role_id == 1 || $permission['Utility'] == 1)
                             <a class="nav-link menu-link @if (request()->routeIs('users.index')) {{ 'active' }} @endif || @if (request()->routeIs('report.index')) {{ 'active' }} @endif"
                                 href="#sidebarApps" data-bs-toggle="collapse" role="button" aria-expanded="false"
@@ -394,10 +394,9 @@
                     </li> -->
                         <!-- user utility  -->
 
-
                     @endif
                     <!-- member subscription expried date code start -->
-                    @if ((isset($session->role_id) && $session->role_id != '') && $session->role_id == 2)
+                    @if (isset($session->role_id) && $session->role_id != '' && $session->role_id == 2)
                         <?php $subexpri = App\Models\members::where('user_id', $session->id)->first();
                         ?>
                         @php
@@ -477,7 +476,7 @@
                                 </li>
                             @endif
                         @endif --}}
-                        @if ((isset($session->role_id) && $session->role_id != '') && ($session->role_id == 1 || $session->role_id == 3))
+                        @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
                             @if ($session->role_id == 1 || $permission['Event'] == 1)
                                 <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('Event.index')) {{ 'active' }} @endif"
@@ -488,8 +487,8 @@
                                 </li>
                             @endif
                         @endif
-                        
-                        @if ((isset($session->role_id) && $session->role_id != '') && ($session->role_id == 1 || $session->role_id == 3))
+
+                        @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
                             @if ($session->role_id == 1 || $permission['ContactInquiry'] == 1)
                                 <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('Contactinquiry.index')) {{ 'active' }} @endif"
@@ -515,11 +514,19 @@
                                     </a>
                                 </li>
                             @endif
+
                         @endif
+
                     </ul>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{{ route('MemberCalendar') }}" target="_blank"
+                            rel="noopener noreferrer">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span data-key="t-apps"></span>
+                        </a>
+                    </li>
                 </div>
                 </li>
-
                 {{-- new end --}}
             </ul>
         </div>

@@ -171,6 +171,9 @@ Route::get('/', function () {
 Route::get('/auth/Memberlogin', function () {
     return view('/auth/Memberlogin');
 })->name('Memberlogin');
+
+Route::get('/member-calendar', [memberscontroller::class, 'memberCalendar'])->name('MemberCalendar');
+
 Route::group(['middleware' => 'check_approval'], function () {
     // Routes that require active users
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
