@@ -81,16 +81,17 @@
                                                             data-id="{{ $data->Cluster_Meet_Member_meeting_id }}"
                                                             data-status="{{ $data->is_approve_meeting ?? 0 }}"
                                                             data-comment="{{ e($data->comment ?? '') }}"
-                                                            data-meeting_id="{{ $data->meeting_id }}">
+                                                            data-meeting_id="{{ $data->meeting_id }}"
+                                                            data-member_id="{{ $data->user_id }}">
                                                             <i class="fas fa-check-circle"></i>
                                                         </a>
-                                                        <a href="javascript:void(0);"
+                                                        {{-- <a href="javascript:void(0);"
                                                             class="btn btn-sm btn-outline-sucess open-comment-modal"
                                                             data-id="{{ $data->Cluster_Meet_Member_meeting_id }}"
                                                             data-member_id="{{ $data->member_id }}"
                                                             data-meeting_id="{{ $data->meeting_id }}">
                                                             <i class="fas fa-comment-dots"></i>
-                                                        </a>
+                                                        </a> --}}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -283,6 +284,8 @@
                 action="{{ route('pendinglogincheck.meetinglogincheck', ['id' => ':id']) }}">
                 @csrf
                 <input type="hidden" name="id" id="statusMeetingMemberId">
+                <input type="hidden" name="memberid" id="statusMemberId">
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="meetingStatusModalLabel">Update Meeting Status</h5>
@@ -292,8 +295,8 @@
                         <div class="mb-3">
                             <label for="meetingStatusSelect" class="form-label">Status</label>
                             <select class="form-control" name="newStatus" id="meetingStatusSelect" required>
-                                <option value="1">Approve</option>
-                                <option value="2">Reject</option>
+                                {{-- <option value="1">Approve</option> --}}
+                                <option value="3">Absent</option>
                             </select>
                         </div>
                         <div class="mb-3" id="meetingStatusCommentGroup" style="display:none;">
@@ -448,13 +451,16 @@
 
             statusButtons.forEach(button => {
                 button.addEventListener('click', function() {
+
                     const id = this.dataset.id;
                     const status = this.dataset.status;
+                    const member_id = this.dataset.member_id;
                     const comment = this.dataset.comment || '';
 
                     document.getElementById('statusMeetingMemberId').value = id;
                     document.getElementById('meetingStatusSelect').value = status;
                     document.getElementById('meetingStatusComment').value = comment;
+                    document.getElementById('statusMemberId').value = member_id;
                     document.getElementById('meetingStatusCommentGroup').style.display = status ===
                         '2' ? 'block' : 'none';
                     statusModal.show();

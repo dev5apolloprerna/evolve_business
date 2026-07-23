@@ -267,14 +267,16 @@ class Membermeetingcontroller extends Controller
                     'Cluster_Meet_Member_meeting.is_approve_meeting',
                     'Cluster_Meet_Member_meeting.comment',
                     'members.Contact_person',
+                    'members.user_id',
                     'Cluster_Meet.*'
                 )
                 ->leftJoin('members', 'Cluster_Meet_Member_meeting.member_id', '=', 'members.id')
                 ->leftJoin('Cluster_Meet', 'Cluster_Meet_Member_meeting.meeting_id', '=', 'Cluster_Meet.id')
                 ->where('Cluster_Meet_Member_meeting.meeting_id', $id)
+                ->where('Cluster_Meet_Member_meeting.is_approve_meeting', 0)
                 ->paginate(env('PAR_PAGE_COUNT', 20));
-
             $count = $datas->count();
+
             $brandshowcasedata = DB::table('Cluster_Meet_Member_meeting as c')
                 ->leftJoin('members as m1', 'c.brand_showcase_1', '=', 'm1.id')
                 ->leftJoin('members as m2', 'c.brand_showcase_2', '=', 'm2.id')

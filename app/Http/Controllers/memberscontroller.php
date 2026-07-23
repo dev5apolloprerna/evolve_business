@@ -102,6 +102,25 @@ class memberscontroller extends Controller
         ));
     }
 
+    public function memberCalendar()
+    {
+        $members = DB::table('members')
+            ->leftJoin('users', 'members.user_id', '=', 'users.id')
+            ->leftJoin('renewal_history', 'members.id', '=', 'renewal_history.member_id')
+            ->select(
+                'members.id',
+                'users.first_name as member_name',
+                'members.date_of_birth',
+                'renewal_history.renewal_date as work_anniversary_date'
+            )
+            ->where('members.iStatus', 1)
+            ->where('members.isDelete', 0)
+            ->orderBy('users.first_name')
+            ->paginate(env('PAR_PAGE_COUNT', 20));
+
+        return view('members.member-calendar', compact('members'));
+    }
+
     public function storeview(Request $request)
     {
         $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
