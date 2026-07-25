@@ -327,10 +327,12 @@ class MemberBusinesscontroller extends Controller
         $Events = Event::where([
             'iStatus' => 1,
             'isDelete' => 0,
-            'isapproved_status' => 0,
-
         ])
             ->whereJsonContains('assign_member_id', (string) $Memberid)
+            ->whereHas('EventMembers', function ($q) use ($Memberid) {
+                $q->where('member_id', $Memberid)
+                    ->where('isapproved_status', 0);
+            })
             ->orderByDesc('event_id')
             ->paginate(env('PAR_PAGE_COUNT', 20));
 
@@ -502,24 +504,18 @@ class MemberBusinesscontroller extends Controller
 
     public function Eventpendinglogin(Request $request)
     {
-
-        DB::table('event_members')->insert([
-            'isapproved_status' => $request->newStatus,
-            'event_id' => $request->id,
-            'member_id' => Auth::user()->id,
-            'created_at' => now()
-        ]);
-        DB::table('news_and_events')->where('event_id', $request->id)->update([
-            'isapproved_status' => $request->newStatus,
-            'member_id' => Auth::user()->id,
-            'created_at' => date('Y-m-d H:i:s'),
-        ]);
+        $member = DB::table('members')->where(['user_id' => Auth::user()->id])->first();
 
         if ($request->newStatus == 1) {
+            DB::table('event_members')->where([
+                'isapproved_status' => 0,
+                'event_id' => $request->id,
+                'member_id' => $member->id,
+            ])->update(['isapproved_status' => $request->newStatus]);
+
             $events = DB::table('news_and_events')
                 ->where('event_id', $request->id)
                 ->first();
-
             $pointsId = null;
 
             if ($events->event_type == 1) {
@@ -548,6 +544,13 @@ class MemberBusinesscontroller extends Controller
                     ]);
                 }
             }
+        } else {
+
+            DB::table('event_members')->where([
+                'isapproved_status' => 0,
+                'event_id' => $request->id,
+                'member_id' => $member->id,
+            ])->update(['isapproved_status' => $request->newStatus]);
         }
 
         return redirect()->back();

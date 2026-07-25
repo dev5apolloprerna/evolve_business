@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\EventMembers;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -68,7 +69,7 @@ class Eventcontroller extends Controller
             ->where([
                 'news_and_events.iStatus' => 1,
                 'news_and_events.isDelete' => 0,
-                'news_and_events.isapproved_status' => 0
+                //'news_and_events.isapproved_status' => 0
             ])
 
             ->when($request->fromdate, function ($query, $FromDate) {
@@ -201,7 +202,7 @@ class Eventcontroller extends Controller
 
     public function EventParticipate(Request $request, $id)
     {
-        $Events = Event::with('EventMembers.member') // 🔥 important
+        $Events = Event::with('EventMembers.member')
             ->where('event_id', $id)
             ->where([
                 'iStatus' => 1,
@@ -209,8 +210,56 @@ class Eventcontroller extends Controller
             ])
             ->orderBy('event_id', 'DESC')
             ->get();
-
         return view('Event.Participate', compact('Events'));
+    }
+
+    public function updateEventMemberStatus(Request $request)
+    {
+        $request->validate([
+            'event_member_id' => 'required|integer|exists:event_members,id',
+            'absent' => 'required|in:0,1',
+        ]);
+
+        $member = EventMembers::findOrFail($request->event_member_id);
+        $member->absent = (int) $request->absent;
+        $member->save();
+
+        // Deduct points only when marking as absent
+        if ($member->absent == 1) {
+            $events = DB::table('news_and_events')
+                ->where('event_id', $member->event_id)
+                ->first();
+
+            if ($events) {
+                $deductPoints = null;
+                $description = null;
+
+                if ($events->event_type == 1) {
+                    // ESP
+                    $deductPoints = -20;
+                    $description = 'Event ESP Absent';
+                } elseif ($events->event_type == 2) {
+                    // Training
+                    $deductPoints = -25;
+                    $description = 'Event Training Absent';
+                }
+
+                if ($deductPoints !== null) {
+                    DB::table('member_points')->insert([
+                        'business_id' => $member->event_id,
+                        'member_id'   => $member->member_id,
+                        'points_id'   => null,
+                        'points'      => $deductPoints,
+                        'status'      => 0,
+                        'description' => $description,
+                        'created_at'  => now(),
+                        'updated_at'  => now(),
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', 'Event member updated successfully.');
     }
 
     public function exportToexcel_list(Request $request, $fromdate = null, $todate = null)
@@ -379,13 +428,64 @@ class Eventcontroller extends Controller
             'strIP' => $request->ip()
         );
         // dd($Data);
-        DB::table('news_and_events')->insert($Data);
+        // DB::table('news_and_events')->insert($Data);
+        $eventId = DB::table('news_and_events')->insertGetId($Data);
+        if (!empty($request->assign_member_id)) {
+
+            $members = [];
+
+            foreach ($request->assign_member_id as $memberId) {
+                $members[] = [
+                    'event_id'          => $eventId,
+                    'member_id'         => $memberId,
+                    'isapproved_status' => 0, // Pending
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
+                ];
+            }
+
+            DB::table('event_members')->insert($members);
+        }
         return redirect()->route('Event.index')->with('success', 'Event Created Successfully.');
     }
-    public function editview(Request $request, $Id)
+    public function editview(Request $request, $id)
     {
-        $Event = Event::where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $Id])->first();
-        echo json_encode($Event);
+        $event = Event::where([
+            'iStatus'  => 1,
+            'isDelete' => 0,
+            'event_id' => $id,
+        ])->first();
+
+        if (!$event) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Event not found.',
+            ], 404);
+        }
+
+        $selectedMemberIds = DB::table('event_members')
+            ->where('event_id', $id)
+            ->pluck('member_id')
+            ->map(function ($memberId) {
+                return (string) $memberId;
+            })
+            ->values()
+            ->toArray();
+
+        return response()->json([
+            'status'               => true,
+            'event_id'             => $event->event_id,
+            'name'                 => $event->name,
+            'photo'                => $event->photo,
+            'eventstart_date'      => $event->eventstart_date
+                ? Carbon::parse($event->eventstart_date)->format('Y-m-d')
+                : '',
+            'eventstart_time'      => $event->eventstart_time,
+            'eventend_time'        => $event->eventend_time,
+            'event_type'           => $event->event_type,
+            'description'          => $event->description ?? '',
+            'selected_member_ids'  => $selectedMemberIds,
+        ]);
     }
     public function update(Request $request)
     {
@@ -437,19 +537,63 @@ class Eventcontroller extends Controller
                 'updated_at' => date('Y-m-d H:i:s'),
                 'updated_by' => auth()->user()->id,
             ]);
+        DB::table('event_members')
+            ->where('event_id', $request->event_id)
+            ->delete();
+        if (!empty($request->assign_member_id)) {
 
+            $members = [];
+
+            foreach ($request->assign_member_id as $memberId) {
+                $members[] = [
+                    'event_id'          => $request->event_id,
+                    'member_id'         => $memberId,
+                    'isapproved_status' => 0,
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
+                ];
+            }
+
+            DB::table('event_members')->insert($members);
+        }
         return redirect()->route('Event.index')->with('success', 'Event Updated Successfully.');
     }
     public function delete(Request $request)
     {
+        $delete = DB::table('news_and_events')
+            ->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $request->id])
+            ->first();
 
-        $delete = DB::table('news_and_events')->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $request->id])->first();
+        if (!$delete) {
+            return redirect()->route('Event.index')->with('error', 'Event not found!');
+        }
+
+        // Delete the event photo if it exists
         $root = $_SERVER['DOCUMENT_ROOT'];
         $destinationpath = $root . '/evolv_business/event/';
-        unlink($destinationpath . $delete->photo);
+        if ($delete->photo && file_exists($destinationpath . $delete->photo)) {
+            unlink($destinationpath . $delete->photo);
+        }
 
-        DB::table('news_and_events')->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $request->id])->delete();
-        return redirect()->route('Event.index')->with('success', 'Event Deleted Successfully!.');
+        DB::beginTransaction();
+        try {
+            // Delete assigned members for this event
+            DB::table('event_members')
+                ->where('event_id', $request->id)
+                ->delete();
+
+            // Delete the event itself
+            DB::table('news_and_events')
+                ->where(['iStatus' => 1, 'isDelete' => 0, 'event_id' => $request->id])
+                ->delete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('Event.index')->with('error', 'Something went wrong while deleting the event.');
+        }
+
+        return redirect()->route('Event.index')->with('success', 'Event Deleted Successfully!');
     }
 
     public function Eventindex(Request $request, $id)
