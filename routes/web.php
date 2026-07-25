@@ -701,6 +701,7 @@ Route::prefix('admin')->name('Contactinquiry.')->middleware('auth')->group(funct
 Route::prefix('admin')->name('Eventinquiry.')->middleware('auth')->group(function () {
     Route::get('/Eventinquiry/index/{id?}', [Eventcontroller::class, 'Eventindex'])->name('index');
     Route::get('/Event/Participate/{id?}', [Eventcontroller::class, 'EventParticipate'])->name('EventParticipate');
+    Route::post('/Event/member/status-update', [Eventcontroller::class, 'updateEventMemberStatus'])->name('memberstatus.update');
     Route::delete('/Eventinquiry/delete', [Eventcontroller::class, 'Eventdelete'])->name('delete');
 });
 //DASHBORAD EXPRIED ROUTE

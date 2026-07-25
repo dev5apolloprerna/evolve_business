@@ -1,7 +1,27 @@
 @extends('layouts.app')
 @section('title', 'Events List')
 @section('content')
+    <style>
+        #EditModal .nicEdit-panelContain {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
 
+        #EditModal .nicEdit-main {
+            width: auto !important;
+            min-height: 180px !important;
+            padding: 10px !important;
+            box-sizing: border-box !important;
+        }
+
+        #EditModal .nicEdit-main:focus {
+            outline: none;
+        }
+
+        #Edit_assign_members {
+            min-height: 160px;
+        }
+    </style>
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
@@ -241,12 +261,11 @@
             </div>
             <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
-                <div class="modal-dialog " style="background-color: white;">
+                <div class="modal-dialog modal-lg modal-dialog-centered" style="background-color: white;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Edit Events</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             </button>
                         </div>
                         <form method="post" action="{{ route('Event.update') }}" enctype="multipart/form-data">
@@ -380,96 +399,206 @@
 
 @section('scripts')
     <script>
-        let editChoicesInstance = null;
+        let editNicEditorInitialized = false;
+        let pendingEditDescription = '';
 
-        // =========================
-        // GET EDIT DATA
-        // =========================
+        /**
+         * Return the NicEdit instance safely.
+         */
+        function getEditNicEditor() {
+            if (
+                typeof window.nicEditors === 'undefined' ||
+                !editNicEditorInitialized
+            ) {
+                return null;
+            }
+
+            try {
+                return nicEditors.findEditor('Editdescription');
+            } catch (error) {
+                return null;
+            }
+        }
+
+        /**
+         * Fix NicEdit width after opening the Bootstrap modal.
+         */
+        function fixEditNicEditorWidth() {
+            const mainEditor = $('#EditModal .nicEdit-main');
+
+            if (!mainEditor.length) {
+                return;
+            }
+
+            mainEditor.css({
+                width: 'auto',
+                minHeight: '180px',
+                boxSizing: 'border-box'
+            });
+
+            mainEditor.parent().css({
+                width: '100%',
+                boxSizing: 'border-box'
+            });
+
+            mainEditor.parent().parent().css({
+                width: '100%',
+                boxSizing: 'border-box'
+            });
+
+            $('#EditModal .nicEdit-panelContain').css({
+                width: '100%',
+                boxSizing: 'border-box'
+            });
+        }
+
+        /**
+         * Set content in both textarea and NicEdit.
+         */
+        function setEditDescription(description) {
+            pendingEditDescription = description || '';
+
+            // Set original textarea value.
+            $('#Editdescription').val(pendingEditDescription);
+
+            // Set visible NicEdit content.
+            const editor = getEditNicEditor();
+
+            if (editor) {
+                editor.setContent(pendingEditDescription);
+            }
+        }
+
+        /**
+         * Initialize NicEdit only after modal becomes visible.
+         */
+        function initializeEditNicEditor() {
+            if (!editNicEditorInitialized) {
+                new nicEditor({
+                    fullPanel: true
+                }).panelInstance('Editdescription');
+
+                editNicEditorInitialized = true;
+            }
+
+            setTimeout(function() {
+                fixEditNicEditorWidth();
+
+                const editor = getEditNicEditor();
+
+                if (editor) {
+                    editor.setContent(pendingEditDescription);
+                }
+            }, 100);
+        }
+
+        /**
+         * Load event edit data.
+         */
         function getEditData(id) {
+            const urlTemplate = "{{ route('Event.edit', ':id') }}";
+            const url = urlTemplate.replace(':id', id);
 
-            var url = "{{ route('Event.edit', ':id') }}";
-            url = url.replace(":id", id);
+            // Clear previous selected members while loading.
+            $('#Edit_assign_members').val([]);
 
             $.ajax({
                 url: url,
                 type: 'GET',
-                success: function(data) {
+                dataType: 'json',
 
-                    var obj = JSON.parse(data);
-
-                    // ===== BASIC =====
-                    $("#event_id").val(id);
-                    $("#Editname").val(obj.name || '');
-                    $("#Editeventstart_date").val(obj.eventstart_date || '');
-                    $("#Editeventstart_time").val(obj.eventstart_time || '');
-                    $("#Editeventend_time").val(obj.eventend_time || '');
-                    $("#Editeventtype").val(obj.event_type || '1');
-                    $("#Editdescription").val(obj.description || '');
-                    $('#hiddenPhoto').val(obj.photo || '');
-
-                    // ===== PHOTO =====
-                    let photoHtml = obj.photo ?
-                        `<img src="https://evolv.co.in/evolv_business/event/${obj.photo}" width="80" height="80" style="object-fit:cover;">` :
-                        '';
-                    $('#PHOTOID').html(photoHtml);
-
-                    // ===== MEMBERS =====
-                    let assignedIds = [];
-
-                    if (obj.assign_member_id) {
-                        try {
-                            assignedIds = JSON.parse(obj.assign_member_id).map(String);
-                        } catch (e) {
-                            assignedIds = [];
-                        }
+                success: function(response) {
+                    if (response.status === false) {
+                        alert(response.message || 'Event data not found.');
+                        return;
                     }
 
-                    // ðŸ”¥ Wait until Choices is ready then set values
-                    let interval = setInterval(() => {
+                    $('#event_id').val(response.event_id);
+                    $('#Editname').val(response.name);
+                    $('#Editeventstart_date').val(response.eventstart_date);
+                    $('#Editeventstart_time').val(response.eventstart_time);
+                    $('#Editeventend_time').val(response.eventend_time);
+                    $('#Editeventtype').val(String(response.event_type));
+                    $('#hiddenPhoto').val(response.photo || '');
 
-                        if (editChoicesInstance) {
+                    /*
+                     * Select previously assigned members.
+                     * Native multiple select does not need Choices.js.
+                     */
+                    let selectedMemberIds = response.selected_member_ids || [];
 
-                            editChoicesInstance.removeActiveItems();
-                            editChoicesInstance.setChoiceByValue(assignedIds);
+                    selectedMemberIds = selectedMemberIds.map(function(id) {
+                        return String(id);
+                    });
 
-                            clearInterval(interval);
-                        }
+                    $('#Edit_assign_members')
+                        .val(selectedMemberIds)
+                        .trigger('change');
 
-                    }, 100);
+                    /*
+                     * Update NicEdit content.
+                     */
+                    setEditDescription(response.description);
+
+                    /*
+                     * Display current event photo.
+                     */
+                    if (response.photo) {
+                        const imageUrl = "{{ asset('event') }}/" + response.photo;
+
+                        $('#PHOTOID').html(
+                            '<img src="' + imageUrl + '"' +
+                            ' alt="Event Photo"' +
+                            ' width="80"' +
+                            ' height="80"' +
+                            ' style="object-fit:cover; margin-top:10px;">'
+                        );
+                    } else {
+                        $('#PHOTOID').html('');
+                    }
+                },
+
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+
+                    alert(
+                        xhr.responseJSON?.message ||
+                        'Unable to load event details.'
+                    );
                 }
             });
         }
 
+        $(document).ready(function() {
+            /*
+             * Initialize NicEdit only when modal has a real visible width.
+             */
+            $('#EditModal').on('shown.bs.modal', function() {
+                initializeEditNicEditor();
+            });
 
-        // =========================
-        // MODAL OPEN â†’ INIT CHOICES
-        // =========================
-        $('#EditModal').on('shown.bs.modal', function() {
+            /*
+             * Synchronize NicEdit HTML into textarea before submission.
+             */
+            $('#EditModal form').on('submit', function() {
+                const editor = getEditNicEditor();
 
-            const select = document.getElementById('Edit_assign_members');
-
-            if (select && typeof Choices !== 'undefined') {
-
-                // destroy old instance
-                if (editChoicesInstance) {
-                    editChoicesInstance.destroy();
+                if (editor) {
+                    editor.saveContent();
                 }
+            });
 
-                // create new instance
-                editChoicesInstance = new Choices(select, {
-                    removeItemButton: true,
-                    shouldSort: false,
-                    placeholderValue: 'Select Members',
-                    searchPlaceholderValue: 'Search members...',
-                    noResultsText: 'No matching members',
-                });
-            }
+            /*
+             * Clear old values when modal closes.
+             */
+            $('#EditModal').on('hidden.bs.modal', function() {
+                $('#Edit_assign_members').val([]);
+                $('#Editphoto').val('');
+                $('#PHOTOID').html('');
+                setEditDescription('');
+            });
         });
 
-
-        // =========================
-        // DELETE
-        // =========================
         function deleteData(id) {
             $("#deleteid").val(id);
         }
@@ -606,23 +735,4 @@
             $("#deleteid").val(id);
         }
     </script>
-
-
-    <script>
-        $(document).ready(function() {
-            // Function to initialize NicEdit within the modal
-            function initNicEdit() {
-                new nicEditor({
-                    fullPanel: true
-                }).panelInstance('Editdescription');
-            }
-
-            // Attach NicEdit initialization to modal shown event
-            $('#EditModal').on('shown.bs.modal', function() {
-                initNicEdit();
-            });
-        });
-    </script>
-
-
 @endsection

@@ -375,25 +375,16 @@ class HomeController extends Controller
             $loginPendingEventCheck = Event::where([
                 'iStatus' => 1,
                 'isDelete' => 0,
-                'isapproved_status' => 0,
-
             ])
                 ->whereJsonContains('assign_member_id', (string) $member->id)
+                ->whereHas('EventMembers', function ($q) use ($member) {
+                    $q->where('member_id', $member->id)
+                        ->where('isapproved_status', 0);
+                })
                 ->orderByDesc('event_id')
-                ->get();
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
-            // $loginPendingEventCheck = Event::where([
-            //     'iStatus' => 1,
-            //     'isDelete' => 0,
-            // ])
-            // ->whereJsonContains('assign_member_id', (string) Auth::id())
-            // ->whereNotIn('event_id', function ($query) {
-            //     $query->select('event_id')
-            //         ->from('event_members')
-            //         ->where('member_id', Auth::id());
-            // })
-            // ->orderByDesc('event_id')
-            // ->get();
+
             $member = members::where('user_id', $user->id)->first();
             $Member_metting = Member_metting::join(
                 'members',

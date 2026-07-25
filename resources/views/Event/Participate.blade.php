@@ -37,6 +37,7 @@
                                                         <th width="5%" data-sort="Date">Type</th>
                                                         <th width="2%" data-sort="Title">Member</th>
                                                         <th width="2%" data-sort="Title">Status</th>
+                                                        <th width="2%" data-sort="Title">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="list">
@@ -71,10 +72,39 @@
 
                                                                 {{-- 🔥 STATUS --}}
                                                                 <td class="text-center">
-                                                                    @if ($memberData->isapproved_status == 1)
+                                                                    @if ($memberData->absent == 1)
+                                                                        Absent
+                                                                    @elseif($memberData->isapproved_status == 1)
                                                                         Join
+                                                                    @elseif($memberData->isapproved_status == 0)
+                                                                        Pending
+                                                                    @elseif($memberData->isapproved_status == 2)
+                                                                        Not Join
                                                                     @else
                                                                         Not Join
+                                                                    @endif
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    @php
+                                                                        $eventEnd = null;
+                                                                        if (!empty($Event->eventend_date)) {
+                                                                            $eventEnd = \Carbon\Carbon::parse(
+                                                                                $Event->eventend_date .
+                                                                                    ' ' .
+                                                                                    trim($Event->eventend_time ?? ''),
+                                                                            );
+                                                                        }
+                                                                    @endphp
+
+                                                                    @if ($eventEnd && $eventEnd->isPast())
+                                                                        <button type="button"
+                                                                            class="btn btn-link p-0 text-primary"
+                                                                            title="Update attendance" data-bs-toggle="modal"
+                                                                            data-bs-target="#eventMemberStatusModal"
+                                                                            data-member-id="{{ $memberData->id }}"
+                                                                            data-current-absent="{{ $memberData->absent ?? 0 }}">
+                                                                            <i class="fa fa-edit"></i>
+                                                                        </button>
                                                                     @endif
                                                                 </td>
 
@@ -99,8 +129,52 @@
     </div>
     </div>
 
+    <div class="modal fade" id="eventMemberStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('Eventinquiry.memberstatus.update') }}">
+                    @csrf
+                    <input type="hidden" name="event_member_id" id="eventMemberId">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Update Attendance</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="absentSelect" class="form-label">Attendance Status</label>
+                            <select name="absent" id="absentSelect" class="form-select">
+                                {{-- /<option value="0">Present</option> --}}
+                                <option value="1">Absent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     {{-- @endforeach --}}
 @endsection
 
 @section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('eventMemberStatusModal');
+            if (!modal) {
+                return;
+            }
+
+            modal.addEventListener('show.bs.modal', function(event) {
+                const triggerButton = event.relatedTarget;
+                const memberId = triggerButton.getAttribute('data-member-id');
+                const currentAbsent = triggerButton.getAttribute('data-current-absent');
+
+                document.getElementById('eventMemberId').value = memberId || '';
+                document.getElementById('absentSelect').value = currentAbsent === '1' ? '1' : '0';
+            });
+        });
+    </script>
 @endsection

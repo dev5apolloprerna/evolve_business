@@ -83,24 +83,14 @@ class CheckApprovalStatus
             $loginPendingEventCheck = Event::where([
                 'iStatus' => 1,
                 'isDelete' => 0,
-                'isapproved_status' => 0,
-
             ])
                 ->whereJsonContains('assign_member_id', (string) $member->id)
+                ->whereHas('EventMembers', function ($q) use ($member) {
+                    $q->where('member_id', $member->id)
+                        ->where('isapproved_status', 0);
+                })
                 ->orderByDesc('event_id')
-                ->get();
-
-            // $loginPendingEventCheck = Event::where('iStatus', 1)
-            //     ->where('isDelete', 0)
-            //     ->whereJsonContains('assign_member_id', (string) Auth::id())
-            //     ->whereNotIn('event_id', function ($query) use ($user) {
-            //         $query->select('event_id')
-            //             ->from('event_members')
-            //             ->where('member_id', $user->id);
-            //     })
-            //     ->orderByDesc('event_id')
-            //     ->get();
-            // dd($loginPendingEventCheck);
+                ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $member = members::where('user_id', $user->id)->first();
 
