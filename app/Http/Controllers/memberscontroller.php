@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use validate;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
+use App\Services\AuthkeyWhatsAppService;
 
 //Groath.network_25- info@getdemo.in
 class memberscontroller extends Controller
@@ -261,6 +262,10 @@ class memberscontroller extends Controller
             $message->from($msg['FromMail'], $msg['Title']);
             $message->to($msg['ToEmail'])->subject($msg['Subject']);
         });
+        $whatsappService = new AuthkeyWhatsAppService();
+        $wid = "39441"; // template id
+        $mobileNo = $request->phonenumber;
+        $statusofMessage = $whatsappService->sendText($mobileNo, $wid);
         DB::commit();
         // return view('frontview.contactthankyou');
         // return redirect()->route('contactthankyou');

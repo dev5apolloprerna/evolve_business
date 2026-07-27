@@ -22,6 +22,7 @@ use App\Mail\BusinessStatusMail;
 use App\Models\Event;
 use App\Models\OneToOne;
 use Illuminate\Support\Str;
+use App\Services\AuthkeyWhatsAppService;
 
 class Businesscontroller extends Controller
 {
@@ -109,6 +110,7 @@ class Businesscontroller extends Controller
         $fromUser = User::find($request->business_from);
         $fromUserName = $fromUser ? $fromUser->first_name : 'Unknown User';
         $ToUser = User::find($request->business_to);
+        $mobileNo = $ToUser->mobile_number ?? '';
         $ToUserName = $ToUser ? $ToUser->first_name : 'Unknown User';
         $gu_id = Str::random(10);
         $request->validate([
@@ -131,6 +133,9 @@ class Businesscontroller extends Controller
             'created_by'      => auth()->id(),
             "strIP" => $_SERVER['REMOTE_ADDR']
         );
+        $whatsappService = new AuthkeyWhatsAppService();
+        $wid = "41861"; // template id
+        $statusofMessage = $whatsappService->sendText($mobileNo, $wid);
 
         DB::table('Business')->insert($Data);
 

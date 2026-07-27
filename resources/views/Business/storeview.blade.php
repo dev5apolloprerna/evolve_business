@@ -7,10 +7,10 @@
             <div class="container-fluid">
 
                 <!-- @if ($errors->any())
-                    @foreach ($errors->all() as $error)
-                        <li class="mb-5" style="color:red">{{ $error }}</li>
-                    @endforeach
-                @endif -->
+                        @foreach ($errors->all() as $error)
+    <li class="mb-5" style="color:red">{{ $error }}</li>
+    @endforeach
+                    @endif -->
 
                 {{-- Alert Messages --}}
                 @include('common.alert')
@@ -22,12 +22,13 @@
                             </div>
                             <div class="card-body">
                                 <div class="live-preview">
-                                    <form onsubmit="return validateSelections();" action="{{ route('Business.create') }}" method="post"
-                                        enctype="multipart/form-data">
+                                    <form onsubmit="return validateSelections();" action="{{ route('Business.create') }}"
+                                        method="post" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row gy-3 mb-3">
-                                            <div class="col-lg-4 col-md-6"> Business Type               
-                                              <span style="color:red;" class="error-message">{{ $errors->first('business_type') }}*</span>
+                                            <div class="col-lg-4 col-md-6"> Business Type
+                                                <span style="color:red;"
+                                                    class="error-message">{{ $errors->first('business_type') }}*</span>
                                                 <select class="form-control" name="business_type" id="business_type"
                                                     value="{{ old('business_type') }}" required>
                                                     <option value="1">Direct</option>
@@ -36,40 +37,45 @@
                                             </div>
 
 
-        
                                             <div class="col-lg-4 col-md-6">
-                                            <span style="color: red;">*</span>Given By                                              
-                                                <span style="color:red;" class="error-message">{{ $errors->first('business_from') }}</span>
+                                                <span style="color: red;">*</span>Given By
+                                                <span style="color:red;"
+                                                    class="error-message">{{ $errors->first('business_from') }}</span>
                                                 <select class="form-control" data-choices name="business_from"
-                                                     id="choices-single-default-given-by">
+                                                    id="choices-single-default-given-by">
                                                     <option value="" disabled selected>Select Given By</option>
                                                     @foreach ($Data as $data)
-                                                        <option value="{{ $data->id }}">{{ $data->first_name }} - ({{$data->mobile_number}})</option>
+                                                        <option value="{{ $data->id }}">{{ $data->first_name }} -
+                                                            ({{ $data->mobile_number }})</option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                           
+
                                             <div class="col-lg-4 col-md-6">
-                                            <span style="color: red;">*</span>Given To                                              
-                                                <span style="color:red;" class="error-message">{{ $errors->first('business_to') }}</span>
+                                                <span style="color: red;">*</span>Given To
+                                                <span style="color:red;"
+                                                    class="error-message">{{ $errors->first('business_to') }}</span>
                                                 <select class="form-control" data-choices name="business_to"
-                                                id="choices-single-default-given-to">
+                                                    id="choices-single-default-given-to">
                                                     <option value="" disabled selected>Select Given To</option>
                                                     @foreach ($Data as $data)
-                                                        <option value="{{ $data->id }}">{{ $data->first_name }} - ({{$data->mobile_number}})</option>
+                                                        <option value="{{ $data->id }}">{{ $data->first_name }} -
+                                                            ({{ $data->mobile_number }})</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-lg-4 col-md-6">
-                                            <span style="color: red;">*</span>Amount
-                                            <span style="color:red;" class="error-message">{{ $errors->first('Business_amount') }}</span>
+                                                <span style="color: red;">*</span>Amount
+                                                <span style="color:red;"
+                                                    class="error-message">{{ $errors->first('Business_amount') }}</span>
                                                 <input type="number" class="form-control" name="Business_amount"
                                                     id="Business_amount" placeholder="Enter Business Amount"
                                                     value="{{ old('Business_amount') }}" required>
                                             </div>
                                             <div class="col-lg-4 col-md-6">
-                                            <span style="color: red;">*</span>Business date
-                                            <span style="color:red;" class="error-message">{{ $errors->first('business_Date') }}</span>
+                                                <span style="color: red;">*</span>Business date
+                                                <span style="color:red;"
+                                                    class="error-message">{{ $errors->first('business_Date') }}</span>
                                                 <input type="text" class="form-control" name="business_Date"
                                                     id="business_Date" placeholder="Enter Business Date" required>
                                             </div>
@@ -79,8 +85,10 @@
                                                 <button type="submit" class="btn btn-success btn-user"
                                                     style="width:
                                                     81px; height: 36px;">Submit</button>
-                                                <button type="button" class="btn btn-danger btn-user" style="width:
-                                                    81px; height: 34px;" onclick="cancelForm()">Cancel</button>
+                                                <button type="button" class="btn btn-danger btn-user"
+                                                    style="width:
+                                                    81px; height: 34px;"
+                                                    onclick="cancelForm()">Cancel</button>
                                             </div>
                                         </div>
                                 </div>
@@ -230,35 +238,36 @@
         });
     </script>
 
-<script>
-    // Function to check if the same person is selected for both "Given By" and "Given To"
-    function validateSelections() {
-        var givenBy = document.getElementById('choices-single-default-given-by').value;
-        var givenTo = document.getElementById('choices-single-default-given-to').value;
+    <script>
+        // Function to check if the same person is selected for both "Given By" and "Given To"
+        function validateSelections() {
+            var givenBy = document.getElementById('choices-single-default-given-by').value;
+            var givenTo = document.getElementById('choices-single-default-given-to').value;
 
-        if (givenBy === givenTo) {
-            alert("You cannot select the same person for both 'Given By' and 'Given To'. Please select different persons.");
-            return false;
+            if (givenBy === givenTo) {
+                alert(
+                    "You cannot select the same person for both 'Given By' and 'Given To'. Please select different persons.");
+                return false;
+            }
+
+            return true;
         }
+    </script>
+    <script>
+        function cancelForm() {
+            window.location.reload();
+        }
+    </script>
 
-        return true;
-    }
-</script>
-<script>
-     function cancelForm() {
-         window.location.reload(); 
-     }
- </script>
- 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script>
-    $(function() {
-        $("#business_Date").datepicker({
-            dateFormat: "yy-mm-dd",
-            //minDate: 0
-        });      
-    });
-</script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $("#business_Date").datepicker({
+                dateFormat: "yy-mm-dd",
+                //minDate: 0
+            });
+        });
+    </script>
 
 @endsection

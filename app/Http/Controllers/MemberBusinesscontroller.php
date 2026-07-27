@@ -24,6 +24,7 @@ use validate;
 use Illuminate\Support\Str;
 use App\Mail\BusinessStatusMail;
 use Carbon\Carbon;
+use App\Services\AuthkeyWhatsAppService;
 
 class MemberBusinesscontroller extends Controller
 {
@@ -104,7 +105,7 @@ class MemberBusinesscontroller extends Controller
             $session = Auth::user();
             $ToUser = User::find($request->business_to);
             $ToUserName = $ToUser ? $ToUser->first_name : 'Unknown User';
-
+            $mobileNo = $ToUser->mobile_number ?? '';
             $request->validate([
                 'business_type'   => 'required',
                 // 'business_from'   => 'required',
@@ -158,6 +159,9 @@ class MemberBusinesscontroller extends Controller
                     $message->cc($msg['CCEmail']);
                 }
             });
+            $whatsappService = new AuthkeyWhatsAppService();
+            $wid = "41861"; // template id
+            $statusofMessage = $whatsappService->sendText($mobileNo, $wid);
             return response()->json(['success' => true, 'message' => 'Business Created Successfully.']);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
