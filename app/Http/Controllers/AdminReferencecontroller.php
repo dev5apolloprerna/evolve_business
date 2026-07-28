@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use validate;
+use App\Services\AuthkeyWhatsAppService;
 
 class AdminReferencecontroller extends Controller
 {
@@ -106,21 +107,19 @@ class AdminReferencecontroller extends Controller
     }
     public function create(Request $request)
     {
-        $fromUser = User::find($request->business_from);
+        $fromUser = User::find($request->Reference_from);
         $fromUserName = $fromUser ? $fromUser->first_name : 'Unknown User';
-        $ToUser = User::find($request->business_to);
+        $ToUser = User::find($request->Reference_to);
+        $mobileNo = $ToUser->mobile_number ?? '';
         $ToUserName = $ToUser ? $ToUser->first_name : 'Unknown User';
         $request->validate([
-            // 'business_type'   => 'required',
+
             'Reference_from'   => 'required',
             'Reference_to'     => 'required',
             'Reference_Name' => 'required',
-            // 'Company_Name'   => 'required',
             'phonenumber'   => 'required',
-            // 'Email'   => 'required',
         ]);
         $Data = array(
-            // 'business_type'   => $request->business_type,
             'Reference_from'   => $request->Reference_from,
             'Reference_to'     => $request->Reference_to,
             'Reference_Name'   => $request->Reference_Name,
@@ -134,6 +133,9 @@ class AdminReferencecontroller extends Controller
             "strIP"            => $_SERVER['REMOTE_ADDR']
         );
         // dd($Data);
+        $whatsappService = new AuthkeyWhatsAppService();
+        $wid = "41826"; // template id
+        $statusofMessage = $whatsappService->sendText($mobileNo, $wid);
         DB::table('Reference')->insert($Data);
 
         return redirect()->route('Admin-Reference.index')->with('success', 'Reference Created Successfully.');

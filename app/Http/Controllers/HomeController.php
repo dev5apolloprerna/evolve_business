@@ -360,17 +360,23 @@ class HomeController extends Controller
                 ->orderBy('Business.business_id', 'DESC')
                 ->get();
 
-            // $loginPendingEventCheck = Event::where([
-            //     'iStatus' => 1,
-            //     'isDelete' => 0,
-            // ])
-            //     ->whereNotIn('event_id', function ($query) {
-            //         $query->select('event_id')
-            //             ->from('event_members')
-            //             ->where('member_id', Auth::id());
-            //     })
-            //     ->orderBy('event_id', 'DESC')
-            //     ->get();
+            $pendingMeeting = DB::table('Cluster_Meet')
+                ->select(
+                    'Cluster_Meet.*',
+                    'mm.id as member_meeting_id',
+                    'mm.member_id'
+                )
+                ->join('Cluster_Meet_Member_meeting AS mm', 'mm.meeting_id', '=', 'Cluster_Meet.id')
+                ->where('Cluster_Meet.city_group_id', $member->citygroup_id)
+                ->where('mm.member_id', $member->id)
+                ->where('mm.iStatus', 1)
+                ->where('mm.isDelete', 0)
+                ->where('mm.is_approve_meeting', 0)
+                ->whereRaw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') >= ?", [
+                    Carbon::today()->format('Y-m-d')
+                ])
+                ->orderByRaw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') ASC")
+                ->get();
 
             $loginPendingEventCheck = Event::where([
                 'iStatus' => 1,
@@ -405,7 +411,7 @@ class HomeController extends Controller
                 ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
                 ->get();
 
-            if (!$loginPendingCheck->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty() || !$Member_metting->isEmpty()) {
+            if (!$loginPendingCheck->isEmpty() || !$pendingMeeting->isEmpty() || !$loginPendingOneToOneCheck->isEmpty() || !$loginPendingEventCheck->isEmpty() || !$Member_metting->isEmpty()) {
                 return redirect()->route('pendinglogincheck.index');
             }
             $session = Auth::user();

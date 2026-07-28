@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use validate;
+use App\Services\AuthkeyWhatsAppService;
 
 class Membermeetingcontroller extends Controller
 {
@@ -97,6 +98,7 @@ class Membermeetingcontroller extends Controller
 
     public function Memberindex(Request $request, $id)
     {
+
         $allmembers = members::select('id', 'Contact_person')->orderBy('Contact_person')->get();
         $meetingdata = Member_metting::where(['meeting_id' => $id])->get();
         //    dd($permission);
@@ -203,7 +205,7 @@ class Membermeetingcontroller extends Controller
 
                 $member = DB::table('members')->where('id', $memberId)->first();
 
-                $allowedCount = ($member && $member->priority_club_3_year == 1) ? 2 : 1;
+                $allowedCount = ($member && in_array($member->priority_club, [3, 5, 7])) ? 2 : 1;
 
                 $usedCount = MemberRoleUsage::where('member_id', $memberId)
                     ->where('role_type', $field)
@@ -224,6 +226,7 @@ class Membermeetingcontroller extends Controller
 
         $meetingId = $request->meetingid;
         $memberIds = $request->members ?? [];
+        $whatsappService = new AuthkeyWhatsAppService();
 
         foreach ($memberIds as $memberId) {
             Member_metting::create([
@@ -234,6 +237,14 @@ class Membermeetingcontroller extends Controller
                 'brand_showcase_1' => $request->brand_showcase_1 ?? 0,
                 'brand_showcase_2' => $request->brand_showcase_2 ?? 0,
             ]);
+            $member = DB::table('members')
+                ->where('id', $memberId)
+                ->first();
+
+            if (!empty($member) && !empty($member->phonenumber)) {
+                $wid = 41818; // Template ID
+                $whatsappService->sendText($member->phonenumber, $wid);
+            }
         }
 
         foreach ($fieldLabels as $field => $label) {

@@ -20,6 +20,7 @@ use App\Mail\BusinessCreated;
 use validate;
 use Illuminate\Support\Str;
 use App\Mail\BusinessStatusMail;
+use App\Services\AuthkeyWhatsAppService;
 
 class OneToOneController extends Controller
 {
@@ -369,6 +370,7 @@ class OneToOneController extends Controller
         try {
             $session = Auth::user();
             $ToUser = User::find($request->oneToone_to);
+            $mobileNo = $ToUser->mobile_number ?? '';
             $ToUserName = $ToUser ? $ToUser->first_name : 'Unknown User';
             $request->validate([
                 'oneToone_to'     => 'required',
@@ -414,6 +416,9 @@ class OneToOneController extends Controller
             );
 
             $businessId = DB::table('one_to_one_detail')->insertGetId($Data);
+            $whatsappService = new AuthkeyWhatsAppService();
+            $wid = "41828"; // template id
+            $statusofMessage = $whatsappService->sendText($mobileNo, $wid);
             // $id = DB::table('member_points')->insertGetId([
             //     'member_id' => $session->id,
             //     'business_id' => $businessId,
