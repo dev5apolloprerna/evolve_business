@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\BusinessCreated;
 use validate;
 use Illuminate\Support\Str;
+use App\Services\AuthkeyWhatsAppService;
 
 class Referencecontroller extends Controller
 {
@@ -66,15 +67,14 @@ class Referencecontroller extends Controller
         // dd($request);
         $session = Auth::user();
         $ToUser = User::find($request->Reference_to);
+        $mobileNo = $ToUser->mobile_number ?? '';
         $ToUserName = $ToUser ? $ToUser->first_name : 'Unknown User';
 
         $request->validate([
-
             'Reference_to'     => 'required',
             // 'Email'     => 'required',
             'Reference_Name' => 'required',
             'phonenumber' => 'required',
-
         ]);
 
         $gu_id = Str::random(10);
@@ -94,13 +94,12 @@ class Referencecontroller extends Controller
             "strIP" => $_SERVER['REMOTE_ADDR']
 
         );
-        //    dd($Data);
+        $whatsappService = new AuthkeyWhatsAppService();
+        $wid = "41826"; // template id
+        $statusofMessage = $whatsappService->sendText($mobileNo, $wid);
 
-        // dd($Data);
         $ReferenceId = DB::table('Reference')->insertGetId($Data);
-        // dd($ReferenceId);
         $toUserEmail = $ToUser ? $ToUser->email : null;
-        // dd($toUserEmail);
         $SendEmailDetails = DB::table('sendemaildetails')
             ->where(['id' => 4])
             ->first();

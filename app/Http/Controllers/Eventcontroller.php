@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use validate;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use App\Services\AuthkeyWhatsAppService;
 
 class Eventcontroller extends Controller
 {
@@ -427,21 +428,27 @@ class Eventcontroller extends Controller
             'created_by'      => auth()->user()->id,
             'strIP' => $request->ip()
         );
-        // dd($Data);
-        // DB::table('news_and_events')->insert($Data);
         $eventId = DB::table('news_and_events')->insertGetId($Data);
         if (!empty($request->assign_member_id)) {
 
             $members = [];
-
+            $whatsappService = new AuthkeyWhatsAppService();
+            $wid = "41821"; // Event template ID
             foreach ($request->assign_member_id as $memberId) {
                 $members[] = [
                     'event_id'          => $eventId,
                     'member_id'         => $memberId,
-                    'isapproved_status' => 0, // Pending
+                    'isapproved_status' => 0,
                     'created_at'        => now(),
                     'updated_at'        => now(),
                 ];
+                $member = DB::table('members')
+                    ->where('id', $memberId)
+                    ->first();
+                if (!empty($member) && !empty($member->phonenumber)) {
+
+                    $response = $whatsappService->sendText($member->phonenumber, $wid);
+                }
             }
 
             DB::table('event_members')->insert($members);
