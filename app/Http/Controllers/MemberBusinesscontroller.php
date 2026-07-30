@@ -286,15 +286,32 @@ class MemberBusinesscontroller extends Controller
             ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
             ->orderBy('one_to_one_detail.id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
-
         $member = members::where('user_id', $session->id)->first();
-        $Member_metting = Member_metting::join('members', 'members.id', '=', 'Cluster_Meet_Member_meeting.member_id')
-            ->where('members.id', $member->id)
-            ->select('Cluster_Meet_Member_meeting.*', 'members.Contact_person As name')
-            ->where(['Cluster_Meet_Member_meeting.iStatus' => 1, 'Cluster_Meet_Member_meeting.isDelete' => 0, 'Cluster_Meet_Member_meeting.is_approve' => 0])
-            ->groupby('Cluster_Meet_Member_meeting.member_id')
-            ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
-            ->paginate(env('PAR_PAGE_COUNT', 20));
+
+        $Member_metting = Member_metting::join('Cluster_Meet', 'Cluster_Meet.id', '=', 'Cluster_Meet_Member_meeting.meeting_id')
+            ->leftJoin('members as bs1', 'bs1.id', '=', 'Cluster_Meet_Member_meeting.brand_showcase_1')
+            ->leftJoin('members as bs2', 'bs2.id', '=', 'Cluster_Meet_Member_meeting.brand_showcase_2')
+            ->where(function ($q) use ($member) {
+                $q->where('Cluster_Meet_Member_meeting.brand_showcase_1', '=', $member->id)
+                    ->orWhere('Cluster_Meet_Member_meeting.brand_showcase_2', '=', $member->id);
+            })
+            ->where('Cluster_Meet_Member_meeting.member_id', $member->id)
+            ->where('Cluster_Meet_Member_meeting.iStatus', 1)
+            ->where('Cluster_Meet_Member_meeting.isDelete', 0)
+            ->where('Cluster_Meet_Member_meeting.is_approve', 0)
+            ->select(
+                'Cluster_Meet_Member_meeting.*',
+                DB::raw("
+            CASE
+                WHEN Cluster_Meet_Member_meeting.brand_showcase_1 = {$member->id}
+                THEN bs1.Contact_person
+                ELSE bs2.Contact_person
+            END as member_name
+        ")
+            )
+            ->orderByDesc('Cluster_Meet_Member_meeting.id')
+            ->first();
+        //dd($Member_metting);
         if ($member) {
             $pendingMeeting = DB::table('Cluster_Meet')
                 ->select(
@@ -340,12 +357,14 @@ class MemberBusinesscontroller extends Controller
             ->orderByDesc('event_id')
             ->paginate(env('PAR_PAGE_COUNT', 20));
 
-        $hasBrandShowcase = $Member_metting->getCollection()->contains(function ($item) {
-            return $item->ppt_taken_1 > 0 ||
-                $item->ppt_taken_2 > 0 ||
-                $item->brand_showcase_1 > 0 ||
-                $item->brand_showcase_2 > 0;
-        });
+        $hasBrandShowcase = $Member_metting &&
+            (
+                $Member_metting->ppt_taken_1 > 0 ||
+                $Member_metting->ppt_taken_2 > 0 ||
+                $Member_metting->brand_showcase_1 > 0 ||
+                $Member_metting->brand_showcase_2 > 0
+            );
+
         return view('pendinglogincheck.index', compact('Referral', 'hasBrandShowcase', 'pendingMeeting', 'member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
