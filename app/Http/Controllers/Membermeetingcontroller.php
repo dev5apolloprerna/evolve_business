@@ -228,6 +228,12 @@ class Membermeetingcontroller extends Controller
         $memberIds = $request->members ?? [];
         $whatsappService = new AuthkeyWhatsAppService();
 
+        // Brand Showcase Members
+        $brandShowcaseMembers = collect([
+            $request->brand_showcase_1,
+            $request->brand_showcase_2,
+        ])->filter()->unique()->values()->toArray();
+
         foreach ($memberIds as $memberId) {
             Member_metting::create([
                 'meeting_id' => $meetingId,
@@ -237,6 +243,9 @@ class Membermeetingcontroller extends Controller
                 'brand_showcase_1' => $request->brand_showcase_1 ?? 0,
                 'brand_showcase_2' => $request->brand_showcase_2 ?? 0,
             ]);
+            if (in_array($memberId, $brandShowcaseMembers)) {
+                continue;
+            }
             $member = DB::table('members')
                 ->where('id', $memberId)
                 ->first();
@@ -244,6 +253,18 @@ class Membermeetingcontroller extends Controller
             if (!empty($member) && !empty($member->phonenumber)) {
                 $wid = 41818; // Template ID
                 $whatsappService->sendText($member->phonenumber, $wid);
+            }
+        }
+
+        // Send Brand Showcase WhatsApp
+        foreach ($brandShowcaseMembers as $memberId) {
+
+            $member = DB::table('members')
+                ->where('id', $memberId)
+                ->first();
+
+            if ($member && !empty($member->phonenumber)) {
+                $whatsappService->sendText($member->phonenumber, 41822); // Brand Showcase Template
             }
         }
 

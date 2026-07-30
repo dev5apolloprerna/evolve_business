@@ -128,31 +128,36 @@ class CheckApprovalStatus
                 //     ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
                 //     ->get();
 
-                $Member_metting = Member_metting::join(
-                    'members',
-                    'members.id',
-                    '=',
-                    'Cluster_Meet_Member_meeting.member_id'
-                )
-                    ->where('members.id', $member->id)
+                $Member_metting = Member_metting::join('Cluster_Meet', 'Cluster_Meet.id', '=', 'Cluster_Meet_Member_meeting.meeting_id')
+                    ->leftJoin('members as bs1', 'bs1.id', '=', 'Cluster_Meet_Member_meeting.brand_showcase_1')
+                    ->leftJoin('members as bs2', 'bs2.id', '=', 'Cluster_Meet_Member_meeting.brand_showcase_2')
+                    ->where(function ($q) use ($member) {
+                        $q->where('Cluster_Meet_Member_meeting.brand_showcase_1', '=', $member->id)
+                            ->orWhere('Cluster_Meet_Member_meeting.brand_showcase_2', '=', $member->id);
+                    })
+                    ->where('Cluster_Meet_Member_meeting.member_id', $member->id)
                     ->where('Cluster_Meet_Member_meeting.iStatus', 1)
                     ->where('Cluster_Meet_Member_meeting.isDelete', 0)
                     ->where('Cluster_Meet_Member_meeting.is_approve', 0)
-                    ->where(function ($q) {
-                        $q->where('brand_showcase_1', '>', 0)
-                            ->orWhere('brand_showcase_2', '>', 0)
-                            ->orWhere('ppt_taken_1', '>', 0)
-                            ->orWhere('ppt_taken_2', '>', 0);
-                    })
-                    ->orderBy('Cluster_Meet_Member_meeting.id', 'DESC')
-                    ->get();
+                    ->select(
+                        'Cluster_Meet_Member_meeting.*',
+                        DB::raw("
+                    CASE
+                        WHEN Cluster_Meet_Member_meeting.brand_showcase_1 = {$member->id}
+                        THEN bs1.Contact_person
+                        ELSE bs2.Contact_person
+                    END as member_name
+                ")
+                    )
+                    ->orderByDesc('Cluster_Meet_Member_meeting.id')
+                    ->first();
             }
             if (
                 !$loginPendingReferralCheck->isEmpty() ||
                 !$loginPendingCheck->isEmpty() ||
                 !$loginPendingOneToOneCheck->isEmpty() ||
                 !$loginPendingEventCheck->isEmpty() ||
-                !$Member_metting->isEmpty() ||
+                $Member_metting != null ||
                 !$pendingMeeting->isEmpty()
             ) {
                 return redirect()->route('pendinglogincheck.index');
