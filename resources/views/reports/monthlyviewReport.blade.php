@@ -29,11 +29,13 @@
                                     </div>
 
                                     <div class="col-md-3 mt-4">
-                                        <button class="btn btn-primary">
+                                        <button class="btn btn-primary"
+                                            style="background: #61a143 !important;border:1px solid #61a143 !important; ">
                                             Search
                                         </button>
 
-                                        <a href="{{ route('reports.monthlyreview') }}" class="btn btn-secondary">
+                                        <a href="{{ route('reports.monthlyreview') }}" class="btn btn-secondary"
+                                            style="background: #61a143 !important;border:1px solid #61a143 !important; ">
                                             Reset
                                         </a>
                                     </div>
@@ -59,10 +61,14 @@
                                                 <th>Total Points</th>
                                                 <th>Highest Direct Business</th>
                                                 <th>Direct Amount</th>
-                                                <th>Highest Reference Business</th>
-                                                <th>Reference Amount</th>
+                                                <th>Group Total Direct Amount</th>
+                                                <th>Highest Referral Business</th>
+                                                <th>Referral Amount</th>
+                                                <th>Group Total Referral Amount</th>
+                                                <th>Group Total Referral Count</th>
                                                 <th>Top One To One</th>
-                                                <th>Total Meetings</th>
+                                                <th>Total One To One</th>
+                                                <th>Group Total One To One Count</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -81,7 +87,7 @@
                                                     </td>
 
                                                     <td>
-                                                        {{ $row['top_direct_business']->member_name ?? '-' }}
+                                                        {{ $row['top_direct_business']->Contact_person ?? '-' }}
                                                     </td>
 
                                                     <td>
@@ -89,7 +95,11 @@
                                                     </td>
 
                                                     <td>
-                                                        {{ $row['top_reference_business']->member_name ?? '-' }}
+                                                        ₹{{ number_format($row['totalDirectBusiness'] ?? 0, 2) }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $row['top_reference_business']->Contact_person ?? '-' }}
                                                     </td>
 
                                                     <td>
@@ -97,11 +107,21 @@
                                                     </td>
 
                                                     <td>
-                                                        {{ $row['top_one_to_one']->member_name ?? '-' }}
+                                                        ₹{{ number_format($row['totalReferenceBusiness'] ?? 0, 2) }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $row['totalReferralCount'] ?? 0 }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $row['top_one_to_one']->Contact_person ?? '-' }}
                                                     </td>
 
                                                     <td>
                                                         {{ $row['top_one_to_one']->total_meetings ?? 0 }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $row['totalOneToOne'] ?? 0 }}
                                                     </td>
                                                 </tr>
                                             @endforeach

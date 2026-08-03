@@ -39,8 +39,8 @@ class ReportController extends Controller
                 ->join('members', 'members.user_id', '=', 'users.id')
                 ->join('categories', 'categories.id', '=', 'members.category_id')
                 ->where('members.citygroup_id', $group->id)
-                ->whereYear('member_points.created_at', $currentYear)
-                ->whereMonth('member_points.created_at', $currentMonth)
+                //->whereYear('member_points.created_at', $currentYear)
+                // ->whereMonth('member_points.created_at', $currentMonth)
                 ->whereBetween('member_points.created_at', [
                     $fromDate . ' 00:00:00',
                     $toDate . ' 23:59:59'
@@ -72,8 +72,8 @@ class ReportController extends Controller
             )
                 ->join('members', 'members.user_id', '=', 'Business.business_from_id')
                 ->where('members.citygroup_id', $group->id)
-                ->whereYear('business_Date', $currentYear)
-                ->whereMonth('business_Date', $currentMonth)
+                //->whereYear('business_Date', $currentYear)
+                //->whereMonth('business_Date', $currentMonth)
                 ->whereBetween('business_Date', [
                     $fromDate,
                     $toDate
@@ -90,6 +90,15 @@ class ReportController extends Controller
                 ->orderByDesc('total_amount')
                 ->first();
 
+            $totalDirectBusiness = Business::join('members', 'members.user_id', '=', 'Business.business_from_id')
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('Business.business_Date', [$fromDate, $toDate])
+                ->where('Business.business_type', 1)
+                ->where('Business.isapproved_status', 1)
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->sum('Business.Business_amount');
+
             // Highest Reference Business
             $topReferenceBusiness = Business::select(
                 'members.Contact_person',
@@ -98,8 +107,8 @@ class ReportController extends Controller
             )
                 ->join('members', 'members.user_id', '=', 'Business.business_from_id')
                 ->where('members.citygroup_id', $group->id)
-                ->whereYear('business_Date', $currentYear)
-                ->whereMonth('business_Date', $currentMonth)
+                //->whereYear('business_Date', $currentYear)
+                //->whereMonth('business_Date', $currentMonth)
                 ->whereBetween('business_Date', [
                     $fromDate,
                     $toDate
@@ -116,12 +125,30 @@ class ReportController extends Controller
                 ->orderByDesc('total_amount')
                 ->first();
 
+            $totalReferenceBusiness = Business::join('members', 'members.user_id', '=', 'Business.business_from_id')
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('Business.business_Date', [$fromDate, $toDate])
+                ->where('Business.business_type', 2)
+                ->where('Business.isapproved_status', 1)
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->sum('Business.Business_amount');
+
+            $totalReferralCount = Business::join('members', 'members.user_id', '=', 'Business.business_from_id')
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('Business.business_Date', [$fromDate, $toDate])
+                ->where('Business.business_type', 2) // 2 = Reference Business
+                ->where('Business.isapproved_status', 1)
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->count();
+
             // Highest One To One
             $topOneToOne = DB::table('one_to_one_detail')
                 ->join('members', 'members.user_id', '=', 'one_to_one_detail.created_by')
                 ->where('members.citygroup_id', $group->id)
-                ->whereYear('receive_date', $currentYear)
-                ->whereMonth('receive_date', $currentMonth)
+                //->whereYear('receive_date', $currentYear)
+                // ->whereMonth('receive_date', $currentMonth)
                 ->whereBetween('receive_date', [
                     $fromDate,
                     $toDate
@@ -142,11 +169,24 @@ class ReportController extends Controller
                 ->orderByDesc('total_meetings')
                 ->first();
 
+            $totalOneToOne = DB::table('one_to_one_detail')
+                ->join('members', 'members.user_id', '=', 'one_to_one_detail.created_by')
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('receive_date', [$fromDate, $toDate])
+                ->where('one_to_one_detail.isapproved_status', 1)
+                ->where('one_to_one_detail.iStatus', 1)
+                ->where('one_to_one_detail.isDelete', 0)
+                ->count();
+
             $reportData[] = [
+                'totalDirectBusiness'         => $totalDirectBusiness,
                 'city_group'            => $group->group_name,
                 'member_of_the_month'   => $memberOfTheMonth,
                 'top_direct_business'   => $topDirectBusiness,
                 'top_reference_business' => $topReferenceBusiness,
+                'totalReferenceBusiness' => $totalReferenceBusiness,
+                'totalReferralCount' => $totalReferralCount,
+                'totalOneToOne' => $totalOneToOne,
                 'top_one_to_one'        => $topOneToOne,
             ];
         }

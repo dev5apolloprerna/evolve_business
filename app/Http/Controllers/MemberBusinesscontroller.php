@@ -596,8 +596,8 @@ class MemberBusinesscontroller extends Controller
             'id' => 'required|integer',
             'comment' => 'nullable',
         ]);
-        $userId = Auth::user()->id;
 
+        $userId = Auth::user()->id;
         $members = members::where('user_id', $userId)->first();
         $updateData = [
             'is_approve_meeting' => $request->newStatus,
@@ -612,7 +612,7 @@ class MemberBusinesscontroller extends Controller
         if ($request->newStatus == 1) {
             DB::table('member_points')->insert([
                 'business_id' => $request->id,
-                'member_id'   => $request->memberid,
+                'member_id'   => $userId,
                 'points_id'   => 3,
                 'points'      => 15,
                 'status'      => 0,
@@ -625,7 +625,7 @@ class MemberBusinesscontroller extends Controller
 
             $exists = DB::table('member_points')
                 ->where('business_id', $request->id)
-                ->where('member_id', $request->memberid)
+                ->where('member_id', $userId)
                 ->where('points_id', 3)
                 ->where('points', -15)
                 ->exists();
@@ -633,7 +633,7 @@ class MemberBusinesscontroller extends Controller
             if (!$exists) {
                 DB::table('member_points')->insert([
                     'business_id' => $request->id,
-                    'member_id'   => $request->memberid,
+                    'member_id'   => $userId,
                     'points_id'   => 3,
                     'points'      => -15,
                     'status'      => 0,
