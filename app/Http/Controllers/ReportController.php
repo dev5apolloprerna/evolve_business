@@ -9,6 +9,7 @@ use App\Models\City;
 use App\Models\City_group;
 use App\Models\MemberPoint;
 use App\Models\Business;
+use App\Models\Reference;
 use App\Models\Categories;
 use App\Models\subcategories;
 use App\Models\membershipplans;
@@ -134,13 +135,21 @@ class ReportController extends Controller
                 ->where('Business.isDelete', 0)
                 ->sum('Business.Business_amount');
 
-            $totalReferralCount = Business::join('members', 'members.user_id', '=', 'Business.business_from_id')
+            // $totalReferralCount = Business::join('members', 'members.user_id', '=', 'Business.business_from_id')
+            //     ->where('members.citygroup_id', $group->id)
+            //     ->whereBetween('Business.business_Date', [$fromDate, $toDate])
+            //     ->where('Business.business_type', 2) // 2 = Reference Business
+            //     ->where('Business.isapproved_status', 1)
+            //     ->where('Business.iStatus', 1)
+            //     ->where('Business.isDelete', 0)
+            //     ->count();
+
+            $totalReferralCount = Reference::join('members', 'members.user_id', '=', 'Reference.Reference_from')
                 ->where('members.citygroup_id', $group->id)
-                ->whereBetween('Business.business_Date', [$fromDate, $toDate])
-                ->where('Business.business_type', 2) // 2 = Reference Business
-                ->where('Business.isapproved_status', 1)
-                ->where('Business.iStatus', 1)
-                ->where('Business.isDelete', 0)
+                ->whereBetween('Reference.Reference_Date', [$fromDate, $toDate])
+                ->where('Reference.isapproved_status', 1)
+                ->where('Reference.iStatus', 1)
+                ->where('Reference.isDelete', 0)
                 ->count();
 
             // Highest One To One
