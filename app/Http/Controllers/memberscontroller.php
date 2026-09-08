@@ -29,6 +29,7 @@ class memberscontroller extends Controller
         $categorysearch = $request->category_id;
         $citysearch = $request->city_id;
         $groupsearch = $request->group_id;
+        $status = $request->status;
 
         $category = Categories::select('id', 'name')->get();
         $cities = DB::table('city')->select('id', 'city_name')->get();
@@ -63,7 +64,7 @@ class memberscontroller extends Controller
             DB::raw('COALESCE(mp.points_total, 0) AS points_total'),
             'ref_user.first_name as referred_by_name'
         )
-            ->orderBy('members.id', 'desc')
+            ->orderBy('users.first_name', 'asc')
             ->leftjoin('city', 'city.id', 'members.city_id')
             ->leftjoin('city_groups', 'city_groups.id', 'members.citygroup_id')
             ->leftjoin('categories', 'categories.id', 'members.category_id')
@@ -74,6 +75,12 @@ class memberscontroller extends Controller
                     ->whereRaw('members.from REGEXP "^[0-9]+$"');
             })
             ->where(['members.iStatus' => 1, 'members.isDelete' => 0, 'members.Arrival_flag' => 0])
+            ->when($status === null || $status === '', function ($query) {
+                $query->where('users.status', 1);
+            })
+            ->when($status !== null && $status !== '', function ($query) use ($status) {
+                $query->where('users.status', $status);
+            })
             ->when($firstname, function ($query) use ($firstname) {
                 $query->where('users.first_name', 'LIKE', '%' . $firstname . '%');
             })
@@ -85,6 +92,9 @@ class memberscontroller extends Controller
             })
             ->when($groupsearch, function ($query) use ($groupsearch) {
                 $query->where('members.citygroup_id', '=', $groupsearch);
+            })
+            ->when($status, function ($query) use ($status) {
+                $query->where('users.status', '=', $status);
             })
             ->paginate(env('PAR_PAGE_COUNT', 20));
 
@@ -99,7 +109,8 @@ class memberscontroller extends Controller
             'firstname',
             'categorysearch',
             'citysearch',
-            'groupsearch'
+            'groupsearch',
+            'status'
         ));
     }
 
@@ -118,7 +129,7 @@ class memberscontroller extends Controller
             ->where('members.isDelete', 0)
             ->orderBy('users.first_name')
             ->paginate(env('PAR_PAGE_COUNT', 20));
-            
+
         // Calendar ke liye all members
         $calendarMembers = DB::table('members')
             ->leftJoin('users', 'members.user_id', '=', 'users.id')
@@ -134,7 +145,7 @@ class memberscontroller extends Controller
             ->orderBy('users.first_name')
             ->get();
 
-        return view('members.member-calendar', compact('members','calendarMembers'));
+        return view('members.member-calendar', compact('members', 'calendarMembers'));
     }
 
     public function storeview(Request $request)

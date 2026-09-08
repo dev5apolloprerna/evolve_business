@@ -107,23 +107,24 @@
                 }
 
                 // Work Anniversary
-                if (member.work_anniversary_date) {
+                /* if (member.work_anniversary_date) {
 
-                    const anniversary = new Date(member.work_anniversary_date);
+                     const anniversary = new Date(member.work_anniversary_date);
 
-                    if (!isNaN(anniversary.getTime())) {
+                     if (!isNaN(anniversary.getTime())) {
 
-                        const month = String(anniversary.getMonth() + 1).padStart(2, '0');
-                        const day = String(anniversary.getDate()).padStart(2, '0');
+                         const month = String(anniversary.getMonth() + 1).padStart(2, '0');
+                         const day = String(anniversary.getDate()).padStart(2, '0');
 
-                        events.push({
-                            title: '🏆 ' + (member.member_name || 'Member') + ' - Work Anniversary',
-                            start: currentYear + '-' + month + '-' + day,
-                            allDay: true,
-                            type: 'anniversary'
-                        });
-                    }
-                }
+                         events.push({
+                             title: '🏆 ' + (member.member_name || 'Member') + ' - Work Anniversary',
+                             start: currentYear + '-' + month + '-' + day,
+                             allDay: true,
+                             type: 'anniversary'
+                         });
+                     }
+                 }
+                     */
             });
 
             const calendar = new FullCalendar.Calendar(calendarEl, {

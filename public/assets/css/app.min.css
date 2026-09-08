@@ -4167,7 +4167,7 @@ code {
     position: absolute;
     left: 50%;
     top: 50%;
-    margin: -20px 0 0 -20px
+    margin: -20px 0 0 -80px
 }
 
 [type=email]::-webkit-input-placeholder,
