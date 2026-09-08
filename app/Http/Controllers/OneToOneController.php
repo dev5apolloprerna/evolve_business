@@ -141,7 +141,7 @@ class OneToOneController extends Controller
                         date('Y-m-d 00:00:00', strtotime($FromDate))
                     );
                 })
-                ->when($request->given_by, function ($query) use ($givenby) {
+                 ->when($request->given_by, function ($query) use ($givenby) {
                     $query->where('one_to_one_detail.to_id', 'LIKE', '%' . $givenby . '%');
                 })
 
@@ -160,17 +160,7 @@ class OneToOneController extends Controller
                 ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $Count = $Business->count();
-            return view('OneToOne.approve', compact(
-                'givenby',
-                'businesses',
-                'Business',
-                'Data',
-                'Datadrop',
-                'Count',
-                'businesstype',
-                'FromDate',
-                'ToDate'
-            ));
+            return view('OneToOne.approve', compact( 'givenby','businesses','Business', 'Data', 'Datadrop', 'Count', 'businesstype', 'FromDate', 'ToDate'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -214,17 +204,7 @@ class OneToOneController extends Controller
                 ->paginate(env('PAR_PAGE_COUNT', 20));
 
             $Count = $Business->count();
-            return view('OneToOne.rejectlist', compact(
-                'givenby',
-                'businesses',
-                'Business',
-                'Data',
-                'Datadrop',
-                'Count',
-                'businesstype',
-                'FromDate',
-                'ToDate'
-            ));
+            return view('OneToOne.rejectlist', compact('givenby','businesses','Business', 'Data', 'Datadrop', 'Count', 'businesstype', 'FromDate', 'ToDate'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }

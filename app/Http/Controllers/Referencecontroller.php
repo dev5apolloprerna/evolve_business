@@ -71,10 +71,12 @@ class Referencecontroller extends Controller
         $ToUserName = $ToUser ? $ToUser->first_name : 'Unknown User';
 
         $request->validate([
+
             'Reference_to'     => 'required',
             // 'Email'     => 'required',
             'Reference_Name' => 'required',
             'phonenumber' => 'required',
+
         ]);
 
         $gu_id = Str::random(10);
@@ -100,11 +102,12 @@ class Referencecontroller extends Controller
 
         $ReferenceId = DB::table('Reference')->insertGetId($Data);
         $toUserEmail = $ToUser ? $ToUser->email : null;
+
         $SendEmailDetails = DB::table('sendemaildetails')
             ->where(['id' => 4])
             ->first();
         $root = $_SERVER['DOCUMENT_ROOT'];
-        $file = file_get_contents($root . '/mailers/Referencestatusemail.html', 'r');
+        $file = file_get_contents($root . '/evolv_business/mailers/Referencestatusemail.html', 'r');
 
         // $file = str_replace('#name', $data['name'], $file);
         // $file = str_replace('#email', $request['email'], $file);
@@ -119,17 +122,18 @@ class Referencecontroller extends Controller
         $file = str_replace('#Refer_for_message', $Data['Refer_for_message'], $file);
 
 
-        $statusUpdateLink = url('https://evolv.co.in/evolve_business/Referencestatus/' . $gu_id);
-        $approveLink = url('https://evolv.co.in/evolve_business/Ref_approve/' . $gu_id);
-        $rejectLink = url('https://evolv.co.in/evolve_business/Ref_reject/' . $gu_id);
+        $statusUpdateLink = url('https://evolv.co.in/evolv_business/Referencestatus/' . $gu_id);
+        $approveLink = url('https://evolv.co.in/evolv_business/Ref_approve/' . $gu_id);
+        $rejectLink = url('https://evolv.co.in/evolv_business/Ref_reject/' . $gu_id);
 
         $file = str_replace('#status_update_link', $statusUpdateLink, $file);
         $file = str_replace('#approve_link', $approveLink, $file);
         $file = str_replace('#reject_link', $rejectLink, $file);
 
         $toMail = $ToUser ? $ToUser->email : null;
+        // $toMail = 'ai.dev.laravel10@gmail.com';
         $to = $toMail;
-        $subject = "REFERENCE STATUS UPDATE";
+        $subject = "REFERRAL STATUS UPDATE";
         $message = $file;
         // dd($message);
         $header = "From:" . $SendEmailDetails->strFromMail . "\r\n";
@@ -275,7 +279,7 @@ class Referencecontroller extends Controller
                 'iStatus' => 1,
                 'isDelete' => 0
             ])
-            ->whereIn('isapproved_status', [1])
+            //->whereIn('isapproved_status', [0])
             ->orderBy('Reference.Reference_id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
 

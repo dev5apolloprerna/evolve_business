@@ -84,29 +84,35 @@
                                                                         Not Join
                                                                     @endif
                                                                 </td>
-                                                                <td class="text-center">
-                                                                    @php
-                                                                        $eventEnd = null;
-                                                                        if (!empty($Event->eventend_date)) {
-                                                                            $eventEnd = \Carbon\Carbon::parse(
-                                                                                $Event->eventend_date .
-                                                                                    ' ' .
-                                                                                    trim($Event->eventend_time ?? ''),
-                                                                            );
-                                                                        }
-                                                                    @endphp
-
-                                                                    @if ($eventEnd && $eventEnd->isPast())
-                                                                        <button type="button"
-                                                                            class="btn btn-link p-0 text-primary"
-                                                                            title="Update attendance" data-bs-toggle="modal"
-                                                                            data-bs-target="#eventMemberStatusModal"
-                                                                            data-member-id="{{ $memberData->id }}"
-                                                                            data-current-absent="{{ $memberData->absent ?? 0 }}">
-                                                                            <i class="fa fa-edit"></i>
-                                                                        </button>
-                                                                    @endif
-                                                                </td>
+                                                               <td class="text-center">
+                                                                @php
+                                                                    $eventEnd = null;
+                                                                
+                                                                    $endDate = $Event->eventend_date ?: $Event->eventstart_date;
+                                                                
+                                                                    $endTime = trim($Event->eventend_time ?? '');
+                                                                
+                                                                    // 06:pm => 06:00 pm
+                                                                    if (preg_match('/^(\d{1,2}):(am|pm)$/i', $endTime)) {
+                                                                        $endTime = preg_replace('/:(am|pm)$/i', ':00 $1', $endTime);
+                                                                    }
+                                                                
+                                                                    if ($endDate && $endTime) {
+                                                                        $eventEnd = \Carbon\Carbon::parse($endDate.' '.$endTime);
+                                                                    }
+                                                                @endphp
+                                                            
+                                                                @if ($eventEnd && $eventEnd->isPast())
+                                                                    <button type="button"
+                                                                        class="btn btn-link p-0 text-primary"
+                                                                        title="Update attendance" data-bs-toggle="modal"
+                                                                        data-bs-target="#eventMemberStatusModal"
+                                                                        data-member-id="{{ $memberData->id }}"
+                                                                        data-current-absent="{{ $memberData->absent ?? 0 }}">
+                                                                        <i class="fa fa-edit"></i>
+                                                                    </button>
+                                                                @endif
+                                                            </td>
 
                                                             </tr>
                                                         @endforeach
@@ -143,8 +149,9 @@
                         <div class="mb-3">
                             <label for="absentSelect" class="form-label">Attendance Status</label>
                             <select name="absent" id="absentSelect" class="form-select">
-                                {{-- /<option value="0">Present</option> --}}
+                                <option value="0">Join</option>
                                 <option value="1">Absent</option>
+                                
                             </select>
                         </div>
                     </div>

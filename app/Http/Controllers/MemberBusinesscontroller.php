@@ -62,18 +62,54 @@ class MemberBusinesscontroller extends Controller
     public function exportToexcel_list(Request $request, $fromdate = null, $todate = null)
     {
         try {
+            // $FromDate = $fromdate;
+            // $ToDate = $todate;
+            // $datas = Business::select(
+            //     'Business.*',
+            //      'members.*'
+            // )
+            // ->leftjoin('members', 'members.user_id', '=', 'Business.business_from_id')
+            //  ->leftjoin('city_groups', 'members.citygroup_id', '=', 'city_groups.id')
+
+            //     ->where('Business.iStatus', 1)
+            //     ->where('Business.isDelete', 0)
+            //     ->where('Business.isapproved_status', 0)
+            //     ->when($fromdate, fn($query, $FromDate) => $query
+            //         ->where('Business.business_Date', '>=', date('Y-m-d 00:00:00', strtotime($FromDate))))
+            //     ->when($todate, fn($query, $ToDate) => $query
+            //         ->where('Business.business_Date', '<=', date('Y-m-d 23:59:59', strtotime($ToDate))))
+            //     ->get();
+            //    ->paginate(20);
+
             $FromDate = $fromdate;
             $ToDate = $todate;
+
             $datas = Business::select(
-                'Business.*'
+                'Business.*',
+                'members.*',
+                'city_groups.name as city_group_name'
+
             )
-                ->where(['Business.iStatus' => 1, 'Business.isDelete' => 0, 'isapproved_status' => 0])
-                ->when($fromdate, fn($query, $FromDate) => $query
-                    ->where('Business.business_Date', '>=', date('Y-m-d 00:00:00', strtotime($FromDate))))
-                ->when($todate, fn($query, $ToDate) => $query
-                    ->where('Business.business_Date', '<=', date('Y-m-d 23:59:59', strtotime($ToDate))))
+                ->leftJoin('members', 'members.user_id', '=', 'Business.business_from_id')
+                ->leftJoin('city_groups', 'members.citygroup_id', '=', 'city_groups.id')
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->where('Business.isapproved_status', 0)
+                ->when($FromDate, function ($query) use ($FromDate) {
+                    $query->where(
+                        'Business.business_Date',
+                        '>=',
+                        date('Y-m-d 00:00:00', strtotime($FromDate))
+                    );
+                })
+                ->when($ToDate, function ($query) use ($ToDate) {
+                    $query->where(
+                        'Business.business_Date',
+                        '<=',
+                        date('Y-m-d 23:59:59', strtotime($ToDate))
+                    );
+                })
                 ->get();
-            //    ->paginate(20);
 
             return view('Business.exportlist', compact('datas', 'FromDate', 'ToDate'));
         } catch (\Exception $e) {
@@ -106,6 +142,7 @@ class MemberBusinesscontroller extends Controller
             $ToUser = User::find($request->business_to);
             $ToUserName = $ToUser ? $ToUser->first_name : 'Unknown User';
             $mobileNo = $ToUser->mobile_number ?? '';
+
             $request->validate([
                 'business_type'   => 'required',
                 // 'business_from'   => 'required',
@@ -286,8 +323,8 @@ class MemberBusinesscontroller extends Controller
             ->where(['iStatus' => 1, 'isDelete' => 0, 'isapproved_status' => 0])
             ->orderBy('one_to_one_detail.id', 'DESC')
             ->paginate(env('PAR_PAGE_COUNT', 20));
-        $member = members::where('user_id', $session->id)->first();
 
+        $member = members::where('user_id', $session->id)->first();
         $Member_metting = Member_metting::join('Cluster_Meet', 'Cluster_Meet.id', '=', 'Cluster_Meet_Member_meeting.meeting_id')
             ->leftJoin('members as bs1', 'bs1.id', '=', 'Cluster_Meet_Member_meeting.brand_showcase_1')
             ->leftJoin('members as bs2', 'bs2.id', '=', 'Cluster_Meet_Member_meeting.brand_showcase_2')
@@ -311,7 +348,6 @@ class MemberBusinesscontroller extends Controller
             )
             ->orderByDesc('Cluster_Meet_Member_meeting.id')
             ->first();
-        //dd($Member_metting);
         if ($member) {
             $pendingMeeting = DB::table('Cluster_Meet')
                 ->select(
@@ -329,7 +365,6 @@ class MemberBusinesscontroller extends Controller
                 ->groupBy('Cluster_Meet.id')
                 ->orderByRaw("STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %T') ASC")
                 ->paginate(env('PAR_PAGE_COUNT', 20));
-            //dd($pendingMeeting);
         }
         // $Events = Event::where([
         //     'iStatus' => 1,
@@ -364,7 +399,6 @@ class MemberBusinesscontroller extends Controller
                 $Member_metting->brand_showcase_1 > 0 ||
                 $Member_metting->brand_showcase_2 > 0
             );
-
         return view('pendinglogincheck.index', compact('Referral', 'hasBrandShowcase', 'pendingMeeting', 'member', 'Member_metting', 'Events', 'Business', 'Data', 'Datadrop', 'OneToOne'));
     }
 
@@ -444,7 +478,7 @@ class MemberBusinesscontroller extends Controller
                 if ($pointsData) {
                     DB::table('member_points')->insert([
                         'business_id' => $business->business_id,
-                        'member_id'   => Auth::id(),
+                        'member_id'   => $business->business_from_id,
                         'points_id'   => $pointsData->id,
                         'points'      => $pointsData->points,
                         'status'      => 0,
@@ -462,41 +496,62 @@ class MemberBusinesscontroller extends Controller
     public function onestatuspendinglogin(Request $request)
     {
 
-        DB::table('one_to_one_detail')->where('id', $request->id)->update([
-            'isapproved_status' => $request->newStatus,
-            'reject_comment'  => $request->businesscomment,
-            'approved_by' => Auth::user()->user_type,
-            'approved_by_id' => Auth::user()->id,
-            'receive_date' => date('Y-m-d H:i:s'),
+        $onetoone = DB::table('one_to_one_detail')
+            ->where('id', $request->id)
+            ->first();
 
-        ]);
-        // Meeting User Points
-        DB::table('member_points')->insert([
-            'member_id'   => Auth::id(),
-            'business_id' => $request->id,
-            'points_id'   => 6,
-            'points'      => 5,
-            'description' => 'One to One Approved',
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ]);
+        if (!$onetoone) {
+            return redirect()->back()->with('error', 'One to One record not found.');
+        }
 
-        // update member_points status
-        DB::table('member_points')
-            ->where('business_id', $request->id)
+        DB::table('one_to_one_detail')
+            ->where('id', $request->id)
             ->update([
-                'status' => $request->newStatus,
-                'updated_at' => now()
+                'isapproved_status' => $request->newStatus,
+                'reject_comment'    => $request->businesscomment,
+                'approved_by'       => Auth::user()->user_type,
+                'approved_by_id'    => Auth::user()->id,
+                'receive_date'      => now(),
             ]);
+
+        // Give points only when approved
+        if ($request->newStatus == 1) {
+
+            // Meeting User Points - From Member
+            DB::table('member_points')->insert([
+                'member_id'   => $onetoone->from_id,
+                'business_id' => $request->id,
+                'points_id'   => 6,
+                'points'      => 5,
+                'status'      => $request->newStatus,
+                'description' => 'One to One From Approved',
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+
+            // Meeting User Points - To Member
+            DB::table('member_points')->insert([
+                'member_id'   => $onetoone->to_id,
+                'business_id' => $request->id,
+                'points_id'   => 6,
+                'points'      => 5,
+                'status'      => $request->newStatus,
+                'description' => 'One to One To Approved',
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+        }
 
         if ($request->newStatus == 2) {
             return redirect()->back();
         }
+
         return redirect()->route('OneToOne.Tostoreview');
     }
 
     public function referralstatuspendinglogin(Request $request)
     {
+        $Reference = DB::table('Reference')->where('Reference_id', $request->id)->first();
         DB::table('Reference')->where('Reference_id', $request->id)->update([
             'isapproved_status' => $request->newStatus,
             'Referencecomment'  => $request->businesscomment,
@@ -506,7 +561,7 @@ class MemberBusinesscontroller extends Controller
         ]);
         // Meeting User Points
         DB::table('member_points')->insert([
-            'member_id'   => Auth::id(),
+            'member_id'   => $Reference->Reference_from ?? 0,
             'business_id' => $request->id,
             'points_id'   => 5,
             'points'      => 10,
@@ -589,21 +644,88 @@ class MemberBusinesscontroller extends Controller
         return redirect()->back();
     }
 
+    // public function meetinglogincheck(Request $request, $id = null)
+    // {
+    //     $request->validate([
+    //         'newStatus' => 'required|in:1,2,3',
+    //         'id' => 'required|integer',
+    //         'comment' => 'nullable',
+    //     ]);
+
+    //     $userId = Auth::user()->id;
+    //     $members = members::where('user_id', $userId)->first();
+    //     $updateData = [
+    //         'is_approve_meeting' => $request->newStatus,
+    //         'is_approve_by' => $userId,
+    //         'created_at' => date('Y-m-d H:i:s'),
+    //     ];
+
+    //     if ($request->filled('comment')) {
+    //         $updateData['comment'] = $request->comment;
+    //     }
+    //     DB::table('Cluster_Meet_Member_meeting')->where(['id' => $request->id])->update($updateData);
+    //     if ($request->newStatus == 1) {
+    //         DB::table('member_points')->insert([
+    //             'business_id' => $request->id,
+    //             'member_id'   => $userId,
+    //             'points_id'   => 3,
+    //             'points'      => 15,
+    //             'status'      => 0,
+    //             'description'      => 'Meeting Joined',
+    //             'created_at'  => now(),
+    //             'updated_at'  => now(),
+    //         ]);
+    //     }
+    //     if ($request->newStatus == 3) {
+
+    //         $exists = DB::table('member_points')
+    //             ->where('business_id', $request->id)
+    //             ->where('member_id', $userId)
+    //             ->where('points_id', 3)
+    //             ->where('points', -15)
+    //             ->exists();
+
+    //         if (!$exists) {
+    //             DB::table('member_points')->insert([
+    //                 'business_id' => $request->id,
+    //                 'member_id'   => $userId,
+    //                 'points_id'   => 3,
+    //                 'points'      => -15,
+    //                 'status'      => 0,
+    //                 'description' => 'Meeting Absent',
+    //                 'created_at'  => now(),
+    //                 'updated_at'  => now(),
+    //             ]);
+    //         }
+    //     }
+    //     return redirect()->back();
+    // }
+
     public function meetinglogincheck(Request $request, $id = null)
     {
         $request->validate([
-            'newStatus' => 'required|in:1,2,3',
+            'newStatus' => 'required|in:1,2,3,4',
             'id' => 'required|integer',
             'comment' => 'nullable',
-        ]);
+            'substitute_name' => 'nullable|string|max:255',
 
+        ]);
         $userId = Auth::user()->id;
-        $members = members::where('user_id', $userId)->first();
+        if ($userId == 1) {
+            $members = members::where('user_id', $request->memberid)->first();
+        } else {
+
+            $members = members::where('user_id', $userId)->first();
+        }
         $updateData = [
             'is_approve_meeting' => $request->newStatus,
-            'is_approve_by' => $userId,
+            'is_approve_by' => $members->user_id,
             'created_at' => date('Y-m-d H:i:s'),
         ];
+
+        if ($request->newStatus == 4) {
+            $updateData['substitute_name'] = $request->substitute_name;
+        }
 
         if ($request->filled('comment')) {
             $updateData['comment'] = $request->comment;
@@ -612,7 +734,7 @@ class MemberBusinesscontroller extends Controller
         if ($request->newStatus == 1) {
             DB::table('member_points')->insert([
                 'business_id' => $request->id,
-                'member_id'   => $userId,
+                'member_id'   => $members->user_id,
                 'points_id'   => 3,
                 'points'      => 15,
                 'status'      => 0,
@@ -625,7 +747,7 @@ class MemberBusinesscontroller extends Controller
 
             $exists = DB::table('member_points')
                 ->where('business_id', $request->id)
-                ->where('member_id', $userId)
+                ->where('member_id', $members->user_id)
                 ->where('points_id', 3)
                 ->where('points', -15)
                 ->exists();
@@ -633,7 +755,7 @@ class MemberBusinesscontroller extends Controller
             if (!$exists) {
                 DB::table('member_points')->insert([
                     'business_id' => $request->id,
-                    'member_id'   => $userId,
+                    'member_id'   => $members->user_id,
                     'points_id'   => 3,
                     'points'      => -15,
                     'status'      => 0,

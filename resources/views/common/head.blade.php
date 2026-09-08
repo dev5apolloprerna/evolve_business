@@ -1,6 +1,6 @@
 <head>
     <meta charset="utf-8" />
-    <title>{{ 'Evolve Business Community' }} | @yield('title')</title>
+    <title>{{ 'Evolv Business Community' }} | @yield('title')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->

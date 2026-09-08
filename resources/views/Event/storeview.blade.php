@@ -73,6 +73,186 @@
         .container-fluid {
             overflow: visible !important;
         }
+
+        /* ==========================================
+               ADD EVENT - MEMBER SEARCH
+            ========================================== */
+
+        .assign-member-box {
+            max-width: 600px;
+        }
+
+        .assign-member-box .choices__inner {
+            min-height: 38px !important;
+            padding: 4px 8px !important;
+        }
+
+
+        /* Search textbox */
+
+        .assign-member-box .choices__input--cloned {
+            display: inline-block !important;
+
+            width: 220px !important;
+            max-width: 100% !important;
+
+            margin: 2px 0 !important;
+            padding: 5px 7px !important;
+
+            border: 1px solid #e1e5e9 !important;
+            border-radius: 4px !important;
+
+            background: #fff !important;
+
+            font-size: 12px !important;
+
+            box-sizing: border-box !important;
+        }
+
+        .assign-member-box .choices__input--cloned::placeholder {
+            color: #8d98a3 !important;
+        }
+
+
+        /* Selected member chips */
+
+        .assign-member-box .choices__list--multiple .choices__item {
+            margin: 2px 4px 2px 0 !important;
+            padding: 4px 7px !important;
+
+            font-size: 11px !important;
+        }
+
+
+        /* Dropdown */
+
+        .assign-member-box .choices__list--dropdown,
+        .assign-member-box .choices__list[aria-expanded] {
+
+            max-height: 180px !important;
+
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+
+            padding: 0 !important;
+        }
+
+
+        /* Dropdown member row */
+
+        .assign-member-box .choices__list--dropdown .choices__item,
+
+        .assign-member-box .choices__list[aria-expanded] .choices__item {
+
+            width: 100% !important;
+
+            padding: 8px 12px !important;
+
+            margin: 0 !important;
+
+            text-indent: 0 !important;
+
+            white-space: normal !important;
+
+            font-size: 12px !important;
+
+            line-height: 18px !important;
+
+            box-sizing: border-box !important;
+        }
+
+        .assign-member-box .choices__item--choice.is-highlighted {
+            background: #f2f7ef !important;
+        }
+
+        /* =========================================================
+       FIX CHOICES MEMBER NAME LEFT CUT ISSUE
+    ========================================================= */
+
+        .assign-member-box .choices__list--dropdown,
+        .assign-member-box .choices__list[aria-expanded] {
+            padding: 0 !important;
+            margin: 0 !important;
+
+            overflow-x: hidden !important;
+        }
+
+
+        /* Inner dropdown list */
+        .assign-member-box .choices__list--dropdown .choices__list,
+        .assign-member-box .choices__list[aria-expanded] .choices__list {
+            padding: 0 !important;
+            margin: 0 !important;
+
+            width: 100% !important;
+
+            overflow-x: hidden !important;
+        }
+
+
+        /* Individual member */
+        .assign-member-box .choices__list--dropdown .choices__item,
+        .assign-member-box .choices__list[aria-expanded] .choices__item {
+            position: relative !important;
+
+            left: 0 !important;
+            right: auto !important;
+
+            transform: none !important;
+
+            width: 100% !important;
+
+            margin: 0 !important;
+
+            /* IMPORTANT */
+            padding: 8px 12px !important;
+            padding-left: 15px !important;
+
+            text-indent: 0 !important;
+
+            white-space: normal !important;
+            word-break: normal !important;
+
+            overflow: visible !important;
+
+            box-sizing: border-box !important;
+
+            font-size: 12px !important;
+            line-height: 18px !important;
+
+            color: #212529 !important;
+        }
+
+
+        /* Choices default pseudo spacing remove */
+        .assign-member-box .choices__list--dropdown .choices__item::before,
+        .assign-member-box .choices__list--dropdown .choices__item::after,
+        .assign-member-box .choices__list[aria-expanded] .choices__item::before,
+        .assign-member-box .choices__list[aria-expanded] .choices__item::after {
+            margin: 0 !important;
+        }
+
+
+        /* Search box also proper left aligned */
+        .assign-member-box .choices__input--cloned {
+            margin-left: 0 !important;
+
+            padding-left: 10px !important;
+
+            text-indent: 0 !important;
+        }
+
+
+        /* Selected items */
+        .assign-member-box .choices__list--multiple {
+            padding-left: 0 !important;
+            margin-left: 0 !important;
+        }
+
+        .assign-member-box .choices__list--multiple .choices__item {
+            margin-left: 0 !important;
+            text-indent: 0 !important;
+        }
     </style>
     <div class="main-content">
         <div class="page-content">
@@ -199,113 +379,152 @@
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-
-            const memberSelect = document.getElementById('assign_members');
-            let choicesInstance = null;
-
-            if (memberSelect) {
-                new Choices(memberSelect, {
-                    removeItemButton: true,
-                    itemSelectText: '',
-                    placeholderValue: 'Select Members',
-                    searchPlaceholderValue: 'Search members...',
-                    noResultsText: 'No matching members found',
-                    shouldSort: false
-                });
-            }
-
-            // Handle Select All functionality
-            // memberSelect.addEventListener('change', function() {
-            //     const allOptions = Array.from(memberSelect.options);
-            //     const selectAllOption = memberSelect.querySelector('option[value="select_all"]');
-
-            //     if (selectAllOption.selected) {
-            //         // Select all member options
-            //         allOptions.forEach(option => {
-            //             if (option.value !== 'select_all') {
-            //                 option.selected = true;
-            //             }
-            //         });
-            //     } else {
-            //         // Check if only select_all was selected, if so deselect it
-            //         const selectedCount = allOptions.filter(o => o.selected).length;
-            //         if (selectedCount === 1) {
-            //             selectAllOption.selected = false;
-            //         }
-            //     }
-
-            //     // Trigger change to update Choices.js
-            //     memberSelect.dispatchEvent(new Event('change', {
-            //         bubbles: true
-            //     }));
-            // });
-
-
-            const eventType = document.getElementById('event_type');
-            if (eventType) {
-                new Choices(eventType, {
-                    searchEnabled: false,
-                    itemSelectText: ''
-                });
-            }
-
-        });
-    </script> --}}
-
     <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+
+        //     const memberSelect = document.getElementById('assign_members');
+
+        //     if (memberSelect) {
+        //         const memberChoices = new Choices(memberSelect, {
+        //             removeItemButton: true,
+        //             itemSelectText: '',
+        //             placeholder: true,
+        //             placeholderValue: 'Select Members',
+        //             searchPlaceholderValue: 'Search members...',
+        //             noResultsText: 'No matching members found',
+        //             shouldSort: false,
+        //             searchEnabled: true,
+        //             position: 'auto'
+        //         });
+
+        //         memberSelect.addEventListener('change', function() {
+        //             const selectedValues = memberChoices.getValue(true);
+
+        //             if (selectedValues.includes('select_all')) {
+        //                 const allValues = Array.from(memberSelect.options)
+        //                     .filter(option => option.value !== 'select_all')
+        //                     .map(option => option.value);
+
+        //                 memberChoices.removeActiveItems();
+        //                 memberChoices.setChoiceByValue(allValues);
+        //             }
+        //         });
+        //     }
+
+        //     // const eventType = document.getElementById('event_type');
+
+        //     // if (eventType) {
+        //     //     new Choices(eventType, {
+        //     //         searchEnabled: false,
+        //     //         itemSelectText: '',
+        //     //         shouldSort: false
+        //     //     });
+        //     // }
+
+        // });
+
         document.addEventListener('DOMContentLoaded', function() {
 
-            const memberSelect = document.getElementById('assign_members');
+            const memberSelect =
+                document.getElementById('assign_members');
+
 
             if (memberSelect) {
-                const memberChoices = new Choices(memberSelect, {
-                    removeItemButton: true,
-                    itemSelectText: '',
-                    placeholder: true,
-                    placeholderValue: 'Select Members',
-                    searchPlaceholderValue: 'Search members...',
-                    noResultsText: 'No matching members found',
-                    shouldSort: false,
-                    searchEnabled: true,
-                    position: 'auto'
-                });
 
-                memberSelect.addEventListener('change', function() {
-                    const selectedValues = memberChoices.getValue(true);
+                const memberChoices =
+                    new Choices(memberSelect, {
 
-                    if (selectedValues.includes('select_all')) {
-                        const allValues = Array.from(memberSelect.options)
-                            .filter(option => option.value !== 'select_all')
-                            .map(option => option.value);
+                        removeItemButton: true,
 
-                        memberChoices.removeActiveItems();
-                        memberChoices.setChoiceByValue(allValues);
+                        itemSelectText: '',
+
+                        placeholder: true,
+
+                        placeholderValue: 'Select Members',
+
+                        searchEnabled: true,
+
+                        searchChoices: true,
+
+                        searchFloor: 1,
+
+                        searchPlaceholderValue: 'Search member by name or mobile...',
+
+                        noResultsText: 'No matching members found',
+
+                        noChoicesText: 'No members available',
+
+                        shouldSort: false,
+
+                        position: 'bottom',
+
+                        renderSelectedChoices: 'auto'
+                    });
+
+
+                /* =====================================
+                   SELECT ALL
+                ===================================== */
+
+                memberSelect.addEventListener(
+                    'change',
+                    function() {
+
+                        const selectedValues =
+                            memberChoices.getValue(true);
+
+
+                        if (
+                            selectedValues.includes(
+                                'select_all'
+                            )
+                        ) {
+
+                            const allValues =
+                                Array
+                                .from(memberSelect.options)
+
+                                .filter(function(option) {
+
+                                    return option.value !==
+                                        'select_all';
+
+                                })
+
+                                .map(function(option) {
+
+                                    return option.value;
+
+                                });
+
+
+                            memberChoices
+                                .removeActiveItems();
+
+
+                            memberChoices
+                                .setChoiceByValue(
+                                    allValues
+                                );
+                        }
+
                     }
-                });
+                );
             }
-
-            // const eventType = document.getElementById('event_type');
-
-            // if (eventType) {
-            //     new Choices(eventType, {
-            //         searchEnabled: false,
-            //         itemSelectText: '',
-            //         shouldSort: false
-            //     });
-            // }
 
         });
     </script>
 
     <script>
         function validateFile() {
-            var allowedExtension = ['jpeg', 'jpg', 'png', 'webp'];
+            var allowedExtension = ['jpeg', 'jpg', 'png',
+                'webp'
+            ];
             var fileExtension = document.getElementById('photovalidate').value.split('.').pop().toLowerCase();
             var isValidFile = false;
 
             for (var index in allowedExtension) {
+
                 if (fileExtension === allowedExtension[index]) {
                     isValidFile = true;
                     break;

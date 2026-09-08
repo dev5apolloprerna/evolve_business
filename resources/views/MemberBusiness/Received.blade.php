@@ -541,7 +541,7 @@
             var todate = $("#enddatepicker").val();
             // var first_name = $("#first_name").val();
 
-            var strURL = "{{ route('Business.exportbusiness') }}";
+            var strURL = "{{ route('Business.exportbusiness_new') }}";
             strURL += "/" + fromdate + "/" + todate;
 
             window.location.href = strURL;

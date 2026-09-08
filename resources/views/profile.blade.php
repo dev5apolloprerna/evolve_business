@@ -1,21 +1,23 @@
+
 @extends('layouts.app')
 @section('title', 'Profile')
 @section('content')
     <!-- ============================================================== -->
     <!-- Start right Content here -->
     <!-- ============================================================== -->
-    <?php $sessionrole = Auth::user(); ?>
+    <?php $sessionrole =Auth::user(); ?>
     <style>
-        .table-responsive table {
-            table-layout: fixed;
-            width: 100%;
-        }
+    .table-responsive table {
+        table-layout: fixed;
+        width: 100%;
+     }
 
-        .table-responsive td {
-            word-wrap: break-word;
-            white-space: normal;
-        }
+    .table-responsive td {
+        word-wrap: break-word;
+        white-space: normal;
+    }
     </style>
+  
     <div class="main-content">
 
         {{-- Alert Messages --}}
@@ -24,33 +26,31 @@
             <div class="container-fluid mt-4">
                 <div class="profile-foreground position-relative mx-n4 mt-n4">
                     <div class="profile-wid-bg">
-                        <img src="https://evolv.co.in/evolv_business/assets/images/group_photo.jpeg" alt=""
-                            class="profile-wid-img" />
+                        <img src="https://evolv.co.in/evolv_business/assets/images/group_photo.jpeg" alt="" class="profile-wid-img" />
                     </div>
                 </div>
                 <div class="pt-4 mb-4 mb-lg-3 pb-lg-4">
                     <div class="row g-4">
                         <div class="col-auto">
-                            @if ($sessionrole->role_id == 2)
-                                @if (isset($member->profile_photo))
-                                    <div class="avatar-lg">
-                                        <img src="{{ asset('profile_photo') . '/' . $member->profile_photo }}"
-                                            alt="user-img " style="height: 100px; width: 100px; object-fit: cover;"
-                                            class="img-thumbnail rounded-circle" />
-                                    </div>
-                                @else
-                                    <div class="avatar-lg">
-                                        <img src="{{ asset('assets/images/users/undraw_profile.webp') }}" alt="user-img"
-                                            class="img-thumbnail rounded-circle" />
-                                    </div>
-                                @endif
-                            @else
-                                <div class="avatar-lg">
-                                    <img src="{{ asset('assets/images/users/undraw_profile.webp') }}" alt="user-img"
-                                        class="img-thumbnail rounded-circle" />
-                                </div>
-
+                        @if($sessionrole->role_id == 2)
+                          @if(isset($member->profile_photo))
+                            <div class="avatar-lg">
+                                <img src="{{ asset('profile_photo') . '/' . $member->profile_photo }}" alt="user-img " style="height: 100px; width: 100px; object-fit: cover;"
+                                    class="img-thumbnail rounded-circle" />
+                            </div>
+                            @else 
+                            <div class="avatar-lg">
+                                <img src="{{ asset('assets/images/users/undraw_profile.webp') }}" alt="user-img"
+                                    class="img-thumbnail rounded-circle" />
+                            </div>
                             @endif
+                        @else
+                        <div class="avatar-lg">
+                                <img src="{{ asset('assets/images/users/undraw_profile.webp') }}" alt="user-img"
+                                    class="img-thumbnail rounded-circle" />
+                            </div>
+
+                        @endif 
                         </div>
                         <!--end col-->
                         <div class="col">
@@ -58,7 +58,10 @@
                                 <h3 class="text-white mb-1">{{ auth()->user()->full_name }}</h3>
                                 <?php
                                 $session = auth()->user()->id;
-                                $role = App\Models\User::select('users.id', 'roles.name')->where('users.id', $session)->join('roles', 'users.role_id', '=', 'roles.id')->first();
+                                $role = App\Models\User::select('users.id', 'roles.name')
+                                    ->where('users.id', $session)
+                                    ->join('roles', 'users.role_id', '=', 'roles.id')
+                                    ->first();
                                 ?>
                                 <p class="text-white-75">
                                     {{ $role->name }}
@@ -74,19 +77,19 @@
                             <div class="d-flex">
                                 <!-- Nav tabs -->
                                 <ul class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1"
-                                    role="tablist">
+                                    role="tablist">                                    
                                 </ul>
-                                @if ($sessionrole->role_id == 2)
-                                    <div class="flex-shrink-0">
-                                        <a href="{{ route('profile.UserEditProfile') }}" class="btn btn-success"><i
-                                                class="ri-edit-box-line align-bottom"></i> Edit Profile</a>
-                                    </div>
-                                @else
-                                    <div class="flex-shrink-0">
-                                        <a href="{{ route('profile.EditProfile') }}" class="btn btn-success"><i
-                                                class="ri-edit-box-line align-bottom"></i> Edit Profile</a>
-                                    </div>
-                                @endif
+                               @if($sessionrole->role_id == 2)
+                               <div class="flex-shrink-0">
+                                    <a href="{{ route('profile.UserEditProfile') }}" class="btn btn-success"><i
+                                            class="ri-edit-box-line align-bottom"></i> Edit Profile</a>
+                                </div>
+                               @else
+                                <div class="flex-shrink-0">
+                                    <a href="{{ route('profile.EditProfile') }}" class="btn btn-success"><i
+                                            class="ri-edit-box-line align-bottom"></i> Edit Profile</a>
+                                </div>
+                              @endif  
                             </div>
                             <!-- Tab panes -->
                             <div class="tab-content pt-4 text-muted">
@@ -99,8 +102,8 @@
                                                     <div class="table-responsive">
                                                         <table class="table table-borderless mb-0">
                                                             <tbody>
-                                                                @if (isset($member) && $member->priority_club_3_year == 1)
-                                                                    <div class="text-center mt-3 mb-3">
+                                                                 @if(isset($member) && $member->priority_club_3_year == 1)
+                                                                     <div class="text-center mt-3 mb-3">
                                                                         <span class="badge px-4 py-2"
                                                                             style="
                                                                                     background: linear-gradient(45deg, #ffcc00, #ff9900);
@@ -134,116 +137,105 @@
                                                                         {{ old('email') ? old('email') : auth()->user()->email }}
                                                                     </td>
                                                                 </tr>
-
+                                                                
                                                                 <!-- MEMBER USER FIELD START -->
-                                                                @if ($sessionrole->role_id == 2)
-                                                                    @if (isset($member->companyname))
+                                                               @if($sessionrole->role_id == 2)
+                                                                    @if(isset($member->companyname))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">Brand Name:
-                                                                            </th>
+                                                                            <th class="ps-0" scope="row">Brand Name:</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->companyname ?? '-' }}
+                                                                                {{ $member->companyname ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->Brand_name))
+                                                                        @endif 
+                                                                        @if(isset($member->Brand_name))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">Company Name:
-                                                                            </th>
+                                                                            <th class="ps-0" scope="row">Company Name:</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->Brand_name ?? '-' }}
+                                                                                {{ $member->Brand_name ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->address))
+                                                                        @endif 
+                                                                        @if(isset($member->address))
                                                                         <tr>
                                                                             <th class="ps-0" scope="row">Address :</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->address ?? '-' }}
+                                                                                {{ $member->address ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->date_of_birth))
+                                                                        @endif 
+                                                                        @if(isset($member->date_of_birth))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">Date of Birth
-                                                                                :</th>
+                                                                            <th class="ps-0" scope="row">Date of Birth :</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->date_of_birth ?? '-' }}
+                                                                                {{ $member->date_of_birth ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->work_anniversary_date))
+                                                                        @endif 
+                                                                        @if(isset($member->work_anniversary_date))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">Work
-                                                                                Anniversary Date :</th>
+                                                                            <th class="ps-0" scope="row">Work Anniversary Date :</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->work_anniversary_date ?? '-' }}
+                                                                                {{ $member->work_anniversary_date ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->gstnumber))
+                                                                        @endif 
+                                                                        @if(isset($member->gstnumber))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">Gst Number :
-                                                                            </th>
+                                                                            <th class="ps-0" scope="row">Gst Number :</th>
                                                                             <td class="text-muted">
                                                                                 {{ $member->gstnumber ?? '-' }}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->facebook_link))
+                                                                        @endif 
+                                                                        @if(isset($member->facebook_link))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">Facebook Link
-                                                                                :</th>
+                                                                            <th class="ps-0" scope="row">Facebook Link :</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->facebook_link ?? '-' }}
+                                                                                {{ $member->facebook_link ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->youtube_link))
+                                                                        @endif 
+                                                                        @if(isset($member->youtube_link))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">youtube Link :
-                                                                            </th>
+                                                                            <th class="ps-0" scope="row">youtube Link :</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->youtube_link ?? '-' }}
+                                                                                {{ $member->youtube_link ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->instagram_link))
+                                                                        @endif 
+                                                                        @if(isset($member->instagram_link))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">Instagram Link
-                                                                                :</th>
+                                                                            <th class="ps-0" scope="row">Instagram Link :</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->instagram_link ?? '-' }}
+                                                                                {{ $member->instagram_link ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->linkedin_link))
+                                                                        @endif 
+                                                                        @if(isset($member->linkedin_link))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">LinkedIn Link
-                                                                                :</th>
+                                                                            <th class="ps-0" scope="row">LinkedIn Link :</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->linkedin_link ?? '-' }}
+                                                                                {{ $member->linkedin_link ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->google_link))
+                                                                        @endif 
+                                                                        @if(isset($member->google_link))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">Google Link :
-                                                                            </th>
+                                                                            <th class="ps-0" scope="row">Google Link :</th>
                                                                             <td class="text-muted">
-                                                                                {{ $member->google_link ?? '-' }}
+                                                                                {{ $member->google_link ?? '-'}}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
-                                                                    @if (isset($member->SubscriptionExpiredDate))
+                                                                        @endif 
+                                                                        @if(isset($member->SubscriptionExpiredDate))
                                                                         <tr>
-                                                                            <th class="ps-0" scope="row">Subscription
-                                                                                Expiry Date :</th>
+                                                                            <th class="ps-0" scope="row">Subscription Expiry Date :</th>
                                                                             <td class="text-muted">
-                                                                                {{ \Carbon\Carbon::parse($member->SubscriptionExpiredDate)->format('d-m-Y') }}
+                                                                            {{ \Carbon\Carbon::parse($member->SubscriptionExpiredDate)->format('d-m-Y') }}
                                                                             </td>
                                                                         </tr>
-                                                                    @endif
+                                                                    @endif 
                                                                 @endif
                                                                 <!-- MEMBER USER FIELD END  -->
                                                             </tbody>

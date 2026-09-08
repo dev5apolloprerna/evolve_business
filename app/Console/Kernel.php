@@ -15,9 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-        $schedule->command('auto:birthdaywith')->now();
-        // $schedule->command('auto:birthdaywith')->everyMinute();
+        $schedule->command('priorityclub:update')->dailyAt('05:00');
+
     }
 
     /**

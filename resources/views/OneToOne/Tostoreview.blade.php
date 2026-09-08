@@ -24,57 +24,63 @@
                             <div class="card-body">
                                 <div class="live-preview">
                                     <!-- <form action="{{ route('OneToOne.create') }}" method="post"
-                                                                                                                                                                                                                                                                                                                                                                                                                                enctype="multipart/form-data"> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                enctype="multipart/form-data"> -->
                                     <form id="oneTooneForm" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row gy-3 mb-3">
-                                            <div class="col-lg-4 col-md-6">Glimpscs about Personal and Business
+                                            <div class="col-lg-4 col-md-6"><span style="color:red;">*</span>Glimpscs about
+                                                Personal and Business
                                                 Background
-                                                <textarea class="form-control" name="to_question_1" id="to_question_1"></textarea>
+                                                <textarea class="form-control" name="to_question_1" id="to_question_1" required></textarea>
                                             </div>
 
-                                            <div class="col-lg-4 col-md-6">Best Products and/or Service
-                                                <textarea class="form-control" name="to_question_2" id="to_question_2"></textarea>
+                                            <div class="col-lg-4 col-md-6"><span style="color:red;">*</span>Best Products
+                                                and/or Service
+                                                <textarea class="form-control" name="to_question_2" id="to_question_2" required></textarea>
                                             </div>
 
-                                            <div class="col-lg-4 col-md-6">Top 5 Clients
-                                                <textarea class="form-control" name="to_question_3" id="to_question_3"></textarea>
+                                            <div class="col-lg-4 col-md-6"><span style="color:red;">*</span>Top 5 Clients
+                                                <textarea class="form-control" name="to_question_3" id="to_question_3" required></textarea>
                                             </div>
 
-                                            <div class="col-lg-4 col-md-6">Looking to Connect with
-                                                <textarea class="form-control" name="to_question_4" id="to_question_4"></textarea>
+                                            <div class="col-lg-4 col-md-6"><span style="color:red;">*</span>Looking to
+                                                Connect with
+                                                <textarea class="form-control" name="to_question_4" id="to_question_4" required></textarea>
                                             </div>
 
-                                            <div class="col-lg-4 col-md-6">Best Testimonial Received till date
-                                                <textarea class="form-control" name="to_question_5" id="to_question_5"></textarea>
+                                            <div class="col-lg-4 col-md-6"><span style="color:red;">*</span>Best Testimonial
+                                                Received till date
+                                                <textarea class="form-control" name="to_question_5" id="to_question_5" required></textarea>
                                             </div>
 
-                                            <div class="col-lg-4 col-md-6">My Dream Client
-                                                <textarea class="form-control" name="to_question_6" id="to_question_6"></textarea>
+                                            <div class="col-lg-4 col-md-6"><span style="color:red;">*</span>My Dream Client
+                                                <textarea class="form-control" name="to_question_6" id="to_question_6" required></textarea>
                                             </div>
-                                            <div class="col-lg-4 col-md-6">Future Plans
-                                                <textarea class="form-control" name="to_question_7" id="to_question_7"></textarea>
+                                            <div class="col-lg-4 col-md-6"><span style="color:red;">*</span>Future Plans
+                                                <textarea class="form-control" name="to_question_7" id="to_question_7" required></textarea>
                                             </div>
                                             <div class="col-lg-4 col-md-6">
                                             </div>
                                             <div class="col-lg-4 col-md-6">
                                             </div>
                                             <p>My commitment to help you and your business</p>
-                                            <div class="col-lg-4 col-md-6">I can help you with
-                                                <textarea class="form-control" name="to_question_8" id="to_question_8"></textarea>
+                                            <div class="col-lg-4 col-md-6"><span style="color:red;">*</span>I can help you
+                                                with
+                                                <textarea class="form-control" name="to_question_8" id="to_question_8" required></textarea>
                                             </div>
-                                            <div class="col-lg-4 col-md-6">I will connect you with
-                                                <textarea class="form-control" name="to_question_9" id="to_question_9"></textarea>
+                                            <div class="col-lg-4 col-md-6"><span style="color:red;">*</span>I will connect
+                                                you with
+                                                <textarea class="form-control" name="to_question_9" id="to_question_9" required></textarea>
                                             </div>
                                             <div class="col-lg-4 col-md-6">
                                                 <label class="form-label d-block">
-                                                    I will give business to you, worth
-                                                    <input type="text" name="to_business_worth"
+                                                    <span style="color:red;">*</span>I will give business to you, worth
+                                                    <input type="text" name="to_business_worth" required
                                                         class="border-0 border-bottom mx-2" style="width:120px;">
 
                                                     till
 
-                                                    <input type="text" name="to_business_till"
+                                                    <input type="text" name="to_business_till" required
                                                         class="border-0 border-bottom mx-2" style="width:180px;">
                                                 </label>
                                             </div>
@@ -193,7 +199,7 @@
                     contentType: false,
                     success: function(response) {
                         console.log(response);
-                        alert('Question Add Successfully.');
+                        alert('One To One Approved Successfully.');
                         window.location.href = "{{ route('OneToOne.index') }}";
                     },
                     error: function(xhr) {

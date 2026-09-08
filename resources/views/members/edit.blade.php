@@ -1,6 +1,43 @@
 @extends('layouts.app')
 @section('title', 'Members List')
 @section('content')
+<style>
+    <style>
+/* Normal select height */
+.choices {
+    margin-bottom: 0;
+}
+
+.choices__inner {
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 5px 12px !important;
+    font-size: 14px;
+}
+
+/* Dropdown maximum height */
+.choices__list--dropdown {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+}
+
+/* Search box */
+.choices__list--dropdown .choices__input {
+    display: block !important;
+    width: 100% !important;
+    padding: 8px 10px !important;
+    margin-bottom: 5px !important;
+    border: 1px solid #ddd !important;
+    font-size: 14px;
+}
+
+/* Options */
+.choices__list--dropdown .choices__item {
+    padding: 8px 10px !important;
+    font-size: 14px;
+}
+</style>
+</style>
 
     <div class="main-content">
         <div class="page-content">
@@ -36,13 +73,13 @@
                                                     autocomplete="off" value ="{{ $data->companyname }}">
                                             </div>
                                             <div class="col-lg-4 col-md-6">
-                                                <span style="color: red;">*</span>Branch Establish Year
+                                                Branch Establish Year
                                                 <span style="color:red;"
                                                     class="error-message">{{ $errors->first('brand_establish_year') }}</span>
                                                 <input type="text" class="form-control" name="brand_establish_year"
                                                     id="brand_establish_year" placeholder="Enter Brand Establish Year"
-                                                    value="{{ old('brand_establish_year') }}"
-                                                    onKeyPress="if(this.value.length==6) return false;" required>
+                                                    value="{{ $data->brand_establish_year }}"
+                                                    onKeyPress="if(this.value.length==6) return false;">
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
@@ -75,12 +112,12 @@
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
-                                                <span style="color: red;">*</span>Date of Birth
+                                                Date of Birth
                                                 <span style="color:red;"
                                                     class="error-message">{{ $errors->first('date_of_birth') }}</span>
                                                 <input type="date" class="form-control" name="date_of_birth"
                                                     id="date_of_birth" placeholder="Enter Date Of Birth"
-                                                    value="{{ old('date_of_birth') }}" required>
+                                                    value="{{ $data['date_of_birth'] }}" required>
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
@@ -113,38 +150,70 @@
                                             @endphp
 
                                             <div class="col-lg-4 col-md-6">
-                                                <label for="referred_to"><span style="color:red;">*</span>From</label>
+                                                <label for="referred_to"><span style="color:red;">*</span>Inducted By</label>
 
-                                                <select class="form-select" name="referred_to"
-                                                    id="choices-single-default">
+                                                <!--<select class="form-select" name="referred_to"-->
+                                                <!--    id="choices-single-default">-->
+                                                    
+                                                <!--     <option value="" disabled-->
+                                                <!--        {{ empty($selectedFrom) ? 'selected' : '' }}>-->
+                                                <!--        Select From-->
+                                                <!--    </option>-->
 
-                                                    @foreach ($Data as $member)
-                                                        <option value="{{ $member->id }}"
-                                                            {{ $selectedFrom == $member->id ? 'selected' : '' }}>
-                                                            {{ $member->first_name }} - ({{ $member->mobile_number }})
-                                                        </option>
-                                                    @endforeach
+                                                <!--    @foreach ($Data as $member)-->
+                                                <!--        <option value="{{ $member->id }}" data-name="{{ $member->first_name }}"-->
+                                                <!--            {{ $selectedFrom == $member->id ? 'selected' : '' }}>-->
+                                                <!--            {{ $member->first_name }} - ({{ $member->mobile_number }})-->
+                                                <!--        </option>-->
+                                                <!--    @endforeach-->
+
+                                                   
+
+                                                <!--    <option value="1" {{ $selectedFrom == '1' ? 'selected' : '' }}>-->
+                                                <!--        Social Media-->
+                                                <!--    </option>-->
+
+                                                <!--    <option value="2" {{ $selectedFrom == '2' ? 'selected' : '' }}>-->
+                                                <!--        Committee Member-->
+                                                <!--    </option>-->
+
+                                                <!--    <option value="3" {{ $selectedFrom == '3' ? 'selected' : '' }}>-->
+                                                <!--        Website-->
+                                                <!--    </option>-->
+                                                <!--</select>-->
+                                                <select class="form-select" name="referred_to" id="choices-single-default">
 
                                                     <option value="" disabled
                                                         {{ empty($selectedFrom) ? 'selected' : '' }}>
                                                         Select From
                                                     </option>
-
-                                                    <option value="1" {{ $selectedFrom == '1' ? 'selected' : '' }}>
+                                                
+                                                    @foreach ($Data as $member)
+                                                        <option value="{{ $member->id }}"
+                                                            {{ (string)$selectedFrom === (string)$member->id ? 'selected' : '' }}>
+                                                            {{ $member->first_name }} - ({{ $member->mobile_number }})
+                                                        </option>
+                                                    @endforeach
+                                                
+                                                    <option value="1"
+                                                        {{ (string)$selectedFrom === '1' ? 'selected' : '' }}>
                                                         Social Media
                                                     </option>
-
-                                                    <option value="2" {{ $selectedFrom == '2' ? 'selected' : '' }}>
+                                                
+                                                    <option value="2"
+                                                        {{ (string)$selectedFrom === '2' ? 'selected' : '' }}>
                                                         Committee Member
                                                     </option>
-
-                                                    <option value="3" {{ $selectedFrom == '3' ? 'selected' : '' }}>
+                                                
+                                                    <option value="3"
+                                                        {{ (string)$selectedFrom === '3' ? 'selected' : '' }}>
                                                         Website
                                                     </option>
+                                                
                                                 </select>
                                             </div>
 
-                                            <div class="col-lg-4 mt-3">
+                                             <div class="col-lg-4 mt-3">
                                                 <label class="form-label fw-bold">Priority Club</label>
 
                                                 <div class="d-flex gap-4">
@@ -272,13 +341,35 @@
 @endsection
 
 @section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const select = document.getElementById('choices-single-default');
+
+    if (!select) {
+        return;
+    }
+
+    new Choices(select, {
+        searchEnabled: true,
+        searchChoices: true,
+        searchPlaceholderValue: 'Search Member',
+        itemSelectText: '',
+        shouldSort: false,
+        searchResultLimit: 100,
+        noResultsText: 'No member found',
+        noChoicesText: 'No members available'
+    });
+
+});
+</script>
 
     <script>
-        new Choices('#choices-single-default', {
-            searchEnabled: true,
-            itemSelectText: '',
-            shouldSort: false // ✅ VERY IMPORTANT
-        });
+        // new Choices('#choices-single-default', {
+        //     searchEnabled: true,
+        //     itemSelectText: '',
+        //     shouldSort: false 
+        // });
 
         function getEditData(id) {
             var url = "{{ route('members.edit', ':id') }}";

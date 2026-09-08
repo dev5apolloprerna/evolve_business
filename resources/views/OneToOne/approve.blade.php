@@ -77,6 +77,7 @@
                                                 value="<?= isset($ToDate) ? $ToDate : '' ?>">
                                         </div>
                                     </div>
+                                    
                                     <div class="col-md-2 mb-2">
                                         <div class="d-flex align-items-center">
                                             <select class="form-select select2" id="given_by" name="given_by" data-choices
@@ -100,8 +101,8 @@
                                                     class="btn btn-success">Cancel</button>
                                             </div>
                                             <!-- <button class="btn btn-success" type="button" onclick="exportExcel();">
-                                                                                                                                                                                                                                                                                                                                                            <i class="fa-solid fa-file-excel fa-xl"></i>
-                                                                                                                                                                                                                                                                                                                                                        </button> -->
+                                                                                                                                                                                                                                                                                                                                                        <i class="fa-solid fa-file-excel fa-xl"></i>
+                                                                                                                                                                                                                                                                                                                                                    </button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -156,7 +157,7 @@
                                                         @foreach ($Business as $Business1)
                                                             <tr>
                                                                 <td class="text-center">
-                                                                    {{ $i + $Business->perPage() * ($Business->currentPage() - 1) }}
+                                                                    {{ $loop->iteration + ($Business->currentPage() - 1) * $Business->perPage() }}
                                                                 </td>
 
                                                                 <td class="text-center">{{ $Business1->from }}</td>

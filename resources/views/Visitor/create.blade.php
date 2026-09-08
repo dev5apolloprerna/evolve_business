@@ -49,9 +49,9 @@
                                                     autocomplete="off" required>
                                             </div>
                                             <div class="col-lg-3 col-md-6">
-                                                <span style="color:red;">*</span>Email
+                                                Email
                                                 <input type="text" class="form-control" name="email" id="email"
-                                                    placeholder="Enter Email" maxlength="70" autocomplete="off" required>
+                                                    placeholder="Enter Email" maxlength="70" autocomplete="off">
                                             </div>
                                             <div class="col-lg-3 col-md-6">
                                                 Business Category

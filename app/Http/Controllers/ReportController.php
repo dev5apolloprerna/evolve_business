@@ -405,13 +405,82 @@ class ReportController extends Controller
 
     //upcoming renewal report
 
+    // public function upcomingrenual(Request $request)
+    // {
+
+    //     $firstname = $request->first_name;
+    //     $FromDate = $request->fromdate;
+    //     $ToDate = $request->todate;
+    //     //dd($firstname);
+
+    //     $cities = City::select('id', 'city_name')->get();
+    //     $cityGroups = City_group::select('id', 'group_name')->get();
+    //     $categories = Categories::select('id', 'name')->get();
+    //     $subcategories = Subcategories::select('id', 'name')->get();
+    //     $plans = Membershipplans::select('id', 'plan_name')->get();
+
+    //     // Subquery to get latest renewal per member
+    //     $latestRenewalSub = DB::table('renewal_history as rh1')
+    //         ->select('rh1.member_id', 'rh1.plan_id', 'rh1.renewal_date', 'rh1.paymentrefNo', 'rh1.substartdate')
+    //         ->whereRaw('rh1.id = (select max(rh2.id) from renewal_history as rh2 where rh2.member_id = rh1.member_id)');
+
+    //     $datas = Members::select(
+    //         'members.*',
+    //         'users.id as user_id',
+    //         'city.id as city_id',
+    //         'city_groups.id as citygroup_id',
+    //         'categories.id as category_id',
+    //         'categories.name as category_name',
+    //         'city.city_name',
+    //         'city_groups.group_name',
+    //         'users.first_name',
+    //         'latest_renewal.plan_id',
+    //         'latest_renewal.renewal_date',
+    //         'latest_renewal.paymentrefNo',
+    //         'latest_renewal.substartdate',
+    //         'membership_plans.plan_name',
+    //         'membership_plans.amount'
+    //     )
+    //         ->join('city', 'members.city_id', '=', 'city.id')
+    //         ->join('city_groups', 'members.citygroup_id', '=', 'city_groups.id')
+    //         ->join('categories', 'members.category_id', '=', 'categories.id')
+    //         ->join('users', 'users.id', '=', 'members.user_id')
+    //         ->leftJoinSub($latestRenewalSub, 'latest_renewal', function ($join) {
+    //             $join->on('latest_renewal.member_id', '=', 'members.id');
+    //         })
+    //         ->leftJoin('membership_plans', 'membership_plans.id', '=', 'latest_renewal.plan_id')
+    //         ->where([
+    //             ['members.iStatus', '=', 1],
+    //             ['members.isDelete', '=', 0]
+    //         ])
+    //         // ->whereMonth('members.SubscriptionExpiredDate', '=', Carbon::now()->month)
+    //         // ->whereYear('members.SubscriptionExpiredDate', '=', Carbon::now()->year)
+    //         ->whereBetween('members.SubscriptionExpiredDate', [
+    //             Carbon::now()->startOfMonth(),
+    //             Carbon::now()->addMonths(3)->endOfMonth()
+    //         ])
+    //         ->when($request->fromdate, function ($query, $fromDate) {
+    //             return $query->where('members.created_at', '>=', Carbon::parse($fromDate)->startOfDay());
+    //         })
+    //         ->when($request->todate, function ($query, $toDate) {
+    //             return $query->where('members.created_at', '<=', Carbon::parse($toDate)->endOfDay());
+    //         })
+    //         ->when($request->first_name, function ($query) use ($request) {
+    //             return $query->where('users.first_name', 'LIKE', '%' . $request->first_name . '%');
+    //         })
+    //         ->paginate(env('PAR_PAGE_COUNT', 20));
+
+    //     $Count = $datas->count();
+
+    //     return view('reports.upcomingrenual', compact('Count', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'datas', 'firstname', 'FromDate', 'ToDate'));
+    // }
+
+
     public function upcomingrenual(Request $request)
     {
-
         $firstname = $request->first_name;
         $FromDate = $request->fromdate;
         $ToDate = $request->todate;
-        //dd($firstname);
 
         $cities = City::select('id', 'city_name')->get();
         $cityGroups = City_group::select('id', 'group_name')->get();
@@ -419,10 +488,22 @@ class ReportController extends Controller
         $subcategories = Subcategories::select('id', 'name')->get();
         $plans = Membershipplans::select('id', 'plan_name')->get();
 
-        // Subquery to get latest renewal per member
+        // Latest renewal per member
         $latestRenewalSub = DB::table('renewal_history as rh1')
-            ->select('rh1.member_id', 'rh1.plan_id', 'rh1.renewal_date', 'rh1.paymentrefNo', 'rh1.substartdate')
-            ->whereRaw('rh1.id = (select max(rh2.id) from renewal_history as rh2 where rh2.member_id = rh1.member_id)');
+            ->select(
+                'rh1.member_id',
+                'rh1.plan_id',
+                'rh1.renewal_date',
+                'rh1.paymentrefNo',
+                'rh1.substartdate'
+            )
+            ->whereRaw('
+            rh1.id = (
+                SELECT MAX(rh2.id)
+                FROM renewal_history as rh2
+                WHERE rh2.member_id = rh1.member_id
+            )
+        ');
 
         $datas = Members::select(
             'members.*',
@@ -445,37 +526,111 @@ class ReportController extends Controller
             ->join('city_groups', 'members.citygroup_id', '=', 'city_groups.id')
             ->join('categories', 'members.category_id', '=', 'categories.id')
             ->join('users', 'users.id', '=', 'members.user_id')
+
             ->leftJoinSub($latestRenewalSub, 'latest_renewal', function ($join) {
-                $join->on('latest_renewal.member_id', '=', 'members.id');
+                $join->on(
+                    'latest_renewal.member_id',
+                    '=',
+                    'members.id'
+                );
             })
-            ->leftJoin('membership_plans', 'membership_plans.id', '=', 'latest_renewal.plan_id')
+
+            ->leftJoin(
+                'membership_plans',
+                'membership_plans.id',
+                '=',
+                'latest_renewal.plan_id'
+            )
+
             ->where([
                 ['members.iStatus', '=', 1],
                 ['members.isDelete', '=', 0]
             ])
-            // ->whereMonth('members.SubscriptionExpiredDate', '=', Carbon::now()->month)
-            // ->whereYear('members.SubscriptionExpiredDate', '=', Carbon::now()->year)
-            ->whereBetween('members.SubscriptionExpiredDate', [
-                Carbon::now()->startOfMonth(),
-                Carbon::now()->addMonths(3)->endOfMonth()
-            ])
-            ->when($request->fromdate, function ($query, $fromDate) {
-                return $query->where('members.created_at', '>=', Carbon::parse($fromDate)->startOfDay());
-            })
-            ->when($request->todate, function ($query, $toDate) {
-                return $query->where('members.created_at', '<=', Carbon::parse($toDate)->endOfDay());
-            })
-            ->when($request->first_name, function ($query) use ($request) {
-                return $query->where('users.first_name', 'LIKE', '%' . $request->first_name . '%');
-            })
-            ->paginate(env('PAR_PAGE_COUNT', 20));
 
+            // -----------------------------------------
+            // Renewal Date Filter
+            // -----------------------------------------
+            ->when(
+                $request->fromdate || $request->todate,
+                function ($query) use ($request) {
+
+                    // Both dates selected
+                    if ($request->fromdate && $request->todate) {
+
+                        return $query->whereBetween(
+                            'members.SubscriptionExpiredDate',
+                            [
+                                Carbon::parse($request->fromdate)->startOfDay(),
+                                Carbon::parse($request->todate)->endOfDay()
+                            ]
+                        );
+                    }
+
+                    // Only From Date
+                    if ($request->fromdate) {
+
+                        return $query->where(
+                            'members.SubscriptionExpiredDate',
+                            '>=',
+                            Carbon::parse($request->fromdate)->startOfDay()
+                        );
+                    }
+
+                    // Only To Date
+                    if ($request->todate) {
+
+                        return $query->where(
+                            'members.SubscriptionExpiredDate',
+                            '<=',
+                            Carbon::parse($request->todate)->endOfDay()
+                        );
+                    }
+                },
+                function ($query) {
+
+                    // Default: Upcoming 3 Months
+                    return $query->whereBetween(
+                        'members.SubscriptionExpiredDate',
+                        [
+                            Carbon::now()->startOfDay(),
+                            Carbon::now()->addMonths(3)->endOfDay()
+                        ]
+                    );
+                }
+            )
+
+            // First name search
+            ->when($request->first_name, function ($query) use ($request) {
+
+                return $query->where(
+                    'users.first_name',
+                    'LIKE',
+                    '%' . $request->first_name . '%'
+                );
+            })
+
+            ->orderBy('members.SubscriptionExpiredDate', 'asc')
+
+            ->paginate(env('PAR_PAGE_COUNT', 20));
 
         $Count = $datas->count();
 
-        return view('reports.upcomingrenual', compact('Count', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'datas', 'firstname', 'FromDate', 'ToDate'));
+        return view(
+            'reports.upcomingrenual',
+            compact(
+                'Count',
+                'cities',
+                'cityGroups',
+                'categories',
+                'subcategories',
+                'plans',
+                'datas',
+                'firstname',
+                'FromDate',
+                'ToDate'
+            )
+        );
     }
-
 
     // 30-7-25
     public function inducted(Request $request, $id = null)

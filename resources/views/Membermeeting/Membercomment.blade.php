@@ -45,6 +45,7 @@
                                             <th scope="col">Meeting start date</th>
                                             <th scope="col">Meeting End date</th>
                                             <th scope="col">Meeting Status</th>
+                                            <th scope="col">Substitute Name</th>
                                             <th scope="col">Comment</th>
                                             <th scope="col">Action</th>
                                         </tr>
@@ -69,6 +70,7 @@
                                                         <span class="badge bg-warning text-dark">Pending</span>
                                                     @endif
                                                 </td>
+                                                <td class="text-center">{{ $data->substitute_name ?? 'N/A' }}</td>
                                                 <td class="text-center"
                                                     style="max-width:250px; white-space:normal; word-wrap:break-word; word-break:break-word;"
                                                     title="{{ $data->comment ?? '' }}">
@@ -294,14 +296,17 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="meetingStatusSelect" class="form-label">Status</label>
-                            <select class="form-control" name="newStatus" id="meetingStatusSelect" required>
-                                {{-- <option value="1">Approve</option> --}}
+                            <select class="form-control" name="newStatus" id="meetingStatusSelect"
+                                onchange="toggleRejectedComments()" required>
+                                <option value="1">Join</option>
                                 <option value="3">Absent</option>
+                                <option value="4">Substitute</option>
                             </select>
                         </div>
                         <div class="mb-3" id="meetingStatusCommentGroup" style="display:none;">
-                            <label for="meetingStatusComment" class="form-label">Comment</label>
-                            <textarea class="form-control" name="comment" id="meetingStatusComment" rows="4"></textarea>
+                            <label for="meetingStatusComment" class="form-label">Substitute Name</label>
+                            <input type="text" class="form-control" name="substitute_name"
+                                id="meetingStatusSubstitute" placeholder="Enter Substitute Name">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -384,6 +389,24 @@
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            window.toggleRejectedComments = function() {
+
+                var statusSelect = document.getElementById('meetingStatusSelect');
+                var substituteGroup = document.getElementById('meetingStatusCommentGroup');
+                var substituteField = document.getElementById('meetingStatusSubstitute');
+
+                if (statusSelect.value == '4') {
+
+                    substituteGroup.style.display = 'block';
+                    substituteField.setAttribute('required', 'required');
+
+                } else {
+
+                    substituteGroup.style.display = 'none';
+                    substituteField.removeAttribute('required');
+                    substituteField.value = '';
+                }
+            };
             const addButtons = document.querySelectorAll('.open-add-member-modal');
             const modal = new bootstrap.Modal(document.getElementById('addMemberModal'));
 
@@ -459,10 +482,10 @@
 
                     document.getElementById('statusMeetingMemberId').value = id;
                     document.getElementById('meetingStatusSelect').value = status;
-                    document.getElementById('meetingStatusComment').value = comment;
+                    document.getElementById('meetingStatusSubstitute').value = comment;
                     document.getElementById('statusMemberId').value = member_id;
                     document.getElementById('meetingStatusCommentGroup').style.display = status ===
-                        '2' ? 'block' : 'none';
+                        '4' ? 'block' : 'none';
                     statusModal.show();
                 });
             });
@@ -470,7 +493,7 @@
             const meetingStatusSelect = document.getElementById('meetingStatusSelect');
             const meetingStatusCommentGroup = document.getElementById('meetingStatusCommentGroup');
             meetingStatusSelect.addEventListener('change', function() {
-                meetingStatusCommentGroup.style.display = this.value === '2' ? 'block' : 'none';
+                meetingStatusCommentGroup.style.display = this.value === '4' ? 'block' : 'none';
             });
         });
     </script>

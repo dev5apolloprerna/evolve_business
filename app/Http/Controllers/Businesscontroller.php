@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\members;
 use App\Models\User;
-use App\Models\Reference;
 use App\Models\City;
 use App\Models\City_group;
 use App\Models\Categories;
@@ -60,22 +59,26 @@ class Businesscontroller extends Controller
         // dd($Count);
         return view('Business.index', compact('Business', 'Data', 'Datadrop', 'FromDate', 'ToDate', 'Count', 'businesstype', 'givenby', 'businesses'));
     }
-    public function exportToexcel_list(Request $request, $fromdate = null, $todate = null)
+    public function exportToexcelList(Request $request, $fromdate = null, $todate = null)
     {
-        // dd($fromdate);
         $FromDate = $fromdate;
         $ToDate = $todate;
 
         $datas = Business::select(
-            'Business.*'
+            'Business.*',
+            'members.*',
+            'city_groups.group_name as city_group_name'
         )
-            ->where(['Business.iStatus' => 1, 'Business.isDelete' => 0, 'isapproved_status' => 0])
+             ->leftJoin('members', 'members.user_id', '=', 'Business.business_from_id')
+                ->leftJoin('city_groups', 'members.citygroup_id', '=', 'city_groups.id')
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->where('Business.isapproved_status', 0)
             ->when($fromdate, fn($query, $FromDate) => $query
                 ->where('Business.business_Date', '>=', date('Y-m-d 00:00:00', strtotime($FromDate))))
             ->when($todate, fn($query, $ToDate) => $query
                 ->where('Business.business_Date', '<=', date('Y-m-d 23:59:59', strtotime($ToDate))))
             ->get();
-
         return view('Business.exportlist', compact('datas', 'FromDate', 'ToDate'));
     }
     public function status(Request $request)
@@ -249,9 +252,15 @@ class Businesscontroller extends Controller
         $ToDate = $todate;
 
         $datas = Business::select(
-            'Business.*'
+            'Business.*',
+            'members.*',
+            'city_groups.group_name as city_group_name'
         )
-            ->where(['Business.iStatus' => 1, 'Business.isDelete' => 0, 'isapproved_status' => 1])
+             ->leftJoin('members', 'members.user_id', '=', 'Business.business_from_id')
+                ->leftJoin('city_groups', 'members.citygroup_id', '=', 'city_groups.id')
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->where('Business.isapproved_status', 1)
             ->when($fromdate, fn($query, $FromDate) => $query
                 ->where('Business.business_Date', '>=', date('Y-m-d 00:00:00', strtotime($FromDate))))
             ->when($todate, fn($query, $ToDate) => $query
@@ -310,9 +319,15 @@ class Businesscontroller extends Controller
         $ToDate = $todate;
 
         $datas = Business::select(
-            'Business.*'
+            'Business.*',
+            'members.*',
+            'city_groups.group_name as city_group_name'
         )
-            ->where(['Business.iStatus' => 1, 'Business.isDelete' => 0, 'isapproved_status' => 2])
+            ->leftJoin('members', 'members.user_id', '=', 'Business.business_from_id')
+                ->leftJoin('city_groups', 'members.citygroup_id', '=', 'city_groups.id')
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->where('Business.isapproved_status', 2)
             ->when($fromdate, fn($query, $FromDate) => $query
                 ->where('Business.business_Date', '>=', date('Y-m-d 00:00:00', strtotime($FromDate))))
             ->when($todate, fn($query, $ToDate) => $query
@@ -334,10 +349,10 @@ class Businesscontroller extends Controller
     public function statusonetooneget(Request $request)
     {
         $data = OneToOne::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $request->id])->first();
-
+        // dd($Business);  
         echo json_encode($data);
     }
-
+    
     public function statusreferralget(Request $request)
     {
         $data = Reference::where(['iStatus' => 1, 'isDelete' => 0, 'Reference_id' => $request->id])->first();

@@ -118,8 +118,23 @@ class memberscontroller extends Controller
             ->where('members.isDelete', 0)
             ->orderBy('users.first_name')
             ->paginate(env('PAR_PAGE_COUNT', 20));
+            
+        // Calendar ke liye all members
+        $calendarMembers = DB::table('members')
+            ->leftJoin('users', 'members.user_id', '=', 'users.id')
+            ->leftJoin('renewal_history', 'members.id', '=', 'renewal_history.member_id')
+            ->select(
+                'members.id',
+                'users.first_name as member_name',
+                'members.date_of_birth',
+                'renewal_history.renewal_date as work_anniversary_date'
+            )
+            ->where('members.iStatus', 1)
+            ->where('members.isDelete', 0)
+            ->orderBy('users.first_name')
+            ->get();
 
-        return view('members.member-calendar', compact('members'));
+        return view('members.member-calendar', compact('members','calendarMembers'));
     }
 
     public function storeview(Request $request)
@@ -244,24 +259,24 @@ class memberscontroller extends Controller
             'SubscriptionExpiredDate' => $subEndDate,
             'renewalhistory_id'       => $renewalHistory,
         ]);
-        $sendemaildetails = DB::table('sendemaildetails')->where('id', 3)->first();
+        // $sendemaildetails = DB::table('sendemaildetails')->where('id', 3)->first();
 
-        $msg = [
-            'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
-            'Title' => $sendemaildetails->strTitle ??  'Evolve Business Community',
-            'ToEmail' => $request->email,
-            'Subject' => $sendemaildetails->strSubject ?? 'Member Login Information' ?? '',
-        ];
+        // $msg = [
+        //     'FromMail' => $sendemaildetails->strFromMail ??  'info@getdemo.in',
+        //     'Title' => $sendemaildetails->strTitle ??  'Evolve Business Community',
+        //     'ToEmail' => $request->email,
+        //     'Subject' => $sendemaildetails->strSubject ?? 'Member Login Information' ?? '',
+        // ];
 
-        $data = [
-            'email' => $request->email,
-            'password' => $request->password
-        ];
+        // $data = [
+        //     'email' => $request->email,
+        //     'password' => $request->password
+        // ];
 
-        $mail = Mail::send('emails.Loginemail', ['data' => $data], function ($message) use ($msg) {
-            $message->from($msg['FromMail'], $msg['Title']);
-            $message->to($msg['ToEmail'])->subject($msg['Subject']);
-        });
+        // $mail = Mail::send('emails.Loginemail', ['data' => $data], function ($message) use ($msg) {
+        //     $message->from($msg['FromMail'], $msg['Title']);
+        //     $message->to($msg['ToEmail'])->subject($msg['Subject']);
+        // });
         $whatsappService = new AuthkeyWhatsAppService();
         $wid = "39441"; // template id
         $mobileNo = $request->phonenumber;
@@ -390,6 +405,7 @@ class memberscontroller extends Controller
                 'priority_club' => $request->priority_club,
                 'from'        => $request->referred_to,
                 'gstnumber'      => $request->gstnumber,
+                'date_of_birth'      => $request->date_of_birth,
                 // 'Book_Your_Podcast'=>$request->Book_Your_Podcast,
                 // 'Book_Your_Member_of_the_week'=>$request->Book_Your_Member_of_the_week,
                 'updated_at'     => now(),

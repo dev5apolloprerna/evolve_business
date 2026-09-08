@@ -98,7 +98,6 @@ class Membermeetingcontroller extends Controller
 
     public function Memberindex(Request $request, $id)
     {
-
         $allmembers = members::select('id', 'Contact_person')->orderBy('Contact_person')->get();
         $meetingdata = Member_metting::where(['meeting_id' => $id])->get();
         //    dd($permission);
@@ -169,122 +168,664 @@ class Membermeetingcontroller extends Controller
         return back()->with('success', 'Brand Showcase Amount Updated!');
     }
 
+    // public function memberstore(Request $request)
+    // {
+
+    //     if (!empty($request->ppt_taken_1) && $request->ppt_taken_1 == $request->ppt_taken_2) {
+    //         return back()->withInput()->withErrors([
+    //             'ppt_taken_2' => 'Same member cannot be selected for both PPT Taken 1 and PPT Taken 2.'
+    //         ]);
+    //     }
+
+    //     if (!empty($request->brand_showcase_1) && $request->brand_showcase_1 == $request->brand_showcase_2) {
+    //         return back()->withInput()->withErrors([
+    //             'brand_showcase_2' => 'Same member cannot be selected for both Brand Showcase 1 and Brand Showcase 2.'
+    //         ]);
+    //     }
+
+    //     $meetingDate = DB::table('Cluster_Meet_Member_meeting')
+    //         ->where('meeting_id', $request->meetingid)
+    //         ->value('created_at');
+
+    //     $threeMonthsAgo = Carbon::parse($meetingDate)->subMonths(3);
+
+    //     $fieldLabels = [
+    //         'ppt_taken_1' => 'PPT Taken 1',
+    //         'ppt_taken_2' => 'PPT Taken 2',
+    //         'brand_showcase_1' => 'Brand Showcase 1',
+    //         'brand_showcase_2' => 'Brand Showcase 2',
+    //     ];
+
+    //     foreach ($fieldLabels as $field => $label) {
+
+    //         $memberId = $request->$field;
+
+    //         if (!empty($memberId)) {
+
+    //             $member = DB::table('members')->where('id', $memberId)->first();
+
+    //             $allowedCount = ($member && in_array($member->priority_club, [3, 5, 7])) ? 2 : 1;
+
+    //             $usedCount = MemberRoleUsage::where('member_id', $memberId)
+    //                 ->where('role_type', $field)
+    //                 ->whereBetween('meeting_date', [$threeMonthsAgo, $meetingDate])
+    //                 ->count();
+
+    //             if ($usedCount >= $allowedCount) {
+    //                 return back()->withInput()->withErrors([
+    //                     $field => "Member already used for {$label} {$allowedCount} time(s) within last 3 months."
+    //                 ]);
+    //             }
+    //         }
+    //     }
+
+    //     DB::table('Cluster_Meet_Member_meeting')
+    //         ->where('meeting_id', $request->meetingid)
+    //         ->delete();
+
+    //     $meetingId = $request->meetingid;
+    //     $memberIds = $request->members ?? [];
+    //     $whatsappService = new AuthkeyWhatsAppService();
+
+    //     // Brand Showcase Members
+    //     $brandShowcaseMembers = collect([
+    //         $request->brand_showcase_1,
+    //         $request->brand_showcase_2,
+    //     ])->filter()->unique()->values()->toArray();
+
+    //     foreach ($memberIds as $memberId) {
+    //         Member_metting::create([
+    //             'meeting_id' => $meetingId,
+    //             'member_id' => $memberId,
+    //             'ppt_taken_1' => $request->ppt_taken_1 ?? 0,
+    //             'ppt_taken_2' => $request->ppt_taken_2 ?? 0,
+    //             'brand_showcase_1' => $request->brand_showcase_1 ?? 0,
+    //             'brand_showcase_2' => $request->brand_showcase_2 ?? 0,
+    //         ]);
+    //         if (in_array($memberId, $brandShowcaseMembers)) {
+    //             continue;
+    //         }
+    //         $member = DB::table('members')
+    //             ->where('id', $memberId)
+    //             ->first();
+
+    //         if (!empty($member) && !empty($member->phonenumber)) {
+    //             $wid = 41818; // Template ID
+    //             $whatsappService->sendText($member->phonenumber, $wid);
+    //         }
+    //     }
+
+    //     // Send Brand Showcase WhatsApp
+    //     foreach ($brandShowcaseMembers as $memberId) {
+
+    //         $member = DB::table('members')
+    //             ->where('id', $memberId)
+    //             ->first();
+
+    //         if ($member && !empty($member->phonenumber)) {
+    //             $whatsappService->sendText($member->phonenumber, 41822); // Brand Showcase Template
+    //         }
+    //     }
+
+    //     foreach ($fieldLabels as $field => $label) {
+
+    //         $memberId = $request->$field;
+
+    //         if (!empty($memberId)) {
+
+    //             MemberRoleUsage::create([
+    //                 'member_id' => $memberId,
+    //                 'role_type' => $field,
+    //                 'meeting_id' => $meetingId,
+    //                 'meeting_date' => $meetingDate,
+    //             ]);
+    //         }
+    //     }
+
+    //     return redirect()->route('Membermeeting.index')
+    //         ->with('success', 'Meeting Members added successfully!');
+    // }
+
     public function memberstore(Request $request)
     {
+        /*
+    |--------------------------------------------------------------------------
+    | 1. Basic Validation
+    |--------------------------------------------------------------------------
+    */
 
-        if (!empty($request->ppt_taken_1) && $request->ppt_taken_1 == $request->ppt_taken_2) {
-            return back()->withInput()->withErrors([
-                'ppt_taken_2' => 'Same member cannot be selected for both PPT Taken 1 and PPT Taken 2.'
-            ]);
+        if (
+            !empty($request->ppt_taken_1) &&
+            $request->ppt_taken_1 == $request->ppt_taken_2
+        ) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'ppt_taken_2' => 'Same member cannot be selected for both PPT Taken 1 and PPT Taken 2.'
+                ]);
         }
 
-        if (!empty($request->brand_showcase_1) && $request->brand_showcase_1 == $request->brand_showcase_2) {
-            return back()->withInput()->withErrors([
-                'brand_showcase_2' => 'Same member cannot be selected for both Brand Showcase 1 and Brand Showcase 2.'
-            ]);
+        if (
+            !empty($request->brand_showcase_1) &&
+            $request->brand_showcase_1 == $request->brand_showcase_2
+        ) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'brand_showcase_2' => 'Same member cannot be selected for both Brand Showcase 1 and Brand Showcase 2.'
+                ]);
         }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 2. Meeting ID & Selected Members
+    |--------------------------------------------------------------------------
+    */
+
+        $meetingId = $request->meetingid;
+
+        $memberIds = $request->members ?? [];
+
+        $requestedMemberIds = collect($memberIds)
+            ->filter()
+            ->map(function ($id) {
+                return (string) $id;
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 3. Meeting Date
+    |--------------------------------------------------------------------------
+    */
 
         $meetingDate = DB::table('Cluster_Meet_Member_meeting')
-            ->where('meeting_id', $request->meetingid)
+            ->where('meeting_id', $meetingId)
             ->value('created_at');
 
-        $threeMonthsAgo = Carbon::parse($meetingDate)->subMonths(3);
+        // First time members are added
+        if (empty($meetingDate)) {
+            $meetingDate = Carbon::now();
+        }
+
+        $meetingDate = Carbon::parse($meetingDate);
+
+        $threeMonthsAgo = $meetingDate
+            ->copy()
+            ->subMonths(3);
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 4. PPT / Brand Showcase Fields
+    |--------------------------------------------------------------------------
+    */
 
         $fieldLabels = [
-            'ppt_taken_1' => 'PPT Taken 1',
-            'ppt_taken_2' => 'PPT Taken 2',
+            'ppt_taken_1'      => 'PPT Taken 1',
+            'ppt_taken_2'      => 'PPT Taken 2',
             'brand_showcase_1' => 'Brand Showcase 1',
             'brand_showcase_2' => 'Brand Showcase 2',
         ];
 
+
+        /*
+    |--------------------------------------------------------------------------
+    | 5. Check 3 Months Role Usage
+    |--------------------------------------------------------------------------
+    |
+    | Current meeting is excluded.
+    |
+    | Therefore:
+    |
+    | If admin edits same meeting, existing usage will NOT count again.
+    |
+    */
+
         foreach ($fieldLabels as $field => $label) {
 
-            $memberId = $request->$field;
+            $memberId = $request->input($field);
 
-            if (!empty($memberId)) {
+            if (empty($memberId)) {
+                continue;
+            }
 
-                $member = DB::table('members')->where('id', $memberId)->first();
+            $member = DB::table('members')
+                ->where('id', $memberId)
+                ->first();
 
-                $allowedCount = ($member && in_array($member->priority_club, [3, 5, 7])) ? 2 : 1;
+            /*
+         * Priority Club 3,5,7 = maximum 2 times
+         * Other members      = maximum 1 time
+         */
+            $allowedCount = (
+                $member &&
+                in_array((int) $member->priority_club, [3, 5, 7])
+            ) ? 2 : 1;
 
-                $usedCount = MemberRoleUsage::where('member_id', $memberId)
-                    ->where('role_type', $field)
-                    ->whereBetween('meeting_date', [$threeMonthsAgo, $meetingDate])
-                    ->count();
 
-                if ($usedCount >= $allowedCount) {
-                    return back()->withInput()->withErrors([
+            $usedCount = MemberRoleUsage::where('member_id', $memberId)
+                ->where('role_type', $field)
+
+                // Do not count current meeting
+                ->where('meeting_id', '!=', $meetingId)
+
+                ->whereBetween('meeting_date', [
+                    $threeMonthsAgo,
+                    $meetingDate
+                ])
+
+                ->count();
+
+
+            if ($usedCount >= $allowedCount) {
+
+                return back()
+                    ->withInput()
+                    ->withErrors([
                         $field => "Member already used for {$label} {$allowedCount} time(s) within last 3 months."
                     ]);
+            }
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 6. Get Existing Meeting Members
+    |--------------------------------------------------------------------------
+    |
+    | VERY IMPORTANT:
+    | Get this BEFORE inserting/updating anything.
+    |
+    */
+
+        $existingMemberIds = Member_metting::where(
+            'meeting_id',
+            $meetingId
+        )
+            ->pluck('member_id')
+            ->map(function ($id) {
+                return (string) $id;
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 7. Get OLD Brand Showcase Members
+    |--------------------------------------------------------------------------
+    |
+    | We need old values so WhatsApp is not sent again if brand showcase
+    | member has not changed.
+    |
+    */
+
+        $oldBrandShowcaseMembers = Member_metting::where(
+            'meeting_id',
+            $meetingId
+        )
+            ->get([
+                'brand_showcase_1',
+                'brand_showcase_2'
+            ])
+            ->flatMap(function ($row) {
+
+                return [
+                    $row->brand_showcase_1,
+                    $row->brand_showcase_2,
+                ];
+            })
+            ->filter()
+            ->map(function ($id) {
+                return (string) $id;
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 8. Current Brand Showcase Members
+    |--------------------------------------------------------------------------
+    */
+
+        $brandShowcaseMembers = collect([
+            $request->brand_showcase_1,
+            $request->brand_showcase_2,
+        ])
+            ->filter()
+            ->map(function ($id) {
+                return (string) $id;
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 9. Newly Added Meeting Members
+    |--------------------------------------------------------------------------
+    */
+
+        $newMemberIds = array_values(
+            array_diff(
+                $requestedMemberIds,
+                $existingMemberIds
+            )
+        );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 10. Removed Meeting Members
+    |--------------------------------------------------------------------------
+    */
+
+        $removedMemberIds = array_values(
+            array_diff(
+                $existingMemberIds,
+                $requestedMemberIds
+            )
+        );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 11. Newly Assigned Brand Showcase Members
+    |--------------------------------------------------------------------------
+    |
+    | Example:
+    |
+    | Old Brand Showcase = Member 5
+    | New Brand Showcase = Member 5, Member 10
+    |
+    | Only Member 10 gets Brand Showcase WhatsApp.
+    |
+    */
+
+        $newBrandShowcaseMembers = array_values(
+            array_diff(
+                $brandShowcaseMembers,
+                $oldBrandShowcaseMembers
+            )
+        );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 12. Database Update
+    |--------------------------------------------------------------------------
+    */
+
+        DB::beginTransaction();
+
+        try {
+
+            /*
+        |--------------------------------------------------------------------------
+        | Delete ONLY Removed Members
+        |--------------------------------------------------------------------------
+        |
+        | IMPORTANT:
+        |
+        | Previously you were doing:
+        |
+        | DB::table('Cluster_Meet_Member_meeting')
+        |     ->where('meeting_id', $meetingId)
+        |     ->delete();
+        |
+        | That was resetting is_approve_meeting.
+        |
+        | Now only members unchecked by admin are deleted.
+        |
+        */
+
+            if (!empty($removedMemberIds)) {
+
+                Member_metting::where('meeting_id', $meetingId)
+                    ->whereIn('member_id', $removedMemberIds)
+                    ->delete();
+            }
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | Insert New Members / Update Existing Members
+        |--------------------------------------------------------------------------
+        |
+        | Existing:
+        |
+        | Member A:
+        | is_approve_meeting = 1
+        |
+        | Because is_approve_meeting is NOT present below,
+        | updateOrCreate will NOT change it.
+        |
+        | So it remains = 1.
+        |
+        */
+
+            foreach ($requestedMemberIds as $memberId) {
+
+                Member_metting::updateOrCreate(
+                    [
+                        'meeting_id' => $meetingId,
+                        'member_id'  => $memberId,
+                    ],
+                    [
+                        'ppt_taken_1' =>
+                        $request->ppt_taken_1 ?? 0,
+
+                        'ppt_taken_2' =>
+                        $request->ppt_taken_2 ?? 0,
+
+                        'brand_showcase_1' =>
+                        $request->brand_showcase_1 ?? 0,
+
+                        'brand_showcase_2' =>
+                        $request->brand_showcase_2 ?? 0,
+                    ]
+                );
+            }
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 13. Member Role Usage
+        |--------------------------------------------------------------------------
+        |
+        | We keep one record for:
+        |
+        | meeting_id + role_type
+        |
+        | Example:
+        |
+        | Meeting 10 / ppt_taken_1 / Member 5
+        |
+        | If admin changes PPT Taken 1 to Member 8:
+        |
+        | Same role usage record is UPDATED instead of duplicate INSERT.
+        |
+        */
+
+            foreach ($fieldLabels as $field => $label) {
+
+                $memberId = $request->input($field);
+
+                if (!empty($memberId)) {
+
+                    MemberRoleUsage::updateOrCreate(
+                        [
+                            'meeting_id' => $meetingId,
+                            'role_type'  => $field,
+                        ],
+                        [
+                            'member_id'    => $memberId,
+                            'meeting_date' => $meetingDate,
+                        ]
+                    );
+                } else {
+
+                    /*
+                 * Admin removed selection from this role.
+                 * Delete existing usage entry for same meeting + role.
+                 */
+
+                    MemberRoleUsage::where(
+                        'meeting_id',
+                        $meetingId
+                    )
+                        ->where(
+                            'role_type',
+                            $field
+                        )
+                        ->delete();
+                }
+            }
+
+
+            DB::commit();
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'error' => $e->getMessage()
+                ]);
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 14. WhatsApp Service
+    |--------------------------------------------------------------------------
+    |
+    | Sending WhatsApp AFTER database commit is safer.
+    |
+    */
+
+        $whatsappService = new AuthkeyWhatsAppService();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 15. Normal Meeting WhatsApp
+    |--------------------------------------------------------------------------
+    |
+    | Send ONLY to NEW meeting members.
+    |
+    | Don't send normal template to Brand Showcase members.
+    |
+    */
+
+        foreach ($newMemberIds as $memberId) {
+
+            /*
+         * Brand Showcase member gets template 41822,
+         * so don't send normal template 41818.
+         */
+            if (
+                in_array(
+                    (string) $memberId,
+                    $brandShowcaseMembers
+                )
+            ) {
+                continue;
+            }
+
+
+            $member = DB::table('members')
+                ->where('id', $memberId)
+                ->first();
+
+
+            if (
+                !empty($member) &&
+                !empty($member->phonenumber)
+            ) {
+
+                try {
+
+                    $whatsappService->sendText(
+                        $member->phonenumber,
+                        41818
+                    );
+                } catch (\Exception $e) {
+
+                    \Log::error(
+                        'Meeting WhatsApp Error: ' .
+                            $e->getMessage()
+                    );
                 }
             }
         }
 
-        DB::table('Cluster_Meet_Member_meeting')
-            ->where('meeting_id', $request->meetingid)
-            ->delete();
 
-        $meetingId = $request->meetingid;
-        $memberIds = $request->members ?? [];
-        $whatsappService = new AuthkeyWhatsAppService();
+        /*
+    |--------------------------------------------------------------------------
+    | 16. Brand Showcase WhatsApp
+    |--------------------------------------------------------------------------
+    |
+    | Send only if member is NEWLY assigned to Brand Showcase.
+    |
+    | Works for both:
+    |
+    | 1. Completely new meeting member
+    | 2. Existing meeting member newly selected as Brand Showcase
+    |
+    */
 
-        // Brand Showcase Members
-        $brandShowcaseMembers = collect([
-            $request->brand_showcase_1,
-            $request->brand_showcase_2,
-        ])->filter()->unique()->values()->toArray();
-
-        foreach ($memberIds as $memberId) {
-            Member_metting::create([
-                'meeting_id' => $meetingId,
-                'member_id' => $memberId,
-                'ppt_taken_1' => $request->ppt_taken_1 ?? 0,
-                'ppt_taken_2' => $request->ppt_taken_2 ?? 0,
-                'brand_showcase_1' => $request->brand_showcase_1 ?? 0,
-                'brand_showcase_2' => $request->brand_showcase_2 ?? 0,
-            ]);
-            if (in_array($memberId, $brandShowcaseMembers)) {
-                continue;
-            }
-            $member = DB::table('members')
-                ->where('id', $memberId)
-                ->first();
-
-            if (!empty($member) && !empty($member->phonenumber)) {
-                $wid = 41818; // Template ID
-                $whatsappService->sendText($member->phonenumber, $wid);
-            }
-        }
-
-        // Send Brand Showcase WhatsApp
-        foreach ($brandShowcaseMembers as $memberId) {
+        foreach ($newBrandShowcaseMembers as $memberId) {
 
             $member = DB::table('members')
                 ->where('id', $memberId)
                 ->first();
 
-            if ($member && !empty($member->phonenumber)) {
-                $whatsappService->sendText($member->phonenumber, 41822); // Brand Showcase Template
+
+            if (
+                !empty($member) &&
+                !empty($member->phonenumber)
+            ) {
+
+                try {
+
+                    $whatsappService->sendText(
+                        $member->phonenumber,
+                        41822
+                    );
+                } catch (\Exception $e) {
+
+                    \Log::error(
+                        'Brand Showcase WhatsApp Error: ' .
+                            $e->getMessage()
+                    );
+                }
             }
         }
 
-        foreach ($fieldLabels as $field => $label) {
 
-            $memberId = $request->$field;
+        /*
+    |--------------------------------------------------------------------------
+    | 17. Success
+    |--------------------------------------------------------------------------
+    */
 
-            if (!empty($memberId)) {
-
-                MemberRoleUsage::create([
-                    'member_id' => $memberId,
-                    'role_type' => $field,
-                    'meeting_id' => $meetingId,
-                    'meeting_date' => $meetingDate,
-                ]);
-            }
-        }
-
-        return redirect()->route('Membermeeting.index')
-            ->with('success', 'Meeting Members added successfully!');
+        return redirect()
+            ->route('Membermeeting.index')
+            ->with(
+                'success',
+                'Meeting Members added successfully!'
+            );
     }
 
     public function Membermeeting_comment(Request $request, $id = null)
@@ -298,6 +839,7 @@ class Membermeetingcontroller extends Controller
                     'Cluster_Meet_Member_meeting.meeting_id',
                     'Cluster_Meet_Member_meeting.is_approve_meeting',
                     'Cluster_Meet_Member_meeting.comment',
+                    'Cluster_Meet_Member_meeting.substitute_name',
                     'members.Contact_person',
                     'members.user_id',
                     'Cluster_Meet.*'
@@ -305,7 +847,7 @@ class Membermeetingcontroller extends Controller
                 ->leftJoin('members', 'Cluster_Meet_Member_meeting.member_id', '=', 'members.id')
                 ->leftJoin('Cluster_Meet', 'Cluster_Meet_Member_meeting.meeting_id', '=', 'Cluster_Meet.id')
                 ->where('Cluster_Meet_Member_meeting.meeting_id', $id)
-                ->where('Cluster_Meet_Member_meeting.is_approve_meeting', 0)
+                ->whereIn('Cluster_Meet_Member_meeting.is_approve_meeting', [0, 4])
                 ->paginate(env('PAR_PAGE_COUNT', 20));
             $count = $datas->count();
 

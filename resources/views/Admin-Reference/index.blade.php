@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Reference List')
+@section('title', 'Referral List')
 @section('content')
 
     <div class="main-content">
@@ -60,8 +60,7 @@
                                                 value="<?= isset($ToDate) ? $ToDate : '' ?>">
                                         </div>
                                     </div>
-
-                                    <div class="col-md-2 mb-2">
+                                     <div class="col-md-2 mb-2">
                                         <div class="d-flex align-items-center">
                                             <select class="form-select select2" id="given_by" name="given_by" data-choices
                                                 name="Contact_person">
@@ -74,7 +73,6 @@
                                             </select>
                                         </div>
                                     </div>
-
                                     <div class="col-md-3 mb-2">
                                         <div class="d-flex align-items-center">
                                             <div class="input-group d-flex">
@@ -103,7 +101,7 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Reference Pending List
+                                    <h5 class="card-title mb-0" data-anchor="data-anchor">Referral Pending List
                                     </h5>
                                 </div>
                                 <div>
@@ -114,7 +112,7 @@
                                         <button type="submit" class="btn btn-success">Resend Reminder</button>
                                     </form>
                                     <a href="{{ route('Admin-Reference.storeview') }}" class="btn btn-success">Add
-                                        Reference</a>
+                                        Referral</a>
                                 </div>
                             </div>
                         </div>
@@ -137,8 +135,8 @@
                                                             <th width="5%" data-sort="Date">Email</th>
                                                             <th width="5%" data-sort="Date">Phone Number
                                                             </th>
-                                                            <th width="5%" data-sort="Date">Reference Date</th>
-                                                            <th width="5%" data-sort="Date">Reference For Message
+                                                            <th width="5%" data-sort="Date">Referral Date</th>
+                                                            <th width="5%" data-sort="Date">Referral For Message
                                                             </th>
                                                             <!-- <th width="5%" data-sort="Date">Rejected Comment</th> -->
                                                             <th width="5%" data-sort="Date">Status</th>
@@ -157,8 +155,7 @@
                                                                 </td>
                                                                 <td class="text-center">{{ $Business1->Reference_from }}
                                                                 </td>
-                                                                <td class="text-center">{{ $Business1->Reference_to }}
-                                                                </td>
+                                                                <td class="text-center">{{ $Business1->Reference_to }}</td>
                                                                 <td class="text-center">
                                                                     {{ $Business1->Company_Name ? $Business1->Company_Name : 'N/A' }}
                                                                 </td>
@@ -240,7 +237,7 @@
                 <div class="modal-dialog " style="background-color: white;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Edit Reference</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Referral</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                             </button>
@@ -300,7 +297,7 @@
                                     <label for="Refer_for_message"><span style="color:red;">*</span>Refer for
                                         message</label>
                                     <input type="Text" class="form-control" name="Refer_for_message"
-                                        id="Refer_for_message" placeholder="Enter Refer for message"maxlength="50"
+                                        id="Refer_for_message" placeholder="Enter Refer for message"maxlength="150"
                                         required>
                                 </div>
                                 <!-- new -->
