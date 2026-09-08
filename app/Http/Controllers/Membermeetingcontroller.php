@@ -109,8 +109,10 @@ class Membermeetingcontroller extends Controller
                 $join->on('cm.city_id', '=', 'm.city_id')
                     ->on('cm.city_group_id', '=', 'm.citygroup_id');
             })
+            ->join('users as u', 'u.id', '=', 'm.user_id')
             ->where('cm.isDelete', 0)
             ->where('m.isDelete', 0)
+            ->where('u.status', 1)
             ->where('cm.city_id', $data->city_id)
             ->where('cm.city_group_id', $data->city_group_id)
             ->orderBy('Contact_person', 'asc')

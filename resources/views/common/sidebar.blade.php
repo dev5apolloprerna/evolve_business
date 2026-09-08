@@ -500,13 +500,13 @@
 
                         @if ($session->role_id == 1 || $session->role_id == 3)
                             @if ($session->role_id == 1 || $permission['ContactInquiry'] == 1)
-                                <li class="nav-item">
+                                {{-- <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('Contactinquiry.index')) {{ 'active' }} @endif"
                                         href="{{ route('Contactinquiry.index') }}">
                                         <i class="fas fa-envelope"></i>
                                         <span data-key="t-dashboards">Contact Inquiry</span>
                                     </a>
-                                </li>
+                                </li> --}}
 
 
                                 <li class="nav-item">
@@ -516,18 +516,18 @@
                                         <span data-key="t-dashboards">Announcement</span>
                                     </a>
                                 </li>
-                                <li>
+                                {{-- <li>
                                     <a class="nav-link menu-link @if (request()->routeIs('Activity.index')) {{ 'active' }} @endif"
                                         href="{{ route('Activity.index') }}">
                                         <i class="text-white" data-feather="activity"></i>
                                         <span data-key="t-dashboards">Activity</span>
                                     </a>
-                                </li>
+                                </li> --}}
                             @endif
                         @endif
                     </ul>
                     <li class="nav-item">
-                        <a class="nav-link menu-link" href="{{ route('MemberCalendar') }}" target="_blank"
+                        <a class="nav-link menu-link" href="{{ route('MemberCalendar') }}"
                             rel="noopener noreferrer">
                             <i class="fas fa-calendar-alt"></i>
                             <span data-key="t-apps"></span>

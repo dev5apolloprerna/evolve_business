@@ -1,43 +1,44 @@
 @extends('layouts.app')
 @section('title', 'Members List')
 @section('content')
-<style>
     <style>
-/* Normal select height */
-.choices {
-    margin-bottom: 0;
-}
+        <style>
 
-.choices__inner {
-    min-height: 38px !important;
-    height: 38px !important;
-    padding: 5px 12px !important;
-    font-size: 14px;
-}
+        /* Normal select height */
+        .choices {
+            margin-bottom: 0;
+        }
 
-/* Dropdown maximum height */
-.choices__list--dropdown {
-    max-height: 300px !important;
-    overflow-y: auto !important;
-}
+        .choices__inner {
+            min-height: 38px !important;
+            height: 38px !important;
+            padding: 5px 12px !important;
+            font-size: 14px;
+        }
 
-/* Search box */
-.choices__list--dropdown .choices__input {
-    display: block !important;
-    width: 100% !important;
-    padding: 8px 10px !important;
-    margin-bottom: 5px !important;
-    border: 1px solid #ddd !important;
-    font-size: 14px;
-}
+        /* Dropdown maximum height */
+        .choices__list--dropdown {
+            max-height: 300px !important;
+            overflow-y: auto !important;
+        }
 
-/* Options */
-.choices__list--dropdown .choices__item {
-    padding: 8px 10px !important;
-    font-size: 14px;
-}
-</style>
-</style>
+        /* Search box */
+        .choices__list--dropdown .choices__input {
+            display: block !important;
+            width: 100% !important;
+            padding: 8px 10px !important;
+            margin-bottom: 5px !important;
+            border: 1px solid #ddd !important;
+            font-size: 14px;
+        }
+
+        /* Options */
+        .choices__list--dropdown .choices__item {
+            padding: 8px 10px !important;
+            font-size: 14px;
+        }
+    </style>
+    </style>
 
     <div class="main-content">
         <div class="page-content">
@@ -150,24 +151,27 @@
                                             @endphp
 
                                             <div class="col-lg-4 col-md-6">
-                                                <label for="referred_to"><span style="color:red;">*</span>Inducted By</label>
+                                                <label for="referred_to"><span style="color:red;">*</span>Inducted
+                                                    By</label>
 
                                                 <!--<select class="form-select" name="referred_to"-->
                                                 <!--    id="choices-single-default">-->
-                                                    
+
                                                 <!--     <option value="" disabled-->
                                                 <!--        {{ empty($selectedFrom) ? 'selected' : '' }}>-->
                                                 <!--        Select From-->
                                                 <!--    </option>-->
 
-                                                <!--    @foreach ($Data as $member)-->
+                                                <!--    @foreach ($Data as $member)
+    -->
                                                 <!--        <option value="{{ $member->id }}" data-name="{{ $member->first_name }}"-->
                                                 <!--            {{ $selectedFrom == $member->id ? 'selected' : '' }}>-->
                                                 <!--            {{ $member->first_name }} - ({{ $member->mobile_number }})-->
                                                 <!--        </option>-->
-                                                <!--    @endforeach-->
+                                                <!--
+    @endforeach-->
 
-                                                   
+
 
                                                 <!--    <option value="1" {{ $selectedFrom == '1' ? 'selected' : '' }}>-->
                                                 <!--        Social Media-->
@@ -181,39 +185,40 @@
                                                 <!--        Website-->
                                                 <!--    </option>-->
                                                 <!--</select>-->
-                                                <select class="form-select" name="referred_to" id="choices-single-default">
+                                                <select class="form-select" name="referred_to"
+                                                    id="choices-single-default">
 
                                                     <option value="" disabled
                                                         {{ empty($selectedFrom) ? 'selected' : '' }}>
                                                         Select From
                                                     </option>
-                                                
+
                                                     @foreach ($Data as $member)
                                                         <option value="{{ $member->id }}"
-                                                            {{ (string)$selectedFrom === (string)$member->id ? 'selected' : '' }}>
+                                                            {{ (string) $selectedFrom === (string) $member->id ? 'selected' : '' }}>
                                                             {{ $member->first_name }} - ({{ $member->mobile_number }})
                                                         </option>
                                                     @endforeach
-                                                
+
                                                     <option value="1"
-                                                        {{ (string)$selectedFrom === '1' ? 'selected' : '' }}>
+                                                        {{ (string) $selectedFrom === '1' ? 'selected' : '' }}>
                                                         Social Media
                                                     </option>
-                                                
+
                                                     <option value="2"
-                                                        {{ (string)$selectedFrom === '2' ? 'selected' : '' }}>
+                                                        {{ (string) $selectedFrom === '2' ? 'selected' : '' }}>
                                                         Committee Member
                                                     </option>
-                                                
+
                                                     <option value="3"
-                                                        {{ (string)$selectedFrom === '3' ? 'selected' : '' }}>
+                                                        {{ (string) $selectedFrom === '3' ? 'selected' : '' }}>
                                                         Website
                                                     </option>
-                                                
+
                                                 </select>
                                             </div>
 
-                                             <div class="col-lg-4 mt-3">
+                                            <div class="col-lg-4 mt-3">
                                                 <label class="form-label fw-bold">Priority Club</label>
 
                                                 <div class="d-flex gap-4">
@@ -306,7 +311,8 @@
                                                 <span style="color:red;">*</span> Joining date
                                                 <input type="text" class="form-control" name="renewal_date"
                                                     id="renewal_date" placeholder="Enter Membership date"
-                                                    value ="{{ $data['renewal_date'] }}" required>
+                                                    value ="{{ !empty($data['renewal_date']) ? date('d-m-Y', strtotime($data['renewal_date'])) : '' }}"
+                                                    required>
                                             </div>
 
                                             <!-- this field old end  -->
@@ -341,28 +347,28 @@
 @endsection
 
 @section('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-    const select = document.getElementById('choices-single-default');
+            const select = document.getElementById('choices-single-default');
 
-    if (!select) {
-        return;
-    }
+            if (!select) {
+                return;
+            }
 
-    new Choices(select, {
-        searchEnabled: true,
-        searchChoices: true,
-        searchPlaceholderValue: 'Search Member',
-        itemSelectText: '',
-        shouldSort: false,
-        searchResultLimit: 100,
-        noResultsText: 'No member found',
-        noChoicesText: 'No members available'
-    });
+            new Choices(select, {
+                searchEnabled: true,
+                searchChoices: true,
+                searchPlaceholderValue: 'Search Member',
+                itemSelectText: '',
+                shouldSort: false,
+                searchResultLimit: 100,
+                noResultsText: 'No member found',
+                noChoicesText: 'No members available'
+            });
 
-});
-</script>
+        });
+    </script>
 
     <script>
         // new Choices('#choices-single-default', {
@@ -510,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <script>
         $(function() {
             $("#renewal_date").datepicker({
-                dateFormat: "yy-mm-dd",
+                dateFormat: "dd-mm-yy",
                 //minDate: 0
             });
         });

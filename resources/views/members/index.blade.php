@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Members List')
 @section('content')
-
     <style>
         .choices[data-type*="select-one"] {
             cursor: pointer;
@@ -24,11 +23,6 @@
                     <!--<a href="{{ route('members.storeview') }}" class="btn btn-success">Add Member</a>-->
                 </div>
                 {{-- This is search field start --}}
-
-
-
-
-
                 <!-- Page Heading -->
                 <div class="col-lg-12">
                     <div class="card">
@@ -36,7 +30,7 @@
                             <form method="get" id="form" action="{{ route('members.index') }}">
                                 <div class="row align-items-center">
 
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col mb-2">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="first_name"
                                                 placeholder="Search by member name" id="first_name"
@@ -44,7 +38,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col mb-2">
                                         <div class="d-flex align-items-center w-100">
                                             <select class="form-select select2 w-100" id="category_id" name="category_id"
                                                 onchange="updatesubcategories()">
@@ -59,7 +53,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col mb-2">
                                         <div class="d-flex align-items-center w-100">
                                             <select class="form-select select2 w-100" id="city_id" name="city_id">
                                                 <option value="">Select City</option>
@@ -73,7 +67,19 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col mb-2">
+                                        <div class="d-flex align-items-center w-100">
+                                            <select class="form-select select2 w-100" id="status" name="status">
+                                                <option value="">Select Status</option>
+                                                <option value="1" {{ $status == '1' ? 'selected' : '' }}>Active
+                                                </option>
+                                                <option value="0" {{ $status == '0' ? 'selected' : '' }}>Inactive
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col mb-2">
                                         <div class="d-flex align-items-center w-100">
                                             <select class="form-select select2 w-100" id="group_id" name="group_id">
                                                 <option value="">Select Group</option>
@@ -87,7 +93,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col mb-2">
                                         <div class="d-flex align-items-center w-100">
                                             <input type="submit" id="search" class="btn btn-success" name="search"
                                                 title="Search" value="Search">
@@ -99,7 +105,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2 mb-2 text-end">
+                                    <div class="col mb-2 text-end">
                                         <a href="{{ route('members.storeview') }}" class="btn btn-success">Add Member</a>
                                     </div>
 
@@ -145,7 +151,6 @@
                                         <?php $i = 1; ?>
                                         @foreach ($datas as $data)
                                             <tr>
-
                                                 <td class="text-center">
                                                     {{ $i + $datas->perPage() * ($datas->currentPage() - 1) }}</td>
                                                 {{-- <td class="text-center">{{ $data->first_name }}</td> --}}
@@ -516,6 +521,7 @@
                 $('#first_name').val('');
                 $('#category_id').val('').trigger('change'); // Select2 needs .trigger('change')
                 $('#city_id').val('').trigger('change');
+                $('#status').val('').trigger('change');
                 $('#group_id').val('').trigger('change');
 
                 // Submit the form
