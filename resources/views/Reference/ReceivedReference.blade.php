@@ -39,7 +39,7 @@
                                                             <th scop="col">Referral For Message</th>
                                                             <th scop="col">Referral Date</th>
                                                             <th scop="col">Status</th>
-                                                            {{-- <th w scop="col">Action</th> --}}
+                                                            <!--<th w scop="col">Action</th>-->
                                                         </tr>
                                                     </thead>
                                                     <tbody class="list">
@@ -68,30 +68,30 @@
                                                                 </td>
                                                                 <!-- <td class="text-center"> {{ $Business1->businesscomment !== null ? $Business1->businesscomment : 'N/A' }}</td> -->
                                                                 <td class="text-center">
-                                                                    {{ $Business1->isapproved_status == 1 ? 'Approved' : ($Business1->isapproved_status == 2 ? 'Rejected' : '') }}
+                                                                    {{ $Business1->isapproved_status == 1 ? 'Approved' : ($Business1->isapproved_status == 2 ? 'Rejected' : 'Pending') }}
                                                                 </td>
 
-                                                                <!-- <td>
-                                                                            <a href="#" data-bs-toggle="modal"
-                                                                                data-bs-target="#EditModal"
-                                                                                onclick="getEditData(<?= $Business1->business_id ?>)"
-                                                                                class="btn btn-link p-0" title="Edit">
-                                                                                <span class="text-500 fas fa-edit"></span>
-                                                                            </a>
-                                                                            <a class="btn btn-link p-0" href="#"
-                                                                                data-bs-toggle="modal" title="Delete"
-                                                                                data-bs-target="#deleteRecordModal"
-                                                                                onclick="deleteData(<?= $Business1->business_id ?>);">
-                                                                                <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                            </a>
-                                                                            <a class="" href="#"
-                                                                                data-bs-toggle="modal" title="Status Changed"
-                                                                                data-bs-target="#statusModal"
-                                                                                onclick="getEditDatastatus(<?= $Business1->business_id ?>);">
-                                                                                <i class="fas fa-plus-square" aria-hidden="true"></i>
-                                                                            </a>
+                                                                <!--<td>-->
+                                                                <!--   <a href="#" data-bs-toggle="modal"-->
+                                                                <!--           data-bs-target="#EditModal"-->
+                                                                <!--           onclick="getEditData(<?= $Business1->business_id ?>)"-->
+                                                                <!--           class="btn btn-link p-0" title="Edit">-->
+                                                                <!--           <span class="text-500 fas fa-edit"></span>-->
+                                                                <!--       </a>-->
+                                                                <!--       <a class="btn btn-link p-0" href="#"-->
+                                                                <!--           data-bs-toggle="modal" title="Delete"-->
+                                                                <!--           data-bs-target="#deleteRecordModal"-->
+                                                                <!--           onclick="deleteData(<?= $Business1->business_id ?>);">-->
+                                                                <!--           <i class="fa fa-trash" aria-hidden="true"></i>-->
+                                                                <!--       </a>-->
+                                                                <!--       <a class="" href="#"-->
+                                                                <!--           data-bs-toggle="modal" title="Status Changed"-->
+                                                                <!--           data-bs-target="#statusModal"-->
+                                                                <!--           onclick="getEditDatastatus(<?= $Business1->business_id ?>);">-->
+                                                                <!--           <i class="fas fa-plus-square" aria-hidden="true"></i>-->
+                                                                <!--       </a>-->
 
-                                                                        </td> -->
+                                                                <!--   </td> -->
 
                                                             </tr>
                                                             <?php $i++; ?>
@@ -261,7 +261,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Add a form for changing status and adding rejected comments -->
-                    <form action="{{ route('pendinglogincheck.statuspendinglogin') }}" method="post">
+                    <form action="{{ route('Admin-Reference.status') }}" method="post">
                         @csrf
                         <input type="hidden" name="id" id="Businessid" value="">
                         <div class="form-group">
@@ -493,7 +493,7 @@
     <script>
         function getEditDatastatus(id) {
             // alert(id);
-            var url = "{{ route('Business.statusget', ':id') }}";
+            var url = "{{ route('Admin-Reference.statusget', ':id') }}";
             url = url.replace(":id", id);
             if (id) {
                 $.ajax({
@@ -527,7 +527,7 @@
             var todate = $("#enddatepicker").val();
             // var first_name = $("#first_name").val();
 
-            var strURL = "{{ route('Business.exportbusiness') }}";
+            var strURL = "{{ route('Business.exportbusiness_new') }}";
             strURL += "/" + fromdate + "/" + todate;
 
             window.location.href = strURL;

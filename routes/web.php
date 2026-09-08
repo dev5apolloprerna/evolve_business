@@ -463,6 +463,10 @@ Route::prefix('admin')->name('Event.')->middleware('auth', 'check_approval')->gr
     Route::any('exportevent/{fromdate?}/{todate?}', [Eventcontroller::class, 'exportToexcel_list'])->name('exportevent');
     Route::any('exporteventapprove/{fromdate?}/{todate?}', [Eventcontroller::class, 'exporteventapprove'])->name('exporteventapprove');
     Route::any('exporteventreject/{fromdate?}/{todate?}', [Eventcontroller::class, 'exporteventreject'])->name('exporteventreject');
+    Route::get('/event/edit/{id}', [Eventcontroller::class, 'editPage'])->name('edit.page');
+    Route::post('/event/update-details', [Eventcontroller::class, 'updateEventDetails'])->name('update.details');
+    Route::post('/event/{id}/add-members', [Eventcontroller::class, 'addEventMembers'])->name('add.members');
+    Route::delete('/event/{eventId}/member/{eventMemberId}', [Eventcontroller::class, 'deleteEventMember'])->name('member.delete');
 });
 
 //Business master  
@@ -483,7 +487,7 @@ Route::prefix('admin')->name('Business.')->middleware(['auth', 'check_approval']
     Route::any('approve_list', [Businesscontroller::class, 'approvelist'])->name('approve_list');
     Route::any('rejected_list', [Businesscontroller::class, 'rejected'])->name('rejected_list');
     // panding
-    Route::any('exportbusiness/{fromdate?}/{todate?}', [Businesscontroller::class, 'exportToexcel_list'])->name('exportbusiness');
+    Route::any('exportbusiness_new/{fromdate?}/{todate?}', [Businesscontroller::class, 'exportToexcelList'])->name('exportbusiness_new');
     Route::view('/Business/exportlist', '/Business/exportlist')->name('exportlist');
     //approve
     Route::any('exportapprove/{fromdate?}/{todate?}', [Businesscontroller::class, 'exportapprove'])->name('exportapprove');

@@ -73,11 +73,12 @@
                                                 <span style="color:red;">*</span>Phone number
                                                 <span style="color:red;"
                                                     class="error-message">{{ $errors->first('phonenumber') }}</span>
-                                                <input type="phonenumber" class="form-control" name="phonenumber"
-                                                    id="phonenumber" placeholder="Enter Phone Number  "
-                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');"
-                                                    onKeyPress="if(this.value.length==10) return false;" maxlength="10"
-                                                    minlength="10" value="{{ old('phonenumber') }}"required>
+                                                <!--<input type="phonenumber" class="form-control" name="phonenumber"-->
+                                                <!--    id="phonenumber" placeholder="Enter Phone Number  "-->
+                                                <!--    oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');"-->
+                                                <!--    onKeyPress="if(this.value.length==10) return false;" maxlength="10"-->
+                                                <!--    minlength="10" value="{{ old('phonenumber') }}"required>-->
+                                            <input type="tel" class="form-control" name="phonenumber" id="phonenumber" placeholder="Enter Phone Number" value="{{ old('phonenumber') }}" required>
                                             </div>
                                             <div class="col-lg-4 col-md-6">
                                                 <span style="color:red;"></span>Email
@@ -92,7 +93,7 @@
                                                     class="error-message">{{ $errors->first('Refer_for_message') }}</span>
                                                 <input type="Text" class="form-control" name="Refer_for_message"
                                                     id="Refer_for_message" placeholder="Enter Refer for message"
-                                                    value="{{ old('Refer_for_message') }}" maxlength="50">
+                                                    value="{{ old('Refer_for_message') }}" maxlength="150">
                                             </div>
                                             <div class="text-center">
                                                 <button type="submit" class="btn btn-success btn-user"
@@ -117,6 +118,33 @@
 
 @section('scripts')
     <script>
+        $('#phonenumber').on('input', function () {
+
+    let value = $(this).val();
+
+    // Remove +91 if already present
+    value = value.replace('+91', '');
+
+    // Keep only digits
+    let digits = value.replace(/\D/g, '');
+
+    // Remove country code if pasted
+    if (digits.length > 10 && digits.startsWith('91')) {
+        digits = digits.slice(-10);
+    }
+
+    // Maximum 10 digits
+    digits = digits.substring(0, 10);
+
+    if (digits.length > 0) {
+        this.value = '+91 ' + digits;
+    } else {
+        this.value = '';
+    }
+
+    // Cursor always at end
+    this.setSelectionRange(this.value.length, this.value.length);
+});
         function getEditData(id) {
             //alert(id);
             var url = "{{ route('Business.edit', ':id') }}";

@@ -84,7 +84,7 @@ class MemberProductscontroller extends Controller
             $root = $_SERVER['DOCUMENT_ROOT'];
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/productimage/';
+            $destinationpath = $root . '/evolv_business/productimage/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }
@@ -160,7 +160,7 @@ class MemberProductscontroller extends Controller
             $root = $_SERVER['DOCUMENT_ROOT'];
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/productimage/';
+            $destinationpath = $root . '/evolv_business/productimage/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }

@@ -52,7 +52,7 @@ class AwardController extends Controller
             $root = $_SERVER['DOCUMENT_ROOT'];
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/Award/';
+            $destinationpath = $root . '/evolve_business/Award/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }
@@ -93,7 +93,7 @@ class AwardController extends Controller
             $root = $_SERVER['DOCUMENT_ROOT'];
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/Award/';
+            $destinationpath = $root . '/evolve_business/Award/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }

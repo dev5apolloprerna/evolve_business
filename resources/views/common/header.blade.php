@@ -134,7 +134,7 @@
                                 ?>
 
                                 <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
-                                    {{ $member->city_group_name ?? '' }}
+                                     {{ $member->city_group_name ?? '' }}
                                 </span>
                             @else
                                 <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
@@ -189,13 +189,11 @@
                                 <!--        class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span-->
                                 <!--        class="align-middle">Profile</span></a>-->
                                 <!-- NEW ADD -->
-                                <!--@if ($role->role_id == 2)
--->
+                                <!--@if ($role->role_id == 2)-->
                                 <!--    <a class="dropdown-item" href="{{ route('Membersub.index') }}"><i-->
                                 <!--            class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span-->
                                 <!--            class="align-middle">My Subscription</span></a>-->
-                                <!--
-@endif-->
+                                <!--@endif-->
                                 <!-- NEW ADD -->
                                 @if ($role->role_id == 1 || $role->role_id == 3)
                                     <a class="dropdown-item" href="{{ route('logout') }}"><i

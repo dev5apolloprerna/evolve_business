@@ -36,7 +36,7 @@ class MemberOneToOneController extends Controller
             ->first();
 
         // $id = $memberData->id;
-        $datas = OneToOne::where('to_id', $user->id)->paginate(env('PAR_PAGE_COUNT', 20));
+        $datas = OneToOne::where('to_id',$user->id)->paginate(env('PAR_PAGE_COUNT', 20));
         $count = $datas->count();
         // dd($datas);
         return view('MemberOneToOne.index', compact('datas', 'user', 'count'));

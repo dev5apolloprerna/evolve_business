@@ -48,10 +48,10 @@ class LoginController extends Controller
         // dd($request);
 
         Auth::logout();
-        Session::flush();
+        Session::flush(); 
         return view('logout');
     }
-    //old login method
+  //old login method
     // public function login(Request $request)
     // {
     //     // dd($request);
@@ -61,7 +61,7 @@ class LoginController extends Controller
     //     if (Auth::attempt($credentials, $remember)) {
     //        $session=auth::user();
     //        if($session->role_id == 2) {
-
+            
     //         if(isset($request->remember)&&!empty($request->remember)){
     //             setcookie("email", $request->email, time() + (7 * 24 * 3600));
     //             setcookie("password", $request->password, time() + (7 * 24 * 3600));
@@ -78,19 +78,19 @@ class LoginController extends Controller
     //         return back()->withErrors(['email' => 'Invalid credentials']);
     //     }
     // }
+    
     // public function login(Request $request)
     // {
     //     $request->validate([
     //         'email' => 'required|email',
     //         'password' => 'required',
     //     ]);
-
-    //     $mobile = $request->mobile;
+    
     //     $email = $request->email;
     //     $password = $request->password;
     //     $remember = $request->has('remember');
     //     $user = User::where('email', $email)->first();
-
+    
     //     if (!$user) {
     //         return back()->with(['error' => 'Email does not exist'])->withInput();
     //     }
@@ -100,10 +100,10 @@ class LoginController extends Controller
     //     $session = Auth::user();
     //     if ($session->role_id == 2) {
     //         if (isset($request->remember) && !empty($request->remember)) {
-    //             setcookie("mobile", $mobile, time() + (7 * 24 * 3600));
+    //             setcookie("email", $email, time() + (7 * 24 * 3600));
     //             setcookie("password", $password, time() + (7 * 24 * 3600));
     //         } else {
-    //             setcookie("mobile", "", time() - 3600);
+    //             setcookie("email", "", time() - 3600);
     //             setcookie("password", "", time() - 3600);
     //         }
     //         return redirect()->intended('/Memberhome');
@@ -111,13 +111,13 @@ class LoginController extends Controller
     //         return redirect()->intended('/home');
     //     }
     // }
-
-    public function login(Request $request)
+    
+     public function login(Request $request)
     {
         $request->validate([
             'password' => 'required',
         ]);
-
+       
         $login = $request->mobile;
         $email = $request->email;
         $password = $request->password;
@@ -174,4 +174,5 @@ class LoginController extends Controller
             return redirect()->intended('/home');
         }
     }
+   
 }

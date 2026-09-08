@@ -30,7 +30,7 @@
                 </li>
 
                 <li class="nav-item">
-                    @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
+                    @if ($session->role_id == 1 || $session->role_id == 3)
                         @if (
                             $session->role_id == 1 ||
                                 (isset($permission['city']) && $permission['city'] == 1) ||
@@ -100,7 +100,7 @@
                 @endif
                 @endif
 
-                @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
+                @if ($session->role_id == 1 || $session->role_id == 3)
                     @if ($session->role_id == 1 || $permission['members'] == 1)
                         <li class="nav-item">
                             <a class="nav-link menu-link @if (request()->routeIs('members.index')) {{ 'active' }} @endif"
@@ -222,7 +222,7 @@
                 @endif
 
 
-                @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
+                @if ($session->role_id == 1 || $session->role_id == 3)
                     @if ($session->role_id == 1 || $permission['Business'] == 1)
                         <!-- <li class="nav-item">
                     <a class="nav-link menu-link @if (request()->routeIs('Business.index')) {{ 'active' }} @endif"
@@ -250,7 +250,7 @@
                                     <li class="nav-item">
                                         <a href="{{ route('Admin-Reference.index') }}" class="nav-link"
                                             data-key="t-chat">
-                                            <i class="fas fa-book"></i></i>Reference
+                                            <i class="fas fa-book"></i></i>Referral
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -315,7 +315,7 @@
                     </li>
                 @endif
                 <!-- new code 08-04-2024 -->
-                @if (isset($session->role_id) && $session->role_id != '' && $session->role_id == 2)
+                @if ($session->role_id == 2)
                     {{-- <li class="nav-item">
                         <a class="nav-link menu-link @if (request()->routeIs('Reference.index')) {{ 'active' }} @endif"
                             href="#sidebarConnection" data-bs-toggle="collapse" role="button" aria-expanded="false"
@@ -332,7 +332,7 @@
                     </li> --}}
                 @endif
                 <!-- new code 08-04-2024 -->
-                @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
+                @if ($session->role_id == 1 || $session->role_id == 3)
                     @if ($session->role_id == 1 || $permission['reports'] == 1)
                         <li class="nav-item">
                             <a class="nav-link menu-link @if (request()->routeIs('users.index')) {{ 'active' }} @endif || @if (request()->routeIs('report.index')) {{ 'active' }} @endif"
@@ -374,7 +374,7 @@
 
                 {{-- new utolity --}}
                 <li class="nav-item">
-                    @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
+                    @if ($session->role_id == 1 || $session->role_id == 3)
                         @if ($session->role_id == 1 || $permission['Utility'] == 1)
                             <a class="nav-link menu-link @if (request()->routeIs('users.index')) {{ 'active' }} @endif || @if (request()->routeIs('report.index')) {{ 'active' }} @endif"
                                 href="#sidebarApps" data-bs-toggle="collapse" role="button" aria-expanded="false"
@@ -394,9 +394,10 @@
                     </li> -->
                         <!-- user utility  -->
 
+
                     @endif
                     <!-- member subscription expried date code start -->
-                    @if (isset($session->role_id) && $session->role_id != '' && $session->role_id == 2)
+                    @if ($session->role_id == 2)
                         <?php $subexpri = App\Models\members::where('user_id', $session->id)->first();
                         ?>
                         @php
@@ -424,19 +425,26 @@
 
                             $loginMemberId = Auth::id();
 
-                            $manOfTheMonth = App\Models\MemberPoint::join(
-                                'users',
-                                'users.id',
-                                '=',
-                                'member_points.member_id',
-                            )
-                                ->where('member_points.member_id', $loginMemberId)
+                            // $manOfTheMonth = App\Models\MemberPoint::join(
+                            //     'users',
+                            //     'users.id',
+                            //     '=',
+                            //     'member_points.member_id',
+                            // )
+                            //     ->where('member_points.member_id', $loginMemberId)
+                            //     ->whereYear('member_points.created_at', $BusinesscurrentYear)
+                            //     ->whereMonth('member_points.created_at', $BusinesscurrentMonth)
+                            //     ->select('users.first_name', 'users.email')
+                            //     ->selectRaw('COALESCE(SUM(member_points.points), 0) as total_points')
+                            //     ->groupBy('users.id', 'users.first_name', 'users.email')
+                            //     ->first();
+                            //dd($loginMemberId);
+                            $manOfTheMonth = DB::table('member_points')
+                                ->where('member_id', $loginMemberId)
                                 ->whereYear('member_points.created_at', $BusinesscurrentYear)
                                 ->whereMonth('member_points.created_at', $BusinesscurrentMonth)
-                                ->select('users.first_name', 'users.email')
-                                ->selectRaw('COALESCE(SUM(member_points.points), 0) as total_points')
-                                ->groupBy('users.id', 'users.first_name', 'users.email')
-                                ->first();
+                                ->sum('points');
+
                         @endphp
                 <li class="nav-item">
                     <a href="#" class="nav-link" data-key="t-chat">
@@ -444,7 +452,7 @@
                             {{ isset($subexpri['SubscriptionExpiredDate'])
                                 ? date('d-m-Y', strtotime($subexpri['SubscriptionExpiredDate']))
                                 : '' }}
-                            | Reward Point :- {{ $manOfTheMonth->total_points ?? 0 }}
+                            | Reward Point :- {{ $manOfTheMonth ?? 0 }}
                     </a>
                 </li>
                 @endif
@@ -476,7 +484,7 @@
                                 </li>
                             @endif
                         @endif --}}
-                        @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
+                        @if ($session->role_id == 1 || $session->role_id == 3)
                             @if ($session->role_id == 1 || $permission['Event'] == 1)
                                 <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('Event.index')) {{ 'active' }} @endif"
@@ -487,8 +495,10 @@
                                 </li>
                             @endif
                         @endif
+                        @if ($session->role_id == 1 || $session->role_id == 3)
+                        @endif
 
-                        @if (isset($session->role_id) && $session->role_id != '' && ($session->role_id == 1 || $session->role_id == 3))
+                        @if ($session->role_id == 1 || $session->role_id == 3)
                             @if ($session->role_id == 1 || $permission['ContactInquiry'] == 1)
                                 <li class="nav-item">
                                     <a class="nav-link menu-link @if (request()->routeIs('Contactinquiry.index')) {{ 'active' }} @endif"
@@ -514,9 +524,7 @@
                                     </a>
                                 </li>
                             @endif
-
                         @endif
-
                     </ul>
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="{{ route('MemberCalendar') }}" target="_blank"
@@ -527,6 +535,7 @@
                     </li>
                 </div>
                 </li>
+
                 {{-- new end --}}
             </ul>
         </div>

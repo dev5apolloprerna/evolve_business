@@ -57,10 +57,10 @@
                                                         autocomplete="off" value="{{ $data->phone }}" required>
                                                 </div>
                                                 <div class="col-lg-3 col-md-6">
-                                                    <span style="color:red;">*</span>Email
+                                                    Email
                                                     <input type="text" class="form-control" name="email" id="email"
                                                         placeholder="Enter Email" value="{{ $data->email }}" maxlength="70"
-                                                        autocomplete="off" required>
+                                                        autocomplete="off">
                                                 </div>
                                                 <div class="col-lg-3 col-md-6">
                                                     Business Category

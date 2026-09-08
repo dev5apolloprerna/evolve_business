@@ -16,6 +16,7 @@ class MemberPoint extends Model
         'points',
         'created_at',
         'updated_at',
-        'status'
+        'status',
+        'description'
     ];
 }

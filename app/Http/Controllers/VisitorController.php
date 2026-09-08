@@ -44,7 +44,6 @@ class VisitorController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-
             'memberid' => 'required',
             'name' => 'required',
         ]);
@@ -53,16 +52,22 @@ class VisitorController extends Controller
             $root = $_SERVER['DOCUMENT_ROOT'];
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/Visitor/';
+            $destinationpath = $root . '/evolv_business/Visitor/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }
             $image->move($destinationpath, $img);
         }
+        $phone = preg_replace('/\D/', '', $request->phonenumber);
+
+        // If country code (91) is present, keep only last 10 digits
+        if (strlen($phone) > 10 && substr($phone, 0, 2) == '91') {
+            $phone = substr($phone, -10);
+        }
         $Data = array(
             'member_id' => $request->memberid,
             'name'    => $request->name,
-            'phone'    => $request->phone,
+            'phone'    => $phone,
             'photo'   => $img,
             'email'    => $request->email,
             'business_catgory'    => $request->business_category_id,
@@ -96,7 +101,7 @@ class VisitorController extends Controller
             $root = $_SERVER['DOCUMENT_ROOT'];
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/Visitor/';
+            $destinationpath = $root . '/evolv_business/Visitor/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }

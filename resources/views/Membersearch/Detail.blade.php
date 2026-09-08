@@ -399,7 +399,7 @@
                                                 @if ($product->photo == null)
                                                     <img src="https://groath.in/assets/images/noimage.png">
                                                 @else
-                                                    <img src="{{ asset('productimage/' . $product->photo) }}">
+                                                    <img src="{{ '/productimage/' . $product->photo }}">
                                                 @endif
 
                                             </div>

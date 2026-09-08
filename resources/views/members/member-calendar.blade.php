@@ -1,6 +1,23 @@
 @extends('layouts.app')
 @section('title', 'Members Calendar')
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.css" rel="stylesheet">
+    <style>
+        #memberCalendar {
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .fc-event {
+            cursor: pointer;
+            padding: 3px 5px;
+        }
+
+        .fc-daygrid-event {
+            white-space: normal;
+        }
+    </style>
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
@@ -11,8 +28,10 @@
                                 <h3 class="mb-1">Member Calendar</h3>
                             </div>
                         </div>
-
-                        @if ($members->isEmpty())
+                        <div class="mb-4">
+                            <div id="memberCalendar"></div>
+                        </div>
+                        {{-- @if ($members->isEmpty())
                             <div class="alert alert-info mb-0">No member dates found.</div>
                         @else
                             <div class="table-responsive">
@@ -44,10 +63,105 @@
                                     {{ $members->appends(request()->except('page'))->links() }}
                                 </div>
                             </div>
-                        @endif
+                        @endif --}}
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const calendarEl = document.getElementById('memberCalendar');
+
+            const members = @json($calendarMembers);
+
+            const currentYear = new Date().getFullYear();
+
+            let events = [];
+
+            members.forEach(function(member) {
+
+                // Date of Birth
+                if (member.date_of_birth) {
+
+                    const dob = new Date(member.date_of_birth);
+
+                    if (!isNaN(dob.getTime())) {
+
+                        const month = String(dob.getMonth() + 1).padStart(2, '0');
+                        const day = String(dob.getDate()).padStart(2, '0');
+
+                        events.push({
+                            title: '🎂 ' + (member.member_name || 'Member') + ' - Birthday',
+                            start: currentYear + '-' + month + '-' + day,
+                            allDay: true,
+                            type: 'birthday'
+                        });
+                    }
+                }
+
+                // Work Anniversary
+                if (member.work_anniversary_date) {
+
+                    const anniversary = new Date(member.work_anniversary_date);
+
+                    if (!isNaN(anniversary.getTime())) {
+
+                        const month = String(anniversary.getMonth() + 1).padStart(2, '0');
+                        const day = String(anniversary.getDate()).padStart(2, '0');
+
+                        events.push({
+                            title: '🏆 ' + (member.member_name || 'Member') + ' - Work Anniversary',
+                            start: currentYear + '-' + month + '-' + day,
+                            allDay: true,
+                            type: 'anniversary'
+                        });
+                    }
+                }
+            });
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+
+                initialView: 'dayGridMonth',
+
+                height: 'auto',
+
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listMonth'
+                },
+
+                events: events,
+
+                eventDidMount: function(info) {
+
+                    // Hover par title
+                    info.el.setAttribute('title', info.event.title);
+
+                    if (info.event.extendedProps.type === 'birthday') {
+                        info.el.style.backgroundColor = '#f39c12';
+                        info.el.style.borderColor = '#f39c12';
+                    }
+
+                    if (info.event.extendedProps.type === 'anniversary') {
+                        info.el.style.backgroundColor = '#28a745';
+                        info.el.style.borderColor = '#28a745';
+                    }
+                },
+
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
 @endsection

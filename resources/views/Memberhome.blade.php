@@ -3,8 +3,9 @@
 @section('title', 'Dashboard')
 
 @section('content')
+
     <style>
-        .meeting-strip {
+       .meeting-strip {
             background: #61a143;
             color: #fff;
             padding: 10px 15px;
@@ -15,9 +16,6 @@
             font-weight: 500;
             text-align: center;
         }
-    </style>
-
-    <style>
         marquee {
 
             background: black;
@@ -171,6 +169,12 @@
         }
     </style>
 
+    <!-- ============================================================== -->
+
+    <!-- Start right Content here -->
+
+    <!-- ============================================================== -->
+
     <div class="main-content">
 
         {{--  <div style="background-image: url(assets/images/banner1.jpg);height: 550px;">  --}}
@@ -203,8 +207,7 @@
                         @endif
 
                     </div>
-
-                    <div class="col-lg-12">
+                     <div class="col-lg-12">
                         @if ($meetings)
                             <div class="meeting-strip">
                                 <strong>
@@ -379,7 +382,7 @@
 
                                                         <p class="text-uppercase fw-bold text-white-50 text-truncate mb-0">
 
-                                                            Reference Given</p>
+                                                            Referral Given</p>
 
                                                     </div>
 
@@ -439,7 +442,7 @@
 
                                                         <p class="text-uppercase fw-bold text-white-50 text-truncate mb-0">
 
-                                                            Reference Received</p>
+                                                            Referral Received</p>
 
                                                     </div>
 
@@ -845,7 +848,7 @@
                                         </div>
                                     @else
                                         <div class="card-header stf text-center text-white">
-                                            No Man of the Month Found
+                                            No Member of the Month Found
                                         </div>
                                     @endif
 
@@ -1092,9 +1095,9 @@
                                                         </div>
                                                         <div class="card-header stf">
                                                             @if ($topReference->Company_logo == null)
-                                                                <img class="cmp-lg"
-                                                                    src="https://groath.in/assets/images/users/user1.png"
-                                                                    alt="No image" class="company-logo">
+                                                                 <img class="user-img"
+                                                                            src="https://groath.in/assets/images/users/undraw_profile.webp"
+                                                                            alt="No image">
                                                             @else
                                                                 <img class="cmp-lg"
                                                                     src="{{ asset('Company_logo') . '/' . $topReference->Company_logo }}"
@@ -1199,7 +1202,7 @@
                                                         </div>
                                                     @else
                                                         <div class="card-header stf text-center text-white">
-                                                            No Reference Connection Giver Not Found
+                                                            No Referral Connection Giver Not Found
                                                         </div>
                                                     @endif
                                                 </div>

@@ -1,16 +1,17 @@
 @extends('layouts.app')
 @section('title', 'Members List')
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
 
                 <!-- @if ($errors->any())
-                                                                                                                                                        @foreach ($errors->all() as $error)
+                                                                                                                                        @foreach ($errors->all() as $error)
     <li class="mb-5" style="color:red">{{ $error }}</li>
     @endforeach
-                                                                                                                                                    @endif -->
+                                                                                                                                    @endif -->
 
                 {{-- Alert Messages --}}
                 @include('common.alert')
@@ -43,13 +44,13 @@
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
-                                                <span style="color: red;">*</span>Branch Establish Year
+                                                Branch Establish Year
                                                 <span style="color:red;"
                                                     class="error-message">{{ $errors->first('brand_establish_year') }}</span>
                                                 <input type="text" class="form-control" name="brand_establish_year"
                                                     id="brand_establish_year" placeholder="Enter Brand Establish Year"
                                                     value="{{ old('brand_establish_year') }}"
-                                                    onKeyPress="if(this.value.length==6) return false;" required>
+                                                    onKeyPress="if(this.value.length==6) return false;">
                                             </div>
 
 
@@ -132,45 +133,57 @@
                                             </div>
 
                                             <div class="col-lg-4 col-md-6">
-                                                <label for="referred_to"><span style="color:red;">*</span>Inducted
-                                                    By</label>
-
-                                                <select class="form-select" name="referred_to" id="referred_to_select"
-                                                    required>
+                                                <label for="referred_to_select">
+                                                    <span style="color:red;">*</span> Inducted By
+                                                </label>
+                                            
+                                                <select class="form-select" name="referred_to" id="referred_to_select" required>
+                                            
                                                     <option value="" disabled
                                                         {{ old('referred_to') ? '' : 'selected' }}>
                                                         Select Inducted
                                                     </option>
-
-                                                    {{-- Dynamic Members --}}
+                                            
                                                     @foreach ($Data as $data)
                                                         @if ($data->id)
-                                                            <option value="{{ $data->id }}" data-type="member"
-                                                                {{ old('referred_to') == $data->id && old('referred_to_type') == 'member' ? 'selected' : '' }}>
+                                                            <option
+                                                                value="{{ $data->id }}"
+                                                                data-type="member"
+                                                                data-name="{{ strtolower($data->first_name) }}"
+                                                                {{ old('referred_to') == $data->id && old('referred_to_type') == 'member' ? 'selected' : '' }}
+                                                            >
                                                                 {{ $data->first_name }} - ({{ $data->mobile_number }})
                                                             </option>
                                                         @endif
                                                     @endforeach
-
-                                                    {{-- Static Options --}}
-                                                    <option value="1" data-type="other"
+                                            
+                                                    <option value="1"
+                                                        data-type="other"
+                                                        data-name="social media"
                                                         {{ old('referred_to') == '1' && old('referred_to_type') == 'other' ? 'selected' : '' }}>
                                                         Social Media
                                                     </option>
-
-                                                    <option value="2" data-type="other"
+                                            
+                                                    <option value="2"
+                                                        data-type="other"
+                                                        data-name="committee member"
                                                         {{ old('referred_to') == '2' && old('referred_to_type') == 'other' ? 'selected' : '' }}>
                                                         Committee Member
                                                     </option>
-
-                                                    <option value="3" data-type="other"
+                                            
+                                                    <option value="3"
+                                                        data-type="other"
+                                                        data-name="website"
                                                         {{ old('referred_to') == '3' && old('referred_to_type') == 'other' ? 'selected' : '' }}>
                                                         Website
                                                     </option>
+                                            
                                                 </select>
-
-                                                <input type="hidden" name="referred_to_type" id="referred_to_type"
-                                                    value="{{ old('referred_to_type') }}">
+                                            
+                                                <input type="hidden"
+                                                       name="referred_to_type"
+                                                       id="referred_to_type"
+                                                       value="{{ old('referred_to_type') }}">
                                             </div>
                                             <div class="col-lg-4 mt-3">
                                                 <label class="form-label fw-bold">Priority Club</label>
@@ -208,6 +221,8 @@
                                             </div>
 
                                             <div class="row gy-2 mb-3">
+
+
                                                 <div class="col-lg-4 col-md-6">
                                                     <label for="citygroup_id"><span style="color:red;">*</span> City Group
                                                         Name</label>
@@ -327,28 +342,78 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function () {
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const referredSelect = document.getElementById('referred_to_select');
-            const referredType = document.getElementById('referred_to_type');
+    const referredSelect = $('#referred_to_select');
+    const referredType = $('#referred_to_type');
 
-            function setReferredType() {
-                const selectedOption = referredSelect.options[referredSelect.selectedIndex];
+    referredSelect.select2({
+        placeholder: 'Search Member by Name',
+        allowClear: true,
+        width: '100%',
 
-                if (selectedOption && selectedOption.dataset.type) {
-                    referredType.value = selectedOption.dataset.type;
-                } else {
-                    referredType.value = '';
-                }
+        matcher: function (params, data) {
+
+            // No search text
+            if ($.trim(params.term) === '') {
+                return data;
             }
 
-            referredSelect.addEventListener('change', setReferredType);
+            // Get ONLY data-name
+            let name = $(data.element).attr('data-name');
 
-            // Set value on page load also
-            setReferredType();
-        });
-    </script>
+            if (!name) {
+                return null;
+            }
+
+            // Convert both to lowercase
+            name = name.toLowerCase();
+            let search = $.trim(params.term).toLowerCase();
+
+            // Search only name
+            if (name.indexOf(search) !== -1) {
+                return data;
+            }
+
+            return null;
+        }
+    });
+
+
+    // Set member / other type
+    function setReferredType() {
+
+        const selectedOption = referredSelect.find('option:selected');
+
+        if (selectedOption.length) {
+
+            const type = selectedOption.attr('data-type');
+
+            if (type) {
+                referredType.val(type);
+            } else {
+                referredType.val('');
+            }
+
+        } else {
+            referredType.val('');
+        }
+    }
+
+
+    // On selection
+    referredSelect.on('change', function () {
+        setReferredType();
+    });
+
+
+    // On page load
+    setReferredType();
+
+});
+</script>
 
     <script>
         new Choices('#choices-single-default', {

@@ -19,7 +19,6 @@ class CheckApprovalStatus
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
-
         if (!$user) {
             return $next($request);
         }
@@ -35,7 +34,6 @@ class CheckApprovalStatus
                 return $next($request);
             }
             $member = members::where('user_id', $user->id)->first();
-
 
             $loginPendingCheck = Business::where('Business.business_to_id', $user->id)
                 ->where('Business.iStatus', 1)

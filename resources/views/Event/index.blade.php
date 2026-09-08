@@ -217,10 +217,8 @@
                                                             </td>
 
                                                             <td class="d-flex gap-2 justify-content-center">
-                                                                <a href="#" data-bs-toggle="modal"
-                                                                    data-bs-target="#EditModal"
-                                                                    onclick="getEditData(<?= $Event->event_id ?>)"
-                                                                    class="" title="Edit">
+                                                                <a href="{{ route('Event.edit.page', $Event->event_id) }}"
+                                                                    title="Edit Event">
                                                                     <span class="text-500 fas fa-edit"></span>
                                                                 </a>
                                                                 <a class="" href="#" data-bs-toggle="modal"

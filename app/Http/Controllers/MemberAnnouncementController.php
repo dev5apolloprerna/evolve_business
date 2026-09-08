@@ -29,12 +29,12 @@ class MemberAnnouncementController extends Controller
             ->first();
 
         $id = $memberData->id;
-        $datas = MemberAnnouncement::where('member_id', $id)->paginate(env('PAR_PAGE_COUNT', 20));
+        $datas = MemberAnnouncement::paginate(env('PAR_PAGE_COUNT', 20));
         $count = $datas->count();
         // dd($datas);
         return view('MemberAnnouncement.index', compact('datas', 'user', 'id', 'count'));
     }
-
+    
     public function otherMemberAnnouncements(Request $request)
     {
         $user = Auth::user();
@@ -47,7 +47,7 @@ class MemberAnnouncementController extends Controller
 
         return view('MemberAnnouncement.MemberAnnouncement', compact('datas', 'user', 'id', 'count'));
     }
-
+    
     public function adminAllAnnouncements(Request $request)
     {
         $user = Auth::user();
@@ -77,7 +77,7 @@ class MemberAnnouncementController extends Controller
             $root = $_SERVER['DOCUMENT_ROOT'];
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/MemberAnnouncement/';
+            $destinationpath = $root . '/evolv_business/MemberAnnouncement/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }
@@ -118,7 +118,7 @@ class MemberAnnouncementController extends Controller
             $root = $_SERVER['DOCUMENT_ROOT'];
             $image = $request->file('photo');
             $img = time() . '.' . $image->getClientOriginalExtension();
-            $destinationpath = $root . '/MemberAnnouncement/';
+            $destinationpath = $root . '/evolv_business/MemberAnnouncement/';
             if (!file_exists($destinationpath)) {
                 mkdir($destinationpath, 0755, true);
             }
@@ -136,7 +136,7 @@ class MemberAnnouncementController extends Controller
         }
 
         $Data = array(
-            //'member_id' => $request->member_id,
+            'member_id' => $request->member_id,
             'title'    => $request->title,
             'description'    => $request->description,
             'photos'    => $img,
