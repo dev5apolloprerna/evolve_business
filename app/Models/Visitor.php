@@ -21,6 +21,7 @@ class Visitor extends Model
         'created_at',
         'updated_at',
         'created_by',
+        'meeting_id',
         'comments'
     ];
 
@@ -32,5 +33,10 @@ class Visitor extends Model
     public function members()
     {
         return $this->belongsTo(members::class, 'member_id', 'id');
+    }
+
+    public function Cluster_metting()
+    {
+        return $this->belongsTo(Cluster_metting::class, 'meeting_id', 'id');
     }
 }

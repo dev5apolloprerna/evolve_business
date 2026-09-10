@@ -133,6 +133,7 @@
                                             <th scope="col">Date</th>
                                             <th scope="col">Phone</th>
                                             <th scope="col">Member</th>
+                                            <th scope="col">Meeting</th>
                                             <th scope="col">Business Name</th>
                                             <th scope="col">Business Category</th>
                                             <th scope="col">Proof of payment</th>
@@ -155,6 +156,8 @@
                                                 </td>
                                                 <td class="text-center">{{ $data->phone }}</td>
                                                 <td class="text-center">{{ $data->members->Contact_person }}</td>
+                                                <td class="text-center">{{ $data->Cluster_metting->Meeting_title ?? '' }}
+                                                </td>
                                                 <td class="text-center">{{ $data->business_name }}</td>
                                                 <td class="text-center">{{ $data->business_category->name ?? '' }}</td>
                                                 <td class="text-center">
@@ -185,6 +188,20 @@
 
                                                         <i class="fas fa-user-check text-success"></i>
                                                     </a>
+                                                    <form action="{{ route('MemberVisitor.destroy', $data->id) }}"
+                                                        method="POST" style="display:inline-block;"
+                                                        onsubmit="return confirm('Are you sure you want to delete this visitor?');">
+
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <button type="submit" class="border-0 bg-transparent p-0"
+                                                            title="Delete">
+
+                                                            <i class="fas fa-trash-alt text-danger"></i>
+
+                                                        </button>
+                                                    </form>
                                                 </td>
 
                                             </tr>

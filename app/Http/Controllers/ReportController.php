@@ -16,6 +16,8 @@ use App\Models\membershipplans;
 use App\Models\renewalhistory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\MonthlyReviewExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 
 class ReportController extends Controller
@@ -201,6 +203,254 @@ class ReportController extends Controller
         }
 
         return view('reports.monthlyviewReport', compact('reportData'));
+    }
+
+    public function exportMonthlyReview(Request $request)
+    {
+        $fromDate = $request->from_date;
+        $toDate   = $request->to_date;
+
+        $cityGroups = City_group::all();
+
+        $reportData = [];
+
+        foreach ($cityGroups as $group) {
+
+            // Member Of The Month
+            $memberOfTheMonth = MemberPoint::join(
+                'users',
+                'users.id',
+                '=',
+                'member_points.member_id'
+            )
+                ->join(
+                    'members',
+                    'members.user_id',
+                    '=',
+                    'users.id'
+                )
+                ->join(
+                    'categories',
+                    'categories.id',
+                    '=',
+                    'members.category_id'
+                )
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('member_points.created_at', [
+                    $fromDate . ' 00:00:00',
+                    $toDate . ' 23:59:59'
+                ])
+                ->select(
+                    'users.first_name',
+                    'users.email',
+                    'members.Contact_person',
+                    'members.companyname',
+                    'categories.name as category_name'
+                )
+                ->selectRaw('SUM(member_points.points) as total_points')
+                ->groupBy(
+                    'member_points.member_id',
+                    'users.first_name',
+                    'users.email',
+                    'members.Contact_person',
+                    'members.companyname',
+                    'categories.name'
+                )
+                ->orderByDesc('total_points')
+                ->first();
+
+
+            // Highest Direct Business
+            $topDirectBusiness = Business::select(
+                'members.Contact_person',
+                'members.companyname',
+                DB::raw('SUM(Business_amount) as total_amount')
+            )
+                ->join(
+                    'members',
+                    'members.user_id',
+                    '=',
+                    'Business.business_from_id'
+                )
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('business_Date', [
+                    $fromDate,
+                    $toDate
+                ])
+                ->where('Business.business_type', 1)
+                ->where('Business.isapproved_status', 1)
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->groupBy(
+                    'Business.business_from_id',
+                    'members.Contact_person',
+                    'members.companyname'
+                )
+                ->orderByDesc('total_amount')
+                ->first();
+
+
+            // Total Direct Business
+            $totalDirectBusiness = Business::join(
+                'members',
+                'members.user_id',
+                '=',
+                'Business.business_from_id'
+            )
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('Business.business_Date', [
+                    $fromDate,
+                    $toDate
+                ])
+                ->where('Business.business_type', 1)
+                ->where('Business.isapproved_status', 1)
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->sum('Business.Business_amount');
+
+
+            // Highest Reference Business
+            $topReferenceBusiness = Business::select(
+                'members.Contact_person',
+                'members.companyname',
+                DB::raw('SUM(Business_amount) as total_amount')
+            )
+                ->join(
+                    'members',
+                    'members.user_id',
+                    '=',
+                    'Business.business_from_id'
+                )
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('business_Date', [
+                    $fromDate,
+                    $toDate
+                ])
+                ->where('Business.business_type', 2)
+                ->where('Business.isapproved_status', 1)
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->groupBy(
+                    'Business.business_from_id',
+                    'members.Contact_person',
+                    'members.companyname'
+                )
+                ->orderByDesc('total_amount')
+                ->first();
+
+
+            // Total Reference Business
+            $totalReferenceBusiness = Business::join(
+                'members',
+                'members.user_id',
+                '=',
+                'Business.business_from_id'
+            )
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('Business.business_Date', [
+                    $fromDate,
+                    $toDate
+                ])
+                ->where('Business.business_type', 2)
+                ->where('Business.isapproved_status', 1)
+                ->where('Business.iStatus', 1)
+                ->where('Business.isDelete', 0)
+                ->sum('Business.Business_amount');
+
+
+            // Total Referral Count
+            $totalReferralCount = Reference::join(
+                'members',
+                'members.user_id',
+                '=',
+                'Reference.Reference_from'
+            )
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('Reference.Reference_Date', [
+                    $fromDate,
+                    $toDate
+                ])
+                ->where('Reference.isapproved_status', 1)
+                ->where('Reference.iStatus', 1)
+                ->where('Reference.isDelete', 0)
+                ->count();
+
+
+            // Highest One To One
+            $topOneToOne = DB::table('one_to_one_detail')
+                ->join(
+                    'members',
+                    'members.user_id',
+                    '=',
+                    'one_to_one_detail.created_by'
+                )
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('receive_date', [
+                    $fromDate,
+                    $toDate
+                ])
+                ->where('one_to_one_detail.isapproved_status', 1)
+                ->where('one_to_one_detail.iStatus', 1)
+                ->where('one_to_one_detail.isDelete', 0)
+                ->select(
+                    'members.Contact_person',
+                    'members.companyname',
+                    DB::raw('COUNT(*) as total_meetings')
+                )
+                ->groupBy(
+                    'one_to_one_detail.created_by',
+                    'members.Contact_person',
+                    'members.companyname'
+                )
+                ->orderByDesc('total_meetings')
+                ->first();
+
+
+            // Total One To One
+            $totalOneToOne = DB::table('one_to_one_detail')
+                ->join(
+                    'members',
+                    'members.user_id',
+                    '=',
+                    'one_to_one_detail.created_by'
+                )
+                ->where('members.citygroup_id', $group->id)
+                ->whereBetween('receive_date', [
+                    $fromDate,
+                    $toDate
+                ])
+                ->where('one_to_one_detail.isapproved_status', 1)
+                ->where('one_to_one_detail.iStatus', 1)
+                ->where('one_to_one_detail.isDelete', 0)
+                ->count();
+
+
+            $reportData[] = [
+
+                'totalDirectBusiness' => $totalDirectBusiness,
+
+                'city_group' => $group->group_name,
+
+                'member_of_the_month' => $memberOfTheMonth,
+
+                'top_direct_business' => $topDirectBusiness,
+
+                'top_reference_business' => $topReferenceBusiness,
+
+                'totalReferenceBusiness' => $totalReferenceBusiness,
+
+                'totalReferralCount' => $totalReferralCount,
+
+                'totalOneToOne' => $totalOneToOne,
+
+                'top_one_to_one' => $topOneToOne,
+            ];
+        }
+
+        return Excel::download(
+            new MonthlyReviewExport($reportData),
+            'monthly-review-report.xlsx'
+        );
     }
 
     public function report(Request $request)

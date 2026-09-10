@@ -38,8 +38,11 @@
                                             style="background: #61a143 !important;border:1px solid #61a143 !important; ">
                                             Reset
                                         </a>
+                                        <a href="{{ route('reports.monthlyreview.export', request()->query()) }}"
+                                            class="btn btn-success">
+                                            <i class="fas fa-file-excel"></i> Export Excel
+                                        </a>
                                     </div>
-
                                 </div>
                             </form>
                         </div>
@@ -65,6 +68,7 @@
                                                 <th>Highest Referral Business</th>
                                                 <th>Referral Amount</th>
                                                 <th>Group Total Referral Amount</th>
+                                                <th>Total Business</th>
                                                 <th>Group Total Referral Count</th>
                                                 <th>Top One To One</th>
                                                 <th>Total One To One</th>
@@ -108,6 +112,9 @@
 
                                                     <td>
                                                         ₹{{ number_format($row['totalReferenceBusiness'] ?? 0, 2) }}
+                                                    </td>
+                                                    <td>
+                                                        ₹{{ number_format(($row['totalReferenceBusiness'] ?? 0) + ($row['totalDirectBusiness'] ?? 0), 2) }}
                                                     </td>
                                                     <td>
                                                         {{ $row['totalReferralCount'] ?? 0 }}

@@ -44,7 +44,7 @@ class MemberVisitorController extends Controller
             ->get();
 
         // $id = $memberData->id;
-        $datas = Visitor::with(['business_category', 'members'])
+        $datas = Visitor::with(['business_category', 'members', 'Cluster_metting'])
             ->where('iStatus', 0)
             ->when($request->fromdate, function ($query) use ($request) {
                 $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($request->fromdate)));
@@ -57,8 +57,98 @@ class MemberVisitorController extends Controller
             })
             ->paginate(env('PAR_PAGE_COUNT', 20));
         $count = $datas->count();
-        // dd($datas);
         return view('MemberVisitor.index', compact('datas', 'user', 'count', 'members', 'givenby', 'FromDate', 'ToDate'));
+    }
+
+    public function Add(Request $request)
+    {
+        $user = Auth::User();
+        // $Data = members::select('*')
+        //     ->join('users', 'members.user_id', '=', 'users.id')
+        //     ->where('users.status', 1)
+        //     ->get();
+
+        $Data = members::query()
+            ->join('users', 'members.user_id', '=', 'users.id')
+            ->where('users.status', 1)
+            ->select(
+                'members.*',
+                'members.id as member_id',
+                'users.first_name',
+                'users.mobile_number'
+            )
+            ->get();
+        $futureMeetings = DB::table('Cluster_Meet')
+            ->join(
+                'city_groups',
+                'city_groups.id',
+                '=',
+                'Cluster_Meet.city_group_id'
+            )
+            ->where('Cluster_Meet.isDelete', 0)
+            ->where('Cluster_Meet.iStatus', 1)
+            ->whereRaw(
+                "STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') >= NOW()"
+            )
+            ->orderByRaw(
+                "STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') ASC"
+            )
+            ->select('Cluster_Meet.*')
+            ->get();
+
+        return view('MemberVisitor.AddVisitor', compact('Data', 'futureMeetings'));
+    }
+
+    public function create(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+        ]);
+        $img = "";
+        if ($request->hasFile('photo')) {
+            $root = $_SERVER['DOCUMENT_ROOT'];
+            $image = $request->file('photo');
+            $img = time() . '.' . $image->getClientOriginalExtension();
+            $destinationpath = $root . '/evolv_business/Visitor/';
+            if (!file_exists($destinationpath)) {
+                mkdir($destinationpath, 0755, true);
+            }
+            $image->move($destinationpath, $img);
+        }
+        $phone = preg_replace('/\D/', '', $request->phone);
+
+        // If country code (91) is present, keep only last 10 digits
+        if (strlen($phone) > 10 && substr($phone, 0, 2) == '91') {
+            $phone = substr($phone, -10);
+        }
+        $Data = array(
+            'member_id' => $request->member_id,
+            'name'    => $request->name,
+            'phone'    => $phone,
+            'photo'   => $img,
+            'email'    => $request->email,
+            'business_catgory'    => $request->business_category_id,
+            'business_name'    => $request->business_name,
+            'meeting_id'    => $request->meeting,
+            'created_at' => date('Y-m-d H:i:s'),
+            //'strIP' => $request->ip(),
+            'created_by'     => auth()->id()
+
+        );
+        DB::table('visitors')->insert($Data);
+
+        return redirect()->route('MemberVisitor.index')->with('success', 'Visitor Created Successfully.');
+    }
+
+    public function destroy($id)
+    {
+        $visitor = Visitor::findOrFail($id);
+
+        $visitor->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'Visitor deleted successfully.');
     }
 
     public function approved(Request $request)
@@ -77,7 +167,7 @@ class MemberVisitorController extends Controller
             ->get();
 
         // $id = $memberData->id;
-        $datas = Visitor::with(['business_category', 'members'])
+        $datas = Visitor::with(['business_category', 'members', 'Cluster_metting'])
             ->where('iStatus', 1)
             ->when($request->fromdate, function ($query) use ($request) {
                 $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($request->fromdate)));
@@ -110,7 +200,7 @@ class MemberVisitorController extends Controller
             ->get();
 
         // $id = $memberData->id;
-        $datas = Visitor::with(['business_category', 'members'])
+        $datas = Visitor::with(['business_category', 'members', 'Cluster_metting'])
             ->where('iStatus', 2)
             ->when($request->fromdate, function ($query) use ($request) {
                 $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($request->fromdate)));
@@ -136,7 +226,7 @@ class MemberVisitorController extends Controller
 
         echo "No\tName\tEmail\tDate\tPhone\tMember\tBusiness Name\tBusiness Category\tStatus\n";
 
-        $datas = Visitor::with(['business_category', 'members'])
+        $datas = Visitor::with(['business_category', 'members', 'Cluster_metting'])
             ->where('iStatus', $status)
             ->when($request->fromdate, function ($query) use ($request) {
                 $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($request->fromdate)));
