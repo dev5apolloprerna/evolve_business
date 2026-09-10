@@ -326,23 +326,59 @@
                                             </div>
                                             <!-- this field new start  -->
 
+                                            <div class="col-lg-4 mt-3">
+                                                <label class="form-label fw-bold">Pin</label>
 
-                                            <div class="text-center">
-                                                <button type="submit" class="btn btn-success btn-user style="width:
-                                                    100px; height: 40px;"">Submit</button>
-                                                <button type="button" class="btn btn-danger btn-user float-right"
-                                                    onclick="cancelForm()">Cancel</button>
+                                                <div class="d-flex gap-4">
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="pin"
+                                                            id="pin" value="SL"
+                                                            {{ old('pin', $data->pin ?? '') == 'SL' ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pin">
+                                                            Sliver
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="pin"
+                                                            id="pin" value="GL"
+                                                            {{ old('pin', $data->pin ?? '') == 'GL' ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pin">
+                                                            Gold
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="pin"
+                                                            id="pin" value="PL"
+                                                            {{ old('pin', $data->pin ?? '') == 'PL' ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pin">
+                                                            Platinum
+                                                        </label>
+                                                    </div>
+                                                </div>
+
                                             </div>
-
                                         </div>
+
+
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-success btn-user style="width: 100px;
+                                                height: 40px;"">Submit</button>
+                                            <button type="button" class="btn btn-danger btn-user float-right"
+                                                onclick="cancelForm()">Cancel</button>
+                                        </div>
+
                                 </div>
-                                </form>
                             </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 @endsection
 

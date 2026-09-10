@@ -270,6 +270,25 @@ class memberscontroller extends Controller
             'SubscriptionExpiredDate' => $subEndDate,
             'renewalhistory_id'       => $renewalHistory,
         ]);
+        $name = trim($request->first_name);
+        if (in_array((int) $request->priority_club, [3, 5, 7])) {
+            $name .= '-' . $request->priority_club . 'p';
+        }
+        if (in_array(strtoupper($request->pin), ['SL', 'GL', 'PL'])) {
+            $name .= '-' . strtolower($request->pin);
+        }
+        DB::table('members')
+            ->where('id', $member)
+            ->update([
+                'Contact_person' => $name
+            ]);
+
+        DB::table('users')
+            ->where('id', $user)
+            ->update([
+                'first_name' => $name
+            ]);
+
         // $sendemaildetails = DB::table('sendemaildetails')->where('id', 3)->first();
 
         // $msg = [
@@ -302,28 +321,260 @@ class memberscontroller extends Controller
     public function editview(Request $request, $id)
     {
 
-        $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
-        $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
-        $categories = Categories::select('id', 'name')->orderBy('name')->get();
-        $subcategories = Subcategories::select('id', 'name')->get();
-        $plans = Membershipplans::select('id', 'plan_name')->orderBy('plan_name')->get();
-        $renewplan = renewalhistory::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $id])->first();
-        $data = Members::select('members.*', db::raw('(select users.first_name from users where    users.id=members.user_id order by users.id desc limit 1 ) as user_id'), db::raw('(select renewal_history.plan_id from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as plan_id'), db::raw('(select renewal_history.renewal_date from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as renewal_date'), db::raw('(select renewal_history.paymentrefNo from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as paymentrefNo'))->where(['members.iStatus' => 1, 'members.isDelete' => 0, 'members.id' => $id])->first();
-        $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
+        $cities = City::select('id', 'city_name')
+            ->orderBy('city_name')
+            ->get();
+
+        $cityGroups = City_group::select('id', 'group_name')
+            ->orderBy('group_name')
+            ->get();
+
+        $categories = Categories::select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $subcategories = Subcategories::select('id', 'name')
+            ->get();
+
+        $plans = Membershipplans::select('id', 'plan_name')
+            ->orderBy('plan_name')
+            ->get();
+
+        $renewplan = renewalhistory::where('member_id', $id)
+            ->where('iStatus', 1)
+            ->where('isDelete', 0)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        /*
+    |--------------------------------------------------------------------------
+    | Member Data
+    |--------------------------------------------------------------------------
+    */
+
+        $data = Members::select(
+            'members.*',
+
+            DB::raw('(
+            SELECT users.first_name
+            FROM users
+            WHERE users.id = members.user_id
+            ORDER BY users.id DESC
+            LIMIT 1
+        ) as user_id'),
+
+            DB::raw('(
+            SELECT renewal_history.plan_id
+            FROM renewal_history
+            WHERE renewal_history.member_id = members.id
+            ORDER BY renewal_history.id DESC
+            LIMIT 1
+        ) as plan_id'),
+
+            DB::raw('(
+            SELECT renewal_history.renewal_date
+            FROM renewal_history
+            WHERE renewal_history.member_id = members.id
+            ORDER BY renewal_history.id DESC
+            LIMIT 1
+        ) as renewal_date'),
+
+            DB::raw('(
+            SELECT renewal_history.paymentrefNo
+            FROM renewal_history
+            WHERE renewal_history.member_id = members.id
+            ORDER BY renewal_history.id DESC
+            LIMIT 1
+        ) as paymentrefNo')
+        )
+            ->where('members.iStatus', 1)
+            ->where('members.isDelete', 0)
+            ->where('members.id', $id)
+            ->firstOrFail();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Member List For Inducted By
+    |--------------------------------------------------------------------------
+    */
+
+        $Data = User::leftJoin(
+            'members',
+            'members.user_id',
+            '=',
+            'users.id'
+        )
             ->where('users.status', 1)
-            //->where('users.role_id', 2)
             ->where('members.Arrival_flag', 0)
             ->orderBy('users.first_name')
             ->select('users.*')
             ->get();
-        return view('members.edit', compact('Data', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'data', 'renewplan', 'Data'));
+
+
+        return view('members.edit', compact(
+            'Data',
+            'cities',
+            'cityGroups',
+            'categories',
+            'subcategories',
+            'plans',
+            'data',
+            'renewplan'
+        ));
     }
 
+    // public function editview(Request $request, $id)
+    // {
+
+    //     $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
+    //     $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
+    //     $categories = Categories::select('id', 'name')->orderBy('name')->get();
+    //     $subcategories = Subcategories::select('id', 'name')->get();
+    //     $plans = Membershipplans::select('id', 'plan_name')->orderBy('plan_name')->get();
+    //     $renewplan = renewalhistory::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $id])->first();
+    //     $data = Members::select('members.*', db::raw('(select users.first_name from users where    users.id=members.user_id order by users.id desc limit 1 ) as user_id'), db::raw('(select renewal_history.plan_id from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as plan_id'), db::raw('(select renewal_history.renewal_date from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as renewal_date'), db::raw('(select renewal_history.paymentrefNo from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as paymentrefNo'))->where(['members.iStatus' => 1, 'members.isDelete' => 0, 'members.id' => $id])->first();
+    //     $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
+    //         ->where('users.status', 1)
+    //         //->where('users.role_id', 2)
+    //         ->where('members.Arrival_flag', 0)
+    //         ->orderBy('users.first_name')
+    //         ->select('users.*')
+    //         ->get();
+    //     return view('members.edit', compact('Data', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'data', 'renewplan', 'Data'));
+    // }
+
+    // public function update(Request $request)
+    // {
+    //     $userid = Members::find($request->id);
+    //     // dd($userid);
+
+    //     $existingCount = DB::table('members')
+    //         ->where('category_id', $request->input('category_id'))
+    //         ->where('citygroup_id', $request->input('citygroup_id'))
+    //         ->where('id', '!=', $request->id)
+    //         ->where('iStatus', 1)
+    //         ->where('isDelete', 0)
+    //         ->count();
+
+    //     if ($existingCount > 0) {
+    //         return redirect()->back()->withErrors(['citygroup_id' => 'This group already exists for the selected category.'])->withInput();
+    //     }
+    //     $request->validate([
+    //         // 'companyname' => 'required',
+    //         'phonenumber' => 'required|regex:/^\d{10}$/',
+    //         'email'       => 'required',
+    //         'address'     => 'required',
+    //         'city_id'     => 'required',
+    //         'citygroup_id' => 'required',
+    //         'pincode' => 'required|regex:/^[0-9]{6}$/',
+    //     ]);
+    //     $planId = $request->input('plan_id');
+    //     $membershipPlan = MembershipPlans::where('id', $planId)->first();
+    //     $days = $membershipPlan->duration_in_days;
+    //     $subStartDate = now();
+    //     $subEndDate = now()->addDays($days);
+
+    //     $existingUser = DB::table('users')->where('email', $request->email)->first();
+    //     // dd($existingUser);
+    //     if ($existingUser) {
+    //         if ($existingUser->id != $userid->user_id) {
+    //             return redirect()->back()->with('error', 'The email address is already in use by another user.');
+    //         } else {
+
+    //             DB::table('users')
+    //                 ->where('id', $existingUser->id)
+    //                 ->update([
+    //                     'first_name'     => $request->first_name,
+    //                     'mobile_number'  => $request->phonenumber,
+    //                     'role_id'        => 2,
+    //                     'user_type'      => 'User',
+    //                     'updated_at'     => date('Y-m-d H:i:s'),
+    //                 ]);
+    //         }
+    //     } else {
+    //         DB::table('users')
+    //             ->where('id', $userid->user_id)
+    //             ->update([
+    //                 'first_name'     => $request->first_name,
+    //                 'mobile_number'  => $request->phonenumber,
+    //                 'email'          => $request->email,
+    //                 'role_id'        => 2,
+    //                 'updated_at'     => date('Y-m-d H:i:s'),
+    //             ]);
+    //     }
+    //     if ($request->priority_club == 3 || $request->priority_club == 5 || $request->priority_club == 7) {
+
+    //         $name = $request->first_name;
+
+    //         // check karo already 'p' se start to nahi ho raha
+    //         if (!str_starts_with($name, 'P-')) {
+    //             $name = 'P-' . $name;
+    //         }
+
+    //         DB::table('members')
+    //             ->where('id', $request->id)
+    //             ->update([
+    //                 'Contact_person' => $name
+    //             ]);
+
+    //         DB::table('users')
+    //             ->where('id', $userid->user_id)
+    //             ->update([
+    //                 'first_name' => $name
+    //             ]);
+    //     }
+    //     DB::table('members')
+    //         ->where('id', $request->id)
+    //         ->update([
+    //             'Contact_person'  =>  $request->first_name,
+    //             'companyname'    => $request->companyname,
+    //             'phonenumber'    => $request->phonenumber,
+    //             'email'          => $request->email,
+    //             'address'        => $request->address,
+    //             'city_id'        => $request->city_id,
+    //             'citygroup_id'   => $request->citygroup_id,
+    //             'category_id'    => $request->category_id,
+    //             'subcategories_id' => 0,
+    //             'pincode'        => $request->pincode,
+    //             'priority_club' => $request->priority_club,
+    //             'from'        => $request->referred_to,
+    //             'gstnumber'      => $request->gstnumber,
+    //             'date_of_birth'      => $request->date_of_birth,
+    //             // 'Book_Your_Podcast'=>$request->Book_Your_Podcast,
+    //             // 'Book_Your_Member_of_the_week'=>$request->Book_Your_Member_of_the_week,
+    //             'updated_at'     => now(),
+    //             'product_service'      => $request->product_service,
+    //             'strIP'          => $request->ip(),
+    //             'updated_by'     => auth()->id(),
+    //         ]);
+    //     $renewalHistory = DB::table('renewal_history')->where('member_id', $request->id)
+    //         ->update([
+    //             'plan_id'       => $request->plan_id,
+    //             'renewal_date'  => $request->renewal_date,
+    //             'updated_at'     => now(),
+    //             'PaymentRefNo'  => $request->PaymentRefNo,
+    //             'SubStartDate'  => $subStartDate,
+    //             'StbEndDate'    => $subEndDate,
+    //             'updated_by'     => auth()->id(),
+    //         ]);
+    //     DB::table('members')->where('id', $request->id)
+    //         ->update([
+    //             'SubscriptionExpiredDate' => $subEndDate,
+    //             'renewalhistory_id'       => $renewalHistory,
+    //         ]);
+    //     return redirect()->route('members.index')->with('success', 'Member Updated Successfully.');
+    // }
 
     public function update(Request $request)
     {
         $userid = Members::find($request->id);
-        // dd($userid);
+
+        if (!$userid) {
+            return redirect()
+                ->back()
+                ->with('error', 'Member not found.');
+        }
 
         $existingCount = DB::table('members')
             ->where('category_id', $request->input('category_id'))
@@ -334,113 +585,199 @@ class memberscontroller extends Controller
             ->count();
 
         if ($existingCount > 0) {
-            return redirect()->back()->withErrors(['citygroup_id' => 'This group already exists for the selected category.'])->withInput();
+            return redirect()
+                ->back()
+                ->withErrors([
+                    'citygroup_id' => 'This group already exists for the selected category.'
+                ])
+                ->withInput();
         }
+
         $request->validate([
-            // 'companyname' => 'required',
             'phonenumber' => 'required|regex:/^\d{10}$/',
-            'email'       => 'required',
-            'address'     => 'required',
-            'city_id'     => 'required',
+            'email'        => 'required',
+            'address'      => 'required',
+            'city_id'      => 'required',
             'citygroup_id' => 'required',
-            'pincode' => 'required|regex:/^[0-9]{6}$/',
+            'pincode'      => 'required|regex:/^[0-9]{6}$/',
         ]);
         $planId = $request->input('plan_id');
+
         $membershipPlan = MembershipPlans::where('id', $planId)->first();
+
+        if (!$membershipPlan) {
+            return redirect()
+                ->back()
+                ->with('error', 'Membership plan not found.')
+                ->withInput();
+        }
+
         $days = $membershipPlan->duration_in_days;
+
         $subStartDate = now();
         $subEndDate = now()->addDays($days);
 
-        $existingUser = DB::table('users')->where('email', $request->email)->first();
-        // dd($existingUser);
+        $priorityClub = $request->has('priority_club')
+            ? $request->priority_club
+            : $userid->priority_club;
+
+        $pin = $request->has('pin')
+            ? strtoupper(trim($request->pin))
+            : strtoupper(trim($userid->pin ?? ''));
+        $name = trim($request->first_name);
+
+        // Remove old "P-" prefix
+        $name = preg_replace('/^P-\s*/i', '', $name);
+
+        // Remove existing priority + pin suffix
+        // Example: Kriti Shah-3p-sl => Kriti Shah
+        $name = preg_replace(
+            '/-(3p|5p|7p)(-(sl|gl|pl))?$/i',
+            '',
+            $name
+        );
+
+        // Remove only pin suffix
+        // Example: Kriti Shah-sl => Kriti Shah
+        $name = preg_replace(
+            '/-(sl|gl|pl)$/i',
+            '',
+            $name
+        );
+
+        $name = trim($name);
+        if (in_array((int) $priorityClub, [3, 5, 7])) {
+            $name .= '-' . (int) $priorityClub . 'p';
+        }
+        if (in_array($pin, ['SL', 'GL', 'PL'])) {
+            $name .= '-' . strtolower($pin);
+        }
+        $existingUser = DB::table('users')
+            ->where('email', $request->email)
+            ->first();
+
         if ($existingUser) {
+
             if ($existingUser->id != $userid->user_id) {
-                return redirect()->back()->with('error', 'The email address is already in use by another user.');
+
+                return redirect()
+                    ->back()
+                    ->with('error', 'The email address is already in use by another user.')
+                    ->withInput();
             } else {
 
                 DB::table('users')
                     ->where('id', $existingUser->id)
                     ->update([
-                        'first_name'     => $request->first_name,
-                        'mobile_number'  => $request->phonenumber,
-                        'role_id'        => 2,
-                        'user_type'      => 'User',
-                        'updated_at'     => date('Y-m-d H:i:s'),
+                        'first_name'    => $name,
+                        'mobile_number' => $request->phonenumber,
+                        'email'         => $request->email,
+                        'role_id'       => 2,
+                        'user_type'     => 'User',
+                        'updated_at'    => now(),
                     ]);
             }
         } else {
-            DB::table('users')
-                ->where('id', $userid->user_id)
-                ->update([
-                    'first_name'     => $request->first_name,
-                    'mobile_number'  => $request->phonenumber,
-                    'email'          => $request->email,
-                    'role_id'        => 2,
-                    'updated_at'     => date('Y-m-d H:i:s'),
-                ]);
-        }
-        if ($request->priority_club == 3 || $request->priority_club == 5 || $request->priority_club == 7) {
-
-            $name = $request->first_name;
-
-            // check karo already 'p' se start to nahi ho raha
-            if (!str_starts_with($name, 'P-')) {
-                $name = 'P-' . $name;
-            }
-
-            DB::table('members')
-                ->where('id', $request->id)
-                ->update([
-                    'Contact_person' => $name
-                ]);
 
             DB::table('users')
                 ->where('id', $userid->user_id)
                 ->update([
-                    'first_name' => $name
+                    'first_name'    => $name,
+                    'mobile_number' => $request->phonenumber,
+                    'email'         => $request->email,
+                    'role_id'       => 2,
+                    'user_type'     => 'User',
+                    'updated_at'    => now(),
                 ]);
         }
         DB::table('members')
             ->where('id', $request->id)
             ->update([
-                'Contact_person'  =>  $request->first_name,
-                'companyname'    => $request->companyname,
-                'phonenumber'    => $request->phonenumber,
-                'email'          => $request->email,
-                'address'        => $request->address,
-                'city_id'        => $request->city_id,
-                'citygroup_id'   => $request->citygroup_id,
-                'category_id'    => $request->category_id,
+                'Contact_person'   => $name,
+                'companyname'      => $request->companyname,
+                'phonenumber'      => $request->phonenumber,
+                'email'            => $request->email,
+                'address'          => $request->address,
+                'city_id'          => $request->city_id,
+                'citygroup_id'     => $request->citygroup_id,
+                'category_id'      => $request->category_id,
                 'subcategories_id' => 0,
-                'pincode'        => $request->pincode,
-                'priority_club' => $request->priority_club,
-                'from'        => $request->referred_to,
-                'gstnumber'      => $request->gstnumber,
-                'date_of_birth'      => $request->date_of_birth,
-                // 'Book_Your_Podcast'=>$request->Book_Your_Podcast,
-                // 'Book_Your_Member_of_the_week'=>$request->Book_Your_Member_of_the_week,
-                'updated_at'     => now(),
-                'product_service'      => $request->product_service,
-                'strIP'          => $request->ip(),
-                'updated_by'     => auth()->id(),
+                'pincode'          => $request->pincode,
+
+                // Priority preserve/update
+                'priority_club'    => $priorityClub,
+
+                // IMPORTANT: Pin database me save hoga
+                'pin'              => $pin,
+
+                'from'             => $request->referred_to,
+                'gstnumber'        => $request->gstnumber,
+                'date_of_birth'    => $request->date_of_birth,
+                'product_service'  => $request->product_service,
+                'updated_at'       => now(),
+                'strIP'            => $request->ip(),
+                'updated_by'       => auth()->id(),
             ]);
-        $renewalHistory = DB::table('renewal_history')->where('member_id', $request->id)
-            ->update([
-                'plan_id'       => $request->plan_id,
-                'renewal_date'  => $request->renewal_date,
-                'updated_at'     => now(),
-                'PaymentRefNo'  => $request->PaymentRefNo,
-                'SubStartDate'  => $subStartDate,
-                'StbEndDate'    => $subEndDate,
-                'updated_by'     => auth()->id(),
-            ]);
-        DB::table('members')->where('id', $request->id)
+        // DB::table('renewal_history')
+        //     ->where('member_id', $request->id)
+        //     ->update([
+        //         'plan_id'      => $request->plan_id,
+        //         'renewal_date' => $request->renewal_date,
+        //         'updated_at'   => now(),
+        //         'PaymentRefNo' => $request->PaymentRefNo,
+        //         'SubStartDate' => $subStartDate,
+        //         'StbEndDate'   => $subEndDate,
+        //         'updated_by'   => auth()->id(),
+        //     ]);
+        // $renewalHistory = DB::table('renewal_history')
+        //     ->where('member_id', $request->id)
+        //     ->value('id');
+
+        $renewalHistory = DB::table('renewal_history')
+            ->where('member_id', $request->id)
+            ->orderBy('id', 'desc')
+            ->first();
+        if ($renewalHistory) {
+
+            DB::table('renewal_history')
+                ->where('id', $renewalHistory->id)
+                ->update([
+                    'plan_id'       => $request->plan_id,
+                    'renewal_date'  => date('Y-m-d', strtotime($request->renewal_date)),
+                    'paymentrefNo'  => $request->PaymentRefNo,
+                    'SubStartDate'  => $subStartDate,
+                    'StbEndDate'    => $subEndDate,
+                    'updated_at'    => now(),
+                    'updated_by'    => auth()->id(),
+                ]);
+
+            $renewalHistoryId = $renewalHistory->id;
+        } else {
+
+            $renewalHistoryId = DB::table('renewal_history')
+                ->insertGetId([
+                    'member_id'     => $request->id,
+                    'plan_id'       => $request->plan_id,
+                    'renewal_date'  => date('Y-m-d', strtotime($request->renewal_date)),
+                    'paymentrefNo'  => $request->PaymentRefNo,
+                    'SubStartDate'  => $subStartDate,
+                    'StbEndDate'    => $subEndDate,
+                    'created_at'    => now(),
+                    'created_by'    => auth()->id(),
+                ]);
+        }
+
+        DB::table('members')
+            ->where('id', $request->id)
             ->update([
                 'SubscriptionExpiredDate' => $subEndDate,
-                'renewalhistory_id'       => $renewalHistory,
+                'renewalhistory_id'       => $renewalHistoryId,
             ]);
-        return redirect()->route('members.index')->with('success', 'Member Updated Successfully.');
+        return redirect()
+            ->route('members.index')
+            ->with('success', 'Member Updated Successfully.');
     }
+
     public function delete(Request $request)
     {
 
