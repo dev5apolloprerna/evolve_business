@@ -8,10 +8,10 @@
             <div class="container-fluid">
 
                 <!-- @if ($errors->any())
-                                                                                                                                            @foreach ($errors->all() as $error)
+                                                                                                                                                                            @foreach ($errors->all() as $error)
     <li class="mb-5" style="color:red">{{ $error }}</li>
     @endforeach
-                                                                                                                                        @endif -->
+                                                                                                                                                                        @endif -->
 
                 {{-- Alert Messages --}}
                 @include('common.alert')
@@ -260,7 +260,7 @@
 
                                             <div class="col-lg-4 col-md-6">
                                                 <label for="plan_id"><span style="color:red;">*</span> Plan Name</label>
-                                                <select class="form-control" name="plan_id" id="plan_id">
+                                                <select class="form-control" name="plan_id" id="plan_id" required>
                                                     <option value="" selected>Select Plan Name</option>
                                                     @foreach ($plans as $plan)
                                                         <option value="{{ $plan->id }}"
@@ -297,6 +297,41 @@
                                                 <input type="password" class="form-control" name="password"
                                                     id="password" placeholder="Enter Password"
                                                     value="{{ old('password') }}" required>
+                                            </div>
+
+                                            <div class="col-lg-4 mt-3">
+                                                <label class="form-label fw-bold">Pin</label>
+
+                                                <div class="d-flex gap-4">
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="pin"
+                                                            id="pin" value="SL"
+                                                            {{ old('pin') == 'SL' ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pin">
+                                                            Sliver
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="pin"
+                                                            id="pin" value="GL"
+                                                            {{ old('pin') == 'GL' ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pin">
+                                                            Gold
+                                                        </label>
+                                                    </div>
+
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="pin"
+                                                            id="pin" value="PL"
+                                                            {{ old('pin') == 'PL' ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pin">
+                                                            Platinum
+                                                        </label>
+                                                    </div>
+
+                                                </div>
                                             </div>
                                             {{-- old code start --}}
                                             {{-- <div class="col-lg-4 col-md-6">Book Your Podcast                                                

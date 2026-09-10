@@ -35,7 +35,8 @@ class members extends Model
         'training_free',
         'brand_showcase',
         'from',
-        'product_service'
+        'product_service',
+        'pin'
     ];
 
     public function renewalhistory()
