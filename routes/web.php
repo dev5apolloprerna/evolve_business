@@ -285,6 +285,9 @@ Route::prefix('admin')->name('MemberAnnouncement.')->middleware(['auth', 'check_
 Route::prefix('admin')->name('MemberVisitor.')->middleware(['auth', 'check_approval'])->group(
     function () {
         Route::any('/MemberVisitor/index', [MemberVisitorController::class, 'index'])->name('index');
+        Route::any('/MemberVisitor/Add', [MemberVisitorController::class, 'Add'])->name('Add');
+        Route::any('/MemberVisitor/store', [MemberVisitorController::class, 'create'])->name('store');
+        Route::delete('/member-visitor/delete/{id}', [MemberVisitorController::class, 'destroy'])->name('destroy');
         Route::any('/MemberVisitor/approved', [MemberVisitorController::class, 'approved'])->name('membervisitor_approved');
         Route::any('/MemberVisitor/rejectlist', [MemberVisitorController::class, 'rejectlist'])->name('membervisitor_rejectlist');
         Route::get('/MemberVisitor/create/{id?}', [MemberVisitorController::class, 'createnew'])->name('create');
@@ -401,7 +404,7 @@ Route::prefix('admin')->name('reports.')->middleware('auth')->group(function () 
     Route::view('/reports/businessexportdata', '/reports/businessexportdata')->name('businessexportdata');
     Route::any('/reports/inducted', [ReportController::class, 'inducted'])->name('inducted');
     Route::any('/reports/monthlyreview', [ReportController::class, 'monthlyreview'])->name('monthlyreview');
-
+    Route::get('/reports/monthlyreview/export', [ReportController::class, 'exportMonthlyReview'])->name('monthlyreview.export');
     //30-7-25
     Route::any('/Member-reports-detail/{id?}', [ReportController::class, 'Member_reports_detail'])->name('Member_reports_detail');
     Route::any('/reports-recived-detail/{id?}', [ReportController::class, 'DirectBuiness_Given'])->name('reports_recived_detail');

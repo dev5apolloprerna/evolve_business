@@ -57,7 +57,7 @@
                                 @csrf
                                 <div class="row align-items-center">
 
-                                    <div class="col-md-2 mb-2">
+                                    <div class="col-md-3 mb-2">
                                         <div class="d-flex align-items-center">
                                             <select class="form-select select2" id="given_by" name="given_by" data-choices
                                                 name="Contact_person">
@@ -87,7 +87,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4 mb-2">
+                                    <div class="col-md-5 mb-2">
                                         <div class="d-flex align-items-center ">
                                             <div class="input-group d-flex ">
                                                 <input type="submit" id="search" class="btn btn-success mx-2"
@@ -98,8 +98,12 @@
                                             <button class="btn btn-success" type="button" onclick="exportExcel(0);">
                                                 <i class="fa-solid fa-file-excel fa-xl"></i>
                                             </button>
+                                            <a href="{{ route('MemberVisitor.Add') }}" class="btn btn-success mx-2">
+                                                Add
+                                            </a>
                                         </div>
                                     </div>
+
                                 </div>
                             </form>
                         </div>
@@ -132,6 +136,7 @@
                                             <th scope="col">Date</th>
                                             <th scope="col">Phone</th>
                                             <th scope="col">Member</th>
+                                            <th scope="col">Meeting</th>
                                             <th scope="col">Business Name</th>
                                             <th scope="col">Business Category</th>
                                             <th scope="col">Proof of payment</th>
@@ -154,6 +159,8 @@
                                                 </td>
                                                 <td class="text-center">{{ $data->phone }}</td>
                                                 <td class="text-center">{{ $data->members->Contact_person }}</td>
+                                                <td class="text-center">{{ $data->Cluster_metting->Meeting_title ?? '' }}
+                                                </td>
                                                 <td class="text-center">{{ $data->business_name }}</td>
                                                 <td class="text-center">{{ $data->business_category->name ?? '' }}</td>
                                                 <td class="text-center">
@@ -181,9 +188,22 @@
                                                         data-bs-target="#statusModal"
                                                         onclick="getEditDatastatus({{ $data->id }})"
                                                         title="Change Status">
-
                                                         <i class="fas fa-user-check text-success"></i>
                                                     </a>
+                                                    <form action="{{ route('MemberVisitor.destroy', $data->id) }}"
+                                                        method="POST" style="display:inline-block;"
+                                                        onsubmit="return confirm('Are you sure you want to delete this visitor?');">
+
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <button type="submit" class="border-0 bg-transparent p-0"
+                                                            title="Delete">
+
+                                                            <i class="fas fa-trash-alt text-danger"></i>
+
+                                                        </button>
+                                                    </form>
                                                 </td>
 
                                             </tr>
