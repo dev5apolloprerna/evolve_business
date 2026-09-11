@@ -311,8 +311,7 @@
                                                 <span style="color:red;">*</span> Joining date
                                                 <input type="text" class="form-control" name="renewal_date"
                                                     id="renewal_date" placeholder="Enter Membership date"
-                                                    value ="{{ !empty($data['renewal_date']) ? date('d-m-Y', strtotime($data['renewal_date'])) : '' }}"
-                                                    required>
+                                                    value="{{ !empty($data->renewal_date) && $data->renewal_date != '0000-00-00' ? \Carbon\Carbon::parse($data->renewal_date)->format('d-m-Y') : '' }}">
                                             </div>
 
                                             <!-- this field old end  -->
@@ -360,25 +359,24 @@
                                                 </div>
 
                                             </div>
+
+
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-success btn-user style="width:
+                                                    100px; height: 40px;"">Submit</button>
+                                                <button type="button" class="btn btn-danger btn-user float-right"
+                                                    onclick="cancelForm()">Cancel</button>
+                                            </div>
+
                                         </div>
-
-
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-success btn-user style="width: 100px;
-                                                height: 40px;"">Submit</button>
-                                            <button type="button" class="btn btn-danger btn-user float-right"
-                                                onclick="cancelForm()">Cancel</button>
-                                        </div>
-
                                 </div>
+                                </form>
                             </div>
-                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection
 

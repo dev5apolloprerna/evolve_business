@@ -8,10 +8,10 @@
             <div class="container-fluid">
 
                 <!-- @if ($errors->any())
-                                                                                                                                                                            @foreach ($errors->all() as $error)
+                                                                                                                                            @foreach ($errors->all() as $error)
     <li class="mb-5" style="color:red">{{ $error }}</li>
     @endforeach
-                                                                                                                                                                        @endif -->
+                                                                                                                                        @endif -->
 
                 {{-- Alert Messages --}}
                 @include('common.alert')
@@ -333,6 +333,7 @@
 
                                                 </div>
                                             </div>
+
                                             {{-- old code start --}}
                                             {{-- <div class="col-lg-4 col-md-6">Book Your Podcast                                                
                                                 <span style="color:red;" class="error-message">{{ $errors->first('Book_Your_Podcast ') }}*</span> 
