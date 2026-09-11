@@ -19,6 +19,7 @@ use validate;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
 use App\Services\AuthkeyWhatsAppService;
+use Carbon\Carbon;
 
 //Groath.network_25- info@getdemo.in
 class memberscontroller extends Controller
@@ -65,6 +66,7 @@ class memberscontroller extends Controller
             'ref_user.first_name as referred_by_name'
         )
             ->orderBy('users.first_name', 'asc')
+            //->orderBy('members.id', 'desc')
             ->leftjoin('city', 'city.id', 'members.city_id')
             ->leftjoin('city_groups', 'city_groups.id', 'members.citygroup_id')
             ->leftjoin('categories', 'categories.id', 'members.category_id')
@@ -92,9 +94,6 @@ class memberscontroller extends Controller
             })
             ->when($groupsearch, function ($query) use ($groupsearch) {
                 $query->where('members.citygroup_id', '=', $groupsearch);
-            })
-            ->when($status, function ($query) use ($status) {
-                $query->where('users.status', '=', $status);
             })
             ->paginate(env('PAR_PAGE_COUNT', 20));
 
@@ -205,6 +204,7 @@ class memberscontroller extends Controller
             'user_type' => 'User',
             'created_at'     => date('Y-m-d H:i:s'),
         ]);
+        $pin = strtoupper(trim($request->pin));
         $member = DB::table('members')->insertGetId([
             'Contact_person'  =>  $request->first_name,
             'user_id'        => $user,
@@ -220,6 +220,7 @@ class memberscontroller extends Controller
             'from'        => $request->referred_to,
             //'referred_to_type' => $request->referred_to_type,
             'priority_club' => $request->priority_club,
+            'pin'                   => $pin,
             'gstnumber'      => $request->gstnumber,
             'date_of_birth'      => $request->date_of_birth,
             'brand_establish_year'      => $request->brand_establish_year,
@@ -255,11 +256,19 @@ class memberscontroller extends Controller
                 ]);
             }
         }
+        $renewalDate = null;
+
+        if ($request->filled('renewal_date')) {
+            $renewalDate = Carbon::createFromFormat(
+                'd-m-Y',
+                $request->renewal_date
+            )->format('Y-m-d');
+        }
 
         $renewalHistory = DB::table('renewal_history')->insertGetId([
             'member_id'     => $member,
             'plan_id'       => $request->plan_id,
-            'renewal_date'  => $request->renewal_date,
+            'renewal_date'  => $renewalDate,
             'created_at'     => date('Y-m-d H:i:s'),
             'paymentrefNo'  => $request->PaymentRefNo,
             'SubStartDate'  => $subStartDate,
@@ -270,6 +279,7 @@ class memberscontroller extends Controller
             'SubscriptionExpiredDate' => $subEndDate,
             'renewalhistory_id'       => $renewalHistory,
         ]);
+
         $name = trim($request->first_name);
         if (in_array((int) $request->priority_club, [3, 5, 7])) {
             $name .= '-' . $request->priority_club . 'p';
@@ -288,7 +298,6 @@ class memberscontroller extends Controller
             ->update([
                 'first_name' => $name
             ]);
-
         // $sendemaildetails = DB::table('sendemaildetails')->where('id', 3)->first();
 
         // $msg = [
@@ -321,128 +330,23 @@ class memberscontroller extends Controller
     public function editview(Request $request, $id)
     {
 
-        $cities = City::select('id', 'city_name')
-            ->orderBy('city_name')
-            ->get();
-
-        $cityGroups = City_group::select('id', 'group_name')
-            ->orderBy('group_name')
-            ->get();
-
-        $categories = Categories::select('id', 'name')
-            ->orderBy('name')
-            ->get();
-
-        $subcategories = Subcategories::select('id', 'name')
-            ->get();
-
-        $plans = Membershipplans::select('id', 'plan_name')
-            ->orderBy('plan_name')
-            ->get();
-
-        $renewplan = renewalhistory::where('member_id', $id)
-            ->where('iStatus', 1)
-            ->where('isDelete', 0)
-            ->orderBy('id', 'desc')
-            ->first();
-
-        /*
-    |--------------------------------------------------------------------------
-    | Member Data
-    |--------------------------------------------------------------------------
-    */
-
-        $data = Members::select(
-            'members.*',
-
-            DB::raw('(
-            SELECT users.first_name
-            FROM users
-            WHERE users.id = members.user_id
-            ORDER BY users.id DESC
-            LIMIT 1
-        ) as user_id'),
-
-            DB::raw('(
-            SELECT renewal_history.plan_id
-            FROM renewal_history
-            WHERE renewal_history.member_id = members.id
-            ORDER BY renewal_history.id DESC
-            LIMIT 1
-        ) as plan_id'),
-
-            DB::raw('(
-            SELECT renewal_history.renewal_date
-            FROM renewal_history
-            WHERE renewal_history.member_id = members.id
-            ORDER BY renewal_history.id DESC
-            LIMIT 1
-        ) as renewal_date'),
-
-            DB::raw('(
-            SELECT renewal_history.paymentrefNo
-            FROM renewal_history
-            WHERE renewal_history.member_id = members.id
-            ORDER BY renewal_history.id DESC
-            LIMIT 1
-        ) as paymentrefNo')
-        )
-            ->where('members.iStatus', 1)
-            ->where('members.isDelete', 0)
-            ->where('members.id', $id)
-            ->firstOrFail();
-
-
-        /*
-    |--------------------------------------------------------------------------
-    | Member List For Inducted By
-    |--------------------------------------------------------------------------
-    */
-
-        $Data = User::leftJoin(
-            'members',
-            'members.user_id',
-            '=',
-            'users.id'
-        )
+        $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
+        $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
+        $categories = Categories::select('id', 'name')->orderBy('name')->get();
+        $subcategories = Subcategories::select('id', 'name')->get();
+        $plans = Membershipplans::select('id', 'plan_name')->orderBy('plan_name')->get();
+        $renewplan = renewalhistory::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $id])->first();
+        $data = Members::select('members.*', db::raw('(select users.first_name from users where    users.id=members.user_id order by users.id desc limit 1 ) as user_id'), db::raw('(select renewal_history.plan_id from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as plan_id'), db::raw('(select renewal_history.renewal_date from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as renewal_date'), db::raw('(select renewal_history.paymentrefNo from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as paymentrefNo'))->where(['members.iStatus' => 1, 'members.isDelete' => 0, 'members.id' => $id])->first();
+        $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
             ->where('users.status', 1)
+            //->where('users.role_id', 2)
             ->where('members.Arrival_flag', 0)
             ->orderBy('users.first_name')
             ->select('users.*')
             ->get();
-
-
-        return view('members.edit', compact(
-            'Data',
-            'cities',
-            'cityGroups',
-            'categories',
-            'subcategories',
-            'plans',
-            'data',
-            'renewplan'
-        ));
+        return view('members.edit', compact('Data', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'data', 'renewplan', 'Data'));
     }
 
-    // public function editview(Request $request, $id)
-    // {
-
-    //     $cities = City::select('id', 'city_name')->orderBy('city_name')->get();
-    //     $cityGroups = City_group::select('id', 'group_name')->orderBy('group_name')->get();
-    //     $categories = Categories::select('id', 'name')->orderBy('name')->get();
-    //     $subcategories = Subcategories::select('id', 'name')->get();
-    //     $plans = Membershipplans::select('id', 'plan_name')->orderBy('plan_name')->get();
-    //     $renewplan = renewalhistory::where(['iStatus' => 1, 'isDelete' => 0, 'id' => $id])->first();
-    //     $data = Members::select('members.*', db::raw('(select users.first_name from users where    users.id=members.user_id order by users.id desc limit 1 ) as user_id'), db::raw('(select renewal_history.plan_id from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as plan_id'), db::raw('(select renewal_history.renewal_date from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as renewal_date'), db::raw('(select renewal_history.paymentrefNo from renewal_history where    renewal_history.member_id=members.id order by renewal_history.id desc limit 1 ) as paymentrefNo'))->where(['members.iStatus' => 1, 'members.isDelete' => 0, 'members.id' => $id])->first();
-    //     $Data = User::leftjoin('members', 'members.user_id', '=', 'users.id')
-    //         ->where('users.status', 1)
-    //         //->where('users.role_id', 2)
-    //         ->where('members.Arrival_flag', 0)
-    //         ->orderBy('users.first_name')
-    //         ->select('users.*')
-    //         ->get();
-    //     return view('members.edit', compact('Data', 'cities', 'cityGroups', 'categories', 'subcategories', 'plans', 'data', 'renewplan', 'Data'));
-    // }
 
     // public function update(Request $request)
     // {
@@ -733,6 +637,14 @@ class memberscontroller extends Controller
         //     ->where('member_id', $request->id)
         //     ->value('id');
 
+        $renewalDate = null;
+
+        if ($request->filled('renewal_date')) {
+            $renewalDate = Carbon::createFromFormat(
+                'd-m-Y',
+                $request->renewal_date
+            )->format('Y-m-d');
+        }
         $renewalHistory = DB::table('renewal_history')
             ->where('member_id', $request->id)
             ->orderBy('id', 'desc')
@@ -743,7 +655,7 @@ class memberscontroller extends Controller
                 ->where('id', $renewalHistory->id)
                 ->update([
                     'plan_id'       => $request->plan_id,
-                    'renewal_date'  => date('Y-m-d', strtotime($request->renewal_date)),
+                    'renewal_date' => $renewalDate,
                     'paymentrefNo'  => $request->PaymentRefNo,
                     'SubStartDate'  => $subStartDate,
                     'StbEndDate'    => $subEndDate,
@@ -758,7 +670,7 @@ class memberscontroller extends Controller
                 ->insertGetId([
                     'member_id'     => $request->id,
                     'plan_id'       => $request->plan_id,
-                    'renewal_date'  => date('Y-m-d', strtotime($request->renewal_date)),
+                    'renewal_date'  => $renewalDate,
                     'paymentrefNo'  => $request->PaymentRefNo,
                     'SubStartDate'  => $subStartDate,
                     'StbEndDate'    => $subEndDate,
