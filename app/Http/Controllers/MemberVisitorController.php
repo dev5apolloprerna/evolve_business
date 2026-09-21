@@ -78,6 +78,24 @@ class MemberVisitorController extends Controller
                 'users.mobile_number'
             )
             ->get();
+        // $futureMeetings = DB::table('Cluster_Meet')
+        //     ->join(
+        //         'city_groups',
+        //         'city_groups.id',
+        //         '=',
+        //         'Cluster_Meet.city_group_id'
+        //     )
+        //     ->where('Cluster_Meet.isDelete', 0)
+        //     ->where('Cluster_Meet.iStatus', 1)
+        //     ->whereRaw(
+        //         "STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') >= NOW()"
+        //     )
+        //     ->orderByRaw(
+        //         "STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') ASC"
+        //     )
+        //     ->select('Cluster_Meet.*')
+        //     ->get();
+
         $futureMeetings = DB::table('Cluster_Meet')
             ->join(
                 'city_groups',
@@ -88,7 +106,7 @@ class MemberVisitorController extends Controller
             ->where('Cluster_Meet.isDelete', 0)
             ->where('Cluster_Meet.iStatus', 1)
             ->whereRaw(
-                "STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') >= NOW()"
+                "STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i')"
             )
             ->orderByRaw(
                 "STR_TO_DATE(Cluster_Meet.start_date, '%d.%m.%y %H:%i') ASC"
@@ -124,6 +142,7 @@ class MemberVisitorController extends Controller
         $Data = array(
             'member_id' => $request->member_id,
             'name'    => $request->name,
+            'mode'    => $request->mode,
             'phone'    => $phone,
             'photo'   => $img,
             'email'    => $request->email,

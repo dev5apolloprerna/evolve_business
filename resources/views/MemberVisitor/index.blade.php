@@ -141,6 +141,7 @@
                                             <th scope="col">Business Category</th>
                                             <th scope="col">Proof of payment</th>
                                             <th scope="col">Status</th>
+                                            <th scope="col">Mode</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -183,6 +184,7 @@
                                                         -
                                                     @endif
                                                 </td>
+                                                <td>{{ $data->mode ?? '' }}</td>
                                                 <td class="text-center">
                                                     <a href="javascript:void(0)" data-bs-toggle="modal"
                                                         data-bs-target="#statusModal"

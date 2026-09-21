@@ -83,6 +83,11 @@
                                                 <div id="viewimg" style="margin-top:10px;"></div>
 
                                             </div>
+                                            <div class="col-lg-3 col-md-6">
+                                                Payment Mode
+                                                <input type="text" class="form-control" name="mode" id="mode"
+                                                    placeholder="Enter Mode" maxlength="70" autocomplete="off">
+                                            </div>
                                         </div>
 
                                         <div class="row gy-3">

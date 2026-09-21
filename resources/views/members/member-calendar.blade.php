@@ -17,6 +17,30 @@
         .fc-daygrid-event {
             white-space: normal;
         }
+
+        /* Birthday - full orange row in list view */
+        .fc .fc-list-event.birthday-event>td {
+            background-color: #f39c12 !important;
+            color: #fff !important;
+            border-color: #f39c12 !important;
+        }
+
+        /* Birthday title */
+        .fc .fc-list-event.birthday-event .fc-list-event-title,
+        .fc .fc-list-event.birthday-event .fc-list-event-title a,
+        .fc .fc-list-event.birthday-event .fc-list-event-time {
+            color: #fff !important;
+        }
+
+        /* Dot */
+        .fc .fc-list-event.birthday-event .fc-list-event-dot {
+            border-color: #fff !important;
+        }
+
+        /* Hover */
+        .fc .fc-list-event.birthday-event:hover>td {
+            background-color: #e8920b !important;
+        }
     </style>
     <div class="main-content">
         <div class="page-content">
@@ -101,7 +125,8 @@
                             title: '🎂 ' + (member.member_name || 'Member') + ' - Birthday',
                             start: currentYear + '-' + month + '-' + day,
                             allDay: true,
-                            type: 'birthday'
+                            type: 'birthday',
+                            classNames: ['birthday-event']
                         });
                     }
                 }

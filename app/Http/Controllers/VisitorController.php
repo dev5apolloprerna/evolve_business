@@ -67,6 +67,7 @@ class VisitorController extends Controller
         $Data = array(
             'member_id' => $request->memberid,
             'name'    => $request->name,
+            'mode'    => $request->mode,
             'phone'    => $phone,
             'photo'   => $img,
             'email'    => $request->email,
@@ -121,6 +122,7 @@ class VisitorController extends Controller
         $Data = array(
             'member_id' => $request->member_id,
             'name'    => $request->name,
+            'mode'    => $request->mode,
             'phone'    => $request->phone,
             'photo'    => $img,
             'email'    => $request->email,

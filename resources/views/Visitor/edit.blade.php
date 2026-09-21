@@ -17,12 +17,12 @@
                 @include('common.alert')
 
                 <!-- <div class="row">
-                                                                                    <div class="col-10">
-                                                                                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                                                                            <h4 class="mb-sm-0">Add Members</h4>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div> -->
+                                                                                                    <div class="col-10">
+                                                                                                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                                                                                            <h4 class="mb-sm-0">Add Members</h4>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div> -->
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
@@ -111,6 +111,12 @@
                                                         @endif
 
                                                     </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-6">
+                                                    <span style="color:red;">*</span>Mode
+                                                    <input type="text" class="form-control" name="mode"
+                                                        id="mode" placeholder="Enter Mode" maxlength="70"
+                                                        autocomplete="off" value="{{ $data->mode }}">
                                                 </div>
 
                                             </div>
