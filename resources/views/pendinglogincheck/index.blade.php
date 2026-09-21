@@ -38,7 +38,7 @@
                                                         </th>
                                                         <th scop="col">Status</th>
                                                         <!-- <th width="5%" class="sort" data-sort="Date">Available seats
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </th> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </th> -->
                                                         <th w scop="col">Action</th>
                                                     </tr>
                                                 </thead>
@@ -112,6 +112,7 @@
                                                     <tr>
                                                         <th scope="col">No</th>
                                                         <th scop="col">Referral Given By</th>
+                                                        <th scop="col">Referral Name</th>
                                                         <th scop="col">date</th>
                                                         <th scop="col">Status</th>
                                                         <th w scop="col">Action</th>
@@ -125,7 +126,7 @@
                                                                 {{ $i + $Referral->perPage() * ($Referral->currentPage() - 1) }}
                                                             </td>
                                                             <td class="text-center">{{ $Ref->reference_from_name }}</td>
-
+                                                            <td class="text-center">{{ $Ref->Reference_Name ?? '' }}</td>
                                                             <td class="text-center">
                                                                 {{ \Carbon\Carbon::parse($Ref->Reference_Date)->format('d-m-Y') }}
                                                             </td>
