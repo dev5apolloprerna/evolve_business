@@ -139,6 +139,7 @@ class memberscontroller extends Controller
                 'members.date_of_birth',
                 'renewal_history.renewal_date as work_anniversary_date'
             )
+            ->where('Member_status', 1)
             ->where('members.iStatus', 1)
             ->where('members.isDelete', 0)
             ->orderBy('users.first_name')
@@ -1067,7 +1068,7 @@ class memberscontroller extends Controller
             ->sum('points');
 
         $memberMeetings = DB::table('Cluster_Meet_Member_meeting as mm')
-            ->select('mm.*', 'Cluster_Meet.Meeting_title', 'Cluster_Meet.start_date', 'Cluster_Meet.End_date')
+            ->select('mm.*', 'Cluster_Meet.Meeting_title', 'Cluster_Meet.start_date', 'Cluster_Meet.End_date', 'Cluster_Meet.End_date')
             ->leftJoin('Cluster_Meet', 'mm.meeting_id', '=', 'Cluster_Meet.id')
             ->where('mm.member_id', $member->id)
             ->where('mm.iStatus', 1)

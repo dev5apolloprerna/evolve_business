@@ -266,6 +266,7 @@
                                     <th>Meeting Title</th>
                                     <th>Start Date</th>
                                     <th>End Date</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -276,6 +277,13 @@
                                         <td>{{ $item->Meeting_title ?? '-' }}</td>
                                         <td>{{ !empty($item->start_date) ? $item->start_date : '-' }}</td>
                                         <td>{{ !empty($item->End_date) ? $item->End_date : '-' }}</td>
+                                        <td>
+                                            @if ($item->is_approve_meeting == 1)
+                                                Join
+                                            @else
+                                                Not join
+                                            @endif
+                                        </td>
                                         <td>
                                             @if (!empty($item->meeting_id))
                                                 <a href="{{ route('Membermeeting.Membercomment', $item->meeting_id) }}"
